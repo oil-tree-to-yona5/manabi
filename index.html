@@ -1319,7 +1319,7 @@
         <button class="app-header-btn big" id="backToTitleBtn">🏠</button>
         <div class="header-back-label">もどる</div>
       </div>
-      <div class="app-header-title">漢字の読みチャレンジ</div>
+      <div class="app-header-title" id="mainScreenTitle">漢字の読みチャレンジ</div>
       <div class="header-back-wrap" style="visibility:hidden;">
         <button class="app-header-btn big"></button>
         <div class="header-back-label">もどる</div>
@@ -2758,7 +2758,14 @@
   var hubBackBtn = document.getElementById('hubBackBtn');
   var titleScreen = document.getElementById('titleScreen');
   var mainScreen = document.getElementById('mainScreen');
+  var mainScreenTitle = document.getElementById('mainScreenTitle');
   var gradeSubtitle = document.getElementById('gradeSubtitle');
+  var SUBJECT_TITLES = {
+    kanji: '漢字の読みチャレンジ',
+    english: '英単語チャレンジ',
+    math: '算数チャレンジ',
+    moji: 'もじ虫食いチャレンジ'
+  };
   var gradeBtns = document.querySelectorAll('#titleScreen .grade-btn');
   var titleStatus = document.getElementById('titleStatus');
   var titleRemaining = document.getElementById('titleRemaining');
@@ -4079,6 +4086,7 @@
       titleScreen.classList.add('hidden');
       mainScreen.classList.remove('hidden');
       currentSubject = 'kanji';
+      mainScreenTitle.textContent = SUBJECT_TITLES[currentSubject];
       loadNextQuestion();
     });
   });
@@ -4128,6 +4136,7 @@
       englishTitleScreen.classList.add('hidden');
       mainScreen.classList.remove('hidden');
       currentSubject = 'english';
+      mainScreenTitle.textContent = SUBJECT_TITLES[currentSubject];
       loadNextQuestion();
     });
   });
@@ -4222,6 +4231,7 @@
       mathTitleScreen.classList.add('hidden');
       mainScreen.classList.remove('hidden');
       currentSubject = 'math';
+      mainScreenTitle.textContent = SUBJECT_TITLES[currentSubject];
       loadNextQuestion();
     });
   });
@@ -4265,6 +4275,7 @@
       mojiTitleScreen.classList.add('hidden');
       mainScreen.classList.remove('hidden');
       currentSubject = 'moji';
+      mainScreenTitle.textContent = SUBJECT_TITLES[currentSubject];
       loadNextQuestion();
     });
   });
