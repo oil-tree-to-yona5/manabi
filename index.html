@@ -1,0 +1,4268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>漢字の読みチャレンジ</title>
+<style>
+  :root{
+    --bg: #FFF3D6;
+    --panel: #FFFFFF;
+    --panel-edge: #FFD37A;
+    --chalk: #2E2A4D;
+    --chalk-dim: #8C86AE;
+    --yellow: #FFC93C;
+    --coral: #FF6F61;
+    --sky: #3FC1E0;
+    --special: #B06FE0;
+    --yellow-text: #B8790A;
+    --coral-text: #D8402F;
+    --sky-text: #0E88AC;
+    --special-text: #7C3FC9;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle 90px at 14% 9%, #FFDA6A 96%, transparent 100%),
+      linear-gradient(180deg, #79D2F0 0%, #BDEAF5 38%, #CDEFC2 55%, #8FD98A 100%);
+    color:var(--chalk);
+    font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
+    -webkit-tap-highlight-color: transparent;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before, body::after{
+    content:"";
+    position:fixed;
+    background:#fff;
+    border-radius:50%;
+    opacity:.85;
+    z-index:0;
+  }
+  body::before{ width:70px;height:44px; top:16%; left:8%; box-shadow: 34px 10px 0 -4px #fff, 60px -4px 0 -8px #fff; }
+  body::after{ width:56px;height:36px; top:9%; right:10%; box-shadow: 30px 8px 0 -4px #fff; }
+  .wrap{width:100%;max-width:420px;position:relative;z-index:1;padding:0 14px 20px;}
+
+  .app-header{
+    background:linear-gradient(135deg, #FFD65C, #FF9F4A);
+    margin:0 -14px 18px;
+    padding:16px 16px 22px;
+    border-radius:0 0 28px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 10px 22px -12px rgba(180,90,0,0.45);
+  }
+  .app-header-title{
+    font-size:17px;
+    font-weight:900;
+    color:#5A3A12;
+  }
+  .app-header-btn{
+    width:40px;height:40px;
+    border-radius:50%;
+    background:#fff;
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.15);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .app-header-btn.big{
+    width:56px;height:56px;
+    font-size:26px;
+  }
+  .header-btn-group{
+    display:flex;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .header-back-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    flex-shrink:0;
+  }
+  .header-back-label{
+    font-size:10.5px;
+    font-weight:900;
+    color:#5A3A12;
+  }
+  .history-list{
+    max-height:340px;
+    overflow-y:auto;
+    margin-bottom:14px;
+    text-align:left;
+  }
+  .history-subject-heading{
+    font-size:15px;
+    font-weight:900;
+    color:var(--special-text);
+    margin:18px 0 10px;
+    padding-bottom:5px;
+    border-bottom:3px solid var(--panel-edge);
+  }
+  .history-subject-heading:first-child{
+    margin-top:0;
+  }
+  .history-row{
+    margin-bottom:14px;
+  }
+  .history-row-indent{
+    margin-left:16px;
+    padding-left:10px;
+    border-left:3px solid var(--panel-edge);
+  }
+  .history-word{
+    font-size:16px;
+    font-weight:900;
+    color:var(--chalk);
+    margin-bottom:4px;
+  }
+  .history-bar-track{
+    height:10px;
+    background:#F0E4D0;
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:3px;
+  }
+  .history-bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--sky), var(--yellow));
+    border-radius:6px;
+  }
+  .history-stat{
+    font-size:11.5px;
+    color:var(--chalk-dim);
+  }
+  .history-empty{
+    text-align:center;
+    color:var(--chalk-dim);
+    padding:24px 0;
+    font-size:13px;
+  }
+  .app-header-badge{
+    background:#fff;
+    border-radius:999px;
+    padding:7px 14px;
+    font-size:14px;
+    font-weight:900;
+    color:var(--yellow-text);
+    box-shadow:0 4px 8px rgba(0,0,0,0.15);
+    display:flex;
+    align-items:center;
+    gap:4px;
+    white-space:nowrap;
+  }
+  .header-badges{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    align-items:flex-end;
+  }
+  .app-header-badge.small{
+    padding:4px 10px;
+    font-size:11.5px;
+    color:var(--special-text);
+  }
+  .app-header-badge.points-badge{
+    padding:9px 16px;
+    font-size:16px;
+    color:var(--special-text);
+  }
+
+  .mascot-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:4px;
+  }
+  .side-btn{
+    flex-shrink:0;
+    width:60px;
+    height:60px;
+    border-radius:18px;
+    border:none;
+    font-size:10px;
+    font-weight:900;
+    line-height:1.4;
+    box-shadow:0 6px 0 -1px rgba(0,0,0,0.12);
+    cursor:pointer;
+  }
+  .chest-icon{
+    width:22px;
+    height:22px;
+    vertical-align:middle;
+  }
+
+  .hub-select{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin:20px 0 14px;
+  }
+  .hub-btn{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    background:var(--panel);
+    border:3px solid var(--panel-edge);
+    border-radius:20px;
+    padding:16px 20px;
+    font-size:18px;
+    font-weight:900;
+    color:var(--chalk);
+    box-shadow:0 8px 0 -2px rgba(0,0,0,0.08);
+    cursor:pointer;
+  }
+  .hub-btn:active{transform:translateY(3px);box-shadow:0 4px 0 -2px rgba(0,0,0,0.08);}
+  .hub-btn .hub-icon{font-size:30px;}
+  .hub-btn:nth-child(1){border-color:var(--sky);}
+  .hub-btn:nth-child(2){border-color:var(--coral);}
+  .hub-btn:nth-child(3){border-color:var(--special);}
+  .hub-btn:nth-child(4){border-color:var(--yellow);}
+
+  .mascot{
+    display:block;
+    margin:4px auto 6px;
+    width:180px;
+    height:132px;
+    filter:drop-shadow(0 8px 10px rgba(60,30,10,0.2));
+  }
+
+  .title{
+    font-size:32px;
+    font-weight:900;
+    text-align:center;
+    color:var(--coral-text);
+    margin:0 0 4px;
+    letter-spacing:.02em;
+    -webkit-text-stroke: 3px #fff;
+    paint-order: stroke fill;
+    text-shadow: 0 4px 0 rgba(120,50,20,0.18);
+  }
+  .title span{color:var(--yellow-text);-webkit-text-stroke: 3px #fff;paint-order: stroke fill;}
+  .subtitle{
+    text-align:center;
+    color:#6A5AA0;
+    font-weight:700;
+    font-size:12.5px;
+    margin:0 0 12px;
+  }
+
+  .points-bar{
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    margin-bottom:16px;
+    font-size:13px;
+    color:var(--chalk-dim);
+  }
+  .points-bar b{color:var(--yellow-text);font-size:15px;}
+
+  .menu-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .menu-btn{
+    flex:1;
+    padding:12px 6px;
+    border:none;
+    border-radius:12px;
+    font-size:12.5px;
+    font-weight:700;
+    cursor:pointer;
+    text-align:center;
+    transition:transform .12s;
+  }
+  .menu-btn:active{transform:scale(0.96);}
+  .btn-gacha{background:linear-gradient(135deg, var(--yellow), #F0A868); color:#2A2110;}
+  .btn-ticket{background:var(--panel); border:1px solid var(--panel-edge); color:var(--chalk);}
+  .btn-exchange{background:var(--sky); color:#0F2A30;}
+
+  .settings-link{
+    display:block;
+    width:100%;
+    background:transparent;
+    border:none;
+    color:var(--chalk-dim);
+    text-decoration:underline;
+    font-size:12.5px;
+    text-align:center;
+    padding:6px;
+    margin-bottom:14px;
+    cursor:pointer;
+  }
+
+  .grade-select{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin:28px 0 22px;
+  }
+  .mode-toggle{
+    display:flex;
+    gap:8px;
+    margin-top:6px;
+  }
+  .title-remaining{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--chalk-dim);
+    margin:10px 0 0;
+  }
+  .title-remaining b{color:var(--yellow-text);}
+  .mode-btn{
+    flex:1;
+    padding:11px;
+    border-radius:10px;
+    border:1px solid var(--panel-edge);
+    background:var(--panel);
+    color:var(--chalk-dim);
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    transition:background .12s, color .12s, border-color .12s;
+  }
+  .mode-btn.active{
+    background:var(--yellow);
+    color:#2A2110;
+    border-color:var(--yellow);
+  }
+  .grade-btn{
+    padding:16px 8px;
+    border-radius:14px;
+    border:none;
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    color:var(--chalk);
+    font-size:14.5px;
+    font-weight:900;
+    cursor:pointer;
+    transition:transform .12s, border-color .12s, background .12s;
+  }
+  .grade-btn:active{transform:scale(0.97);}
+  .grade-btn:nth-child(1){border-color:var(--yellow);}
+  .grade-btn:nth-child(2){border-color:var(--sky);}
+  .grade-btn:nth-child(3){border-color:var(--special);}
+  .grade-btn.locked{
+    opacity:.5;
+    color:var(--chalk-dim);
+    font-size:15px;
+  }
+  .grade-btn.locked::before{ content:"🔒 "; }
+  .grade-btn.extra-btn{
+    border-color:var(--coral);
+    background:linear-gradient(135deg, rgba(229,142,125,0.18), var(--panel));
+  }
+
+  .category-select{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin:28px 0 22px;
+  }
+  .category-btn{
+    padding:22px 8px;
+    border-radius:14px;
+    border:1px solid var(--panel-edge);
+    background:var(--panel);
+    color:var(--chalk);
+    font-size:17px;
+    font-weight:900;
+    cursor:pointer;
+    transition:transform .12s, border-color .12s, background .12s;
+  }
+  .category-btn:active{transform:scale(0.97);}
+  .category-btn:nth-child(1){border-color:var(--sky);}
+  .category-btn:nth-child(2){border-color:var(--yellow);}
+  .category-btn:nth-child(3){border-color:var(--coral);}
+  .category-btn:nth-child(4){border-color:var(--special);}
+  .category-btn small{
+    display:block;
+    font-size:11px;
+    font-weight:500;
+    color:var(--chalk-dim);
+    margin-top:4px;
+  }
+  .category-btn.locked{
+    opacity:.5;
+    color:var(--chalk-dim);
+    font-size:15px;
+  }
+  .category-btn.locked::before{ content:"🔒 "; }
+
+  .special-banner{
+    display:none;
+    text-align:center;
+    background:linear-gradient(135deg, var(--special), #8E6BB0);
+    color:#fff;
+    font-weight:900;
+    font-size:13px;
+    border-radius:10px;
+    padding:8px;
+    margin-bottom:14px;
+    letter-spacing:.02em;
+  }
+  .card.is-special .special-banner{display:block;}
+
+  .answer-row{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:16px;
+    margin-bottom:22px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .field label{
+    font-size:12px;
+    color:var(--chalk-dim);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:78px;
+    height:58px;
+    text-align:center;
+    font-size:26px;
+    font-weight:700;
+    color:var(--chalk);
+    background:#F3EEDC;
+    border:2px solid var(--panel-edge);
+    border-radius:10px;
+    outline:none;
+  }
+  .field input:focus{
+    box-shadow:0 0 0 3px var(--sky);
+  }
+  .amari-tag{
+    font-size:13px;
+    color:var(--chalk-dim);
+    padding-bottom:16px;
+  }
+
+  .special-block{
+    display:none;
+    background:rgba(176,111,224,0.12);
+    border:1px dashed var(--special);
+    border-radius:14px;
+    padding:16px 14px;
+    margin-bottom:22px;
+    text-align:center;
+  }
+  .card.is-special .special-block{display:block;}
+  .special-block .special-label{
+    font-size:12px;
+    color:var(--special-text);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .special-block .problem{
+    font-size:30px;
+    margin:0 0 14px;
+  }
+  .special-block .field input{
+    width:100px;
+  }
+
+  .title-status{
+    min-height:18px;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--coral-text);
+    margin:-8px 0 14px;
+  }
+
+  .streak-track{
+    position:relative;
+    height:56px;
+    background:linear-gradient(90deg, #FDEEC9, #FFF9EC);
+    border:3px solid var(--panel-edge);
+    border-radius:28px;
+    margin-bottom:2px;
+  }
+  .streak-endpoints{
+    display:flex;
+    justify-content:space-between;
+    padding:0 14px;
+    margin-bottom:6px;
+  }
+  .streak-endpoints span{
+    font-size:10.5px;
+    font-weight:900;
+    color:var(--chalk-dim);
+  }
+  .streak-steps{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 26px;
+  }
+  .streak-step{
+    width:7px;height:7px;
+    border-radius:50%;
+    background:#EAD3A3;
+  }
+  .streak-food{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:26px;
+  }
+  .streak-dog{
+    position:absolute;
+    top:50%;
+    left:8px;
+    transform:translate(0,-50%) scaleX(-1);
+    font-size:32px;
+    transition:left .45s cubic-bezier(.34,1.4,.64,1);
+  }
+  .streak-dog.at-food{
+    animation: dogBounce .5s ease;
+  }
+  @keyframes dogBounce{
+    0%{transform:translate(0,-50%) scaleX(-1) scale(1);}
+    40%{transform:translate(0,-65%) scaleX(-1) scale(1.25);}
+    100%{transform:translate(0,-50%) scaleX(-1) scale(1);}
+  }
+  .streak-label{
+    text-align:center;
+    font-size:12px;
+    font-weight:800;
+    color:var(--chalk-dim);
+    margin:0 0 16px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:3px solid var(--panel-edge);
+    border-radius:24px;
+    padding:28px 20px 24px;
+    box-shadow: 0 14px 0 -4px rgba(0,0,0,0.06), 0 18px 34px -18px rgba(80,40,120,0.35);
+    position:relative;
+  }
+  .card.is-special{
+    border:2px solid var(--special);
+    animation: specialGlow 2.1s ease-in-out infinite;
+  }
+  @keyframes specialGlow{
+    0%,100%{ box-shadow: 0 0 0 2px rgba(201,155,224,0.30), 0 18px 40px -20px rgba(0,0,0,0.55); }
+    50%{ box-shadow: 0 0 0 6px rgba(201,155,224,0.5), 0 18px 46px -18px rgba(0,0,0,0.6); }
+  }
+
+  .answer-mark{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0.5) rotate(-8deg);
+    font-size:180px;
+    font-weight:900;
+    line-height:1;
+    opacity:0;
+    pointer-events:none;
+    z-index:5;
+    text-shadow: 0 6px 0 rgba(0,0,0,0.08);
+  }
+  .answer-mark.show{
+    animation: markStamp .4s cubic-bezier(.2,1.6,.4,1) forwards;
+  }
+  .answer-mark.mark-ok{ color: rgba(255,201,60,0.9); }
+  .answer-mark.mark-ng{ color: rgba(255,111,97,0.9); }
+  @keyframes markStamp{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(0.3) rotate(-8deg); }
+    60%{ opacity:0.9; transform:translate(-50%,-50%) scale(1.15) rotate(-8deg); }
+    100%{ opacity:0.85; transform:translate(-50%,-50%) scale(1) rotate(-8deg); }
+  }
+
+  .sp-lamp-wrap{
+    display:none;
+    position:absolute;
+    top:-16px;
+    right:18px;
+    width:46px;
+    height:46px;
+    z-index:3;
+  }
+  .card.is-special .sp-lamp-wrap{display:block;}
+  .sp-lamp-wrap.sp-lamp-left{
+    right:auto;
+    left:18px;
+  }
+  .sp-lamp-ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:conic-gradient(from 0deg, #ff3b3b, #ff9f1c, #ffe14d, #4ade80, #38bdf8, #a78bfa, #ff3b3b);
+    animation: spSpin 2.2s linear infinite;
+    box-shadow:0 0 14px 2px rgba(255,255,255,0.35);
+  }
+  .sp-lamp-core{
+    position:absolute;
+    inset:5px;
+    border-radius:50%;
+    background:var(--panel);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:12px;
+    letter-spacing:.02em;
+    color:var(--chalk);
+  }
+  @keyframes spSpin{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+  }
+
+  .special-caption{
+    display:none;
+    text-align:center;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--special-text);
+    margin:0 0 10px;
+    letter-spacing:.02em;
+  }
+  .card.is-special .special-caption{display:block;}
+
+  .count{
+    font-size:13px;
+    color:var(--chalk-dim);
+    text-align:center;
+    margin-bottom:6px;
+  }
+
+  .illustration{
+    font-size:72px;
+    text-align:center;
+    line-height:1;
+    margin:6px 0 4px;
+  }
+  .problem{
+    font-size:44px;
+    font-weight:900;
+    text-align:center;
+    color:var(--chalk);
+    margin:10px 0 24px;
+    line-height:1.3;
+  }
+  .problem .op{color:var(--sky-text);padding:0 6px;}
+
+  .choices{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .choice-btn{
+    padding:16px 8px;
+    border-radius:12px;
+    border:2px solid var(--panel-edge);
+    background:var(--panel);
+    color:var(--chalk);
+    font-size:19px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .12s, border-color .12s, background .12s;
+  }
+  .choice-btn:active{transform:scale(0.96);}
+  .choice-btn:disabled{cursor:not-allowed;}
+  .choice-btn.correct{
+    background:rgba(231,197,104,0.18);
+    border-color:var(--yellow);
+    color:var(--yellow-text);
+  }
+  .choice-btn.wrong{
+    background:rgba(229,142,125,0.18);
+    border-color:var(--coral);
+    color:var(--coral-text);
+  }
+
+  .btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .12s, filter .12s;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-check{background:var(--yellow);color:#2A2110;}
+  .btn-next{background:var(--sky);color:#0F2A30;}
+  .btn-retry{background:var(--chalk);color:var(--bg);}
+  .btn-end{
+    background:transparent;
+    color:var(--chalk-dim);
+    text-decoration:underline;
+    font-weight:500;
+    font-size:13px;
+    padding:10px;
+    margin-top:4px;
+  }
+  .btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+  }
+
+  .feedback{
+    text-align:center;
+    min-height:26px;
+    margin-bottom:14px;
+    font-weight:700;
+    font-size:15px;
+  }
+  .feedback.ok{color:var(--yellow-text);}
+  .feedback.ng{color:var(--coral-text);}
+
+  .result{
+    text-align:center;
+  }
+  .result .big{
+    font-size:48px;
+    font-weight:900;
+    color:var(--yellow-text);
+    margin:8px 0 2px;
+  }
+  .result .earned{
+    color:var(--sky-text);
+    font-size:16px;
+    margin-bottom:2px;
+    font-weight:700;
+  }
+  .result .total{
+    color:var(--chalk-dim);
+    font-size:13px;
+    margin-bottom:16px;
+  }
+  .result .msg{
+    color:var(--chalk-dim);
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .review{
+    text-align:left;
+    background:rgba(0,0,0,0.15);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:20px;
+    max-height:220px;
+    overflow-y:auto;
+  }
+  .review-item{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    padding:5px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    gap:8px;
+  }
+  .review-item:last-child{border-bottom:none;}
+  .review-item .rtext{flex:1;}
+  .review-item .mark-ok{color:var(--yellow-text);}
+  .review-item .mark-ng{color:var(--coral-text);}
+
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(8,18,15,0.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+    overflow-y:auto;
+  }
+  .overlay.hidden{display:none;}
+  .overlay-card{
+    background:var(--panel);
+    border:3px solid var(--panel-edge);
+    border-radius:22px;
+    padding:26px 22px;
+    max-width:360px;
+    width:100%;
+    text-align:center;
+    margin:auto;
+    box-shadow: 0 14px 0 -4px rgba(0,0,0,0.06), 0 18px 34px -18px rgba(80,40,120,0.35);
+  }
+  .overlay-card h2{
+    margin:0 0 14px;
+    font-size:18px;
+    color:var(--chalk);
+  }
+  .gacha-limit-info{
+    font-size:12px;
+    color:var(--chalk-dim);
+    text-align:center;
+    margin-bottom:14px;
+    min-height:14px;
+  }
+  .gacha-panel{
+    background:rgba(0,0,0,0.15);
+    border-radius:14px;
+    padding:16px 14px;
+    margin-bottom:14px;
+    text-align:center;
+    border:1px solid var(--panel-edge);
+  }
+  .gacha-panel-title{
+    font-weight:900;
+    font-size:15px;
+    margin-bottom:8px;
+  }
+  .gacha-panel-balance{
+    font-size:13px;
+    color:var(--chalk-dim);
+    margin-bottom:2px;
+  }
+  .gacha-panel-balance b{color:var(--yellow-text);}
+  .gacha-panel.special-panel{border-color:var(--special);}
+  .gacha-panel.special-panel .gacha-panel-balance b{color:var(--special-text);}
+  .gacha-panel-cost{
+    font-size:12px;
+    color:var(--chalk-dim);
+    margin-bottom:12px;
+  }
+  .gacha-result-icon{
+    font-size:52px;
+    margin-bottom:10px;
+  }
+  .gacha-result-title{
+    font-size:22px;
+    font-weight:900;
+    margin-bottom:6px;
+    color:var(--yellow-text);
+  }
+  .gacha-result-title.miss{color:var(--chalk-dim);}
+  .gacha-result-sub{
+    font-size:13px;
+    color:var(--chalk-dim);
+    margin-bottom:20px;
+  }
+
+  .ticket-section-label{
+    font-size:11px;
+    color:var(--chalk-dim);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:14px 0 8px;
+    text-align:left;
+  }
+  .prize-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 4px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    font-size:14px;
+    text-align:left;
+  }
+  .prize-row:last-child{border-bottom:none;}
+  .prize-row .pname{color:var(--chalk);}
+  .prize-row .pcount{color:var(--chalk-dim);font-size:12.5px;}
+  .prize-total{
+    margin-top:16px;
+    font-weight:900;
+    font-size:18px;
+    text-align:center;
+    color:var(--yellow-text);
+  }
+  .prize-total .lbl{
+    display:block;
+    font-size:12px;
+    font-weight:500;
+    color:var(--chalk-dim);
+    margin-bottom:2px;
+  }
+
+  .btn-close{background:var(--chalk);color:var(--bg);}
+
+  .settings-section{
+    text-align:left;
+    margin-bottom:18px;
+  }
+  .settings-section h3{
+    font-size:13px;
+    color:var(--chalk-dim);
+    margin:0 0 10px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .settings-section h4{
+    font-size:12px;
+    color:var(--chalk-dim);
+    margin:0 0 8px;
+  }
+  .settings-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .settings-row .rank-badge{
+    width:56px;
+    font-size:12px;
+    text-align:left;
+    flex-shrink:0;
+    color:var(--chalk-dim);
+  }
+  .settings-row .rank-badge b{color:var(--chalk);display:block;font-size:13px;}
+  .settings-row input[type="number"]{
+    width:58px;
+    padding:9px 6px;
+    border-radius:8px;
+    border:none;
+    background:var(--chalk);
+    color:var(--bg);
+    font-size:13px;
+    font-weight:700;
+    text-align:center;
+  }
+  .settings-row .pct-label{
+    font-size:12px;
+    color:var(--chalk-dim);
+    width:20px;
+    flex-shrink:0;
+  }
+  .settings-row.readonly input[type="number"]{
+    background:rgba(255,255,255,0.12);
+    color:var(--chalk-dim);
+  }
+  .settings-cost-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .settings-cost-row label{
+    font-size:13px;
+    color:var(--chalk-dim);
+    flex:1;
+  }
+  .settings-cost-row input{
+    width:70px;
+    padding:9px 6px;
+    border-radius:8px;
+    border:none;
+    background:var(--chalk);
+    color:var(--bg);
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+  }
+  .settings-cost-row .pct-suffix{
+    font-size:13px;
+    color:var(--chalk-dim);
+    width:16px;
+    flex-shrink:0;
+  }
+  .settings-divider{
+    border:none;
+    border-top:1px solid var(--panel-edge);
+    margin:18px 0;
+  }
+  .ev-box{
+    background:rgba(0,0,0,0.15);
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:12px;
+  }
+  .ev-title{
+    font-size:11px;
+    color:var(--chalk-dim);
+    margin-bottom:6px;
+  }
+  .ev-row{
+    font-size:13px;
+    color:var(--chalk);
+    padding:2px 0;
+  }
+  .ev-row b{color:var(--yellow-text);}
+  .ev-row-highlight{
+    margin-top:4px;
+    padding-top:6px;
+    border-top:1px dashed var(--panel-edge);
+    font-weight:700;
+  }
+  .ev-row-highlight b{color:var(--special-text);}
+  .ev-note{
+    font-size:10.5px;
+    color:var(--chalk-dim);
+    margin-top:6px;
+    line-height:1.4;
+  }
+  .settings-status{
+    min-height:18px;
+    font-size:12.5px;
+    text-align:center;
+    margin-bottom:12px;
+  }
+  .settings-status.ok{color:var(--yellow-text);}
+  .settings-status.ng{color:var(--coral-text);}
+  .pw-input{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:none;
+    background:var(--chalk);
+    color:var(--bg);
+    font-size:20px;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:.2em;
+    margin-bottom:14px;
+    outline:none;
+  }
+  .btn-row{
+    display:flex;
+    gap:10px;
+  }
+  .btn-row .btn{flex:1;}
+  .btn-secondary{background:transparent;border:1px solid var(--panel-edge);color:var(--chalk-dim);}
+
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="hubScreen">
+    <div class="app-header">
+      <div class="header-btn-group">
+        <button class="app-header-btn" id="settingsLinkBtn">⚙️</button>
+        <button class="app-header-btn" id="historyLinkBtn">📊</button>
+      </div>
+      <div class="app-header-title">まなびランド</div>
+      <div class="header-badges">
+        <div class="app-header-badge points-badge">🏆 <span id="hubPointsText">0</span> pt</div>
+      </div>
+    </div>
+
+    <div class="mascot-row">
+      <button class="menu-btn btn-gacha side-btn" id="gachaBtn">
+        <svg class="chest-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="18" width="30" height="16" rx="3" fill="#A85C2A"/>
+          <rect x="5" y="18" width="30" height="16" rx="3" fill="none" stroke="#6B3A17" stroke-width="1.5"/>
+          <path d="M5 18 Q5 8 20 8 Q35 8 35 18 Z" fill="#C97A3B"/>
+          <path d="M5 18 Q5 8 20 8 Q35 8 35 18 Z" fill="none" stroke="#6B3A17" stroke-width="1.5"/>
+          <rect x="4" y="17" width="32" height="4" rx="2" fill="#FFD34D"/>
+          <rect x="17" y="17" width="6" height="12" rx="2" fill="#FFD34D"/>
+          <circle cx="20" cy="23" r="3" fill="#B8790A"/>
+        </svg>
+        <br>ふくびき
+      </button>
+
+      <svg class="mascot" viewBox="0 0 260 190" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="furGradW" cx="35%" cy="28%" r="75%">
+            <stop offset="0%" stop-color="#FFFDF7"/>
+            <stop offset="100%" stop-color="#F3E8D2"/>
+          </radialGradient>
+        </defs>
+
+        <!-- left puppy (smaller, behind) -->
+        <g transform="translate(52,118) scale(0.68)">
+          <ellipse cx="-46" cy="8" rx="14" ry="24" fill="#E6D3AE" transform="rotate(-15)"/>
+          <ellipse cx="46" cy="8" rx="14" ry="24" fill="#E6D3AE" transform="rotate(15)"/>
+          <circle cx="44" cy="0" r="15" fill="url(#furGradW)"/>
+          <circle cx="31" cy="31" r="15" fill="url(#furGradW)"/>
+          <circle cx="0" cy="44" r="15" fill="url(#furGradW)"/>
+          <circle cx="-31" cy="31" r="15" fill="url(#furGradW)"/>
+          <circle cx="-44" cy="0" r="15" fill="url(#furGradW)"/>
+          <circle cx="-31" cy="-31" r="15" fill="url(#furGradW)"/>
+          <circle cx="0" cy="-44" r="15" fill="url(#furGradW)"/>
+          <circle cx="31" cy="-31" r="15" fill="url(#furGradW)"/>
+          <circle cx="0" cy="0" r="41" fill="url(#furGradW)"/>
+          <ellipse cx="-24" cy="6" rx="7" ry="5" fill="#FFB0A8" opacity="0.5"/>
+          <ellipse cx="24" cy="6" rx="7" ry="5" fill="#FFB0A8" opacity="0.5"/>
+          <circle cx="-13" cy="-3" r="4.5" fill="#4A3728"/>
+          <circle cx="13" cy="-3" r="4.5" fill="#4A3728"/>
+          <ellipse cx="-14.5" cy="-4.5" rx="1.4" ry="1.4" fill="#fff" opacity="0.8"/>
+          <ellipse cx="11.5" cy="-4.5" rx="1.4" ry="1.4" fill="#fff" opacity="0.8"/>
+          <ellipse cx="0" cy="9" rx="5" ry="3.5" fill="#4A3728"/>
+          <path d="M0 12 Q0 18 -8 19" stroke="#4A3728" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+          <path d="M0 12 Q0 18 8 19" stroke="#4A3728" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="-7" cy="-42" rx="8" ry="5" fill="#4FC3E8" transform="rotate(-25 -7 -42)"/>
+          <ellipse cx="7" cy="-42" rx="8" ry="5" fill="#4FC3E8" transform="rotate(25 7 -42)"/>
+          <circle cx="0" cy="-42" r="3.5" fill="#0E88AC"/>
+        </g>
+
+        <!-- right puppy (smaller, behind) -->
+        <g transform="translate(208,118) scale(0.68)">
+          <ellipse cx="-46" cy="8" rx="14" ry="24" fill="#E6D3AE" transform="rotate(-15)"/>
+          <ellipse cx="46" cy="8" rx="14" ry="24" fill="#E6D3AE" transform="rotate(15)"/>
+          <circle cx="44" cy="0" r="15" fill="url(#furGradW)"/>
+          <circle cx="31" cy="31" r="15" fill="url(#furGradW)"/>
+          <circle cx="0" cy="44" r="15" fill="url(#furGradW)"/>
+          <circle cx="-31" cy="31" r="15" fill="url(#furGradW)"/>
+          <circle cx="-44" cy="0" r="15" fill="url(#furGradW)"/>
+          <circle cx="-31" cy="-31" r="15" fill="url(#furGradW)"/>
+          <circle cx="0" cy="-44" r="15" fill="url(#furGradW)"/>
+          <circle cx="31" cy="-31" r="15" fill="url(#furGradW)"/>
+          <circle cx="0" cy="0" r="41" fill="url(#furGradW)"/>
+          <ellipse cx="-24" cy="6" rx="7" ry="5" fill="#FFB0A8" opacity="0.5"/>
+          <ellipse cx="24" cy="6" rx="7" ry="5" fill="#FFB0A8" opacity="0.5"/>
+          <circle cx="-13" cy="-3" r="4.5" fill="#4A3728"/>
+          <circle cx="13" cy="-3" r="4.5" fill="#4A3728"/>
+          <ellipse cx="-14.5" cy="-4.5" rx="1.4" ry="1.4" fill="#fff" opacity="0.8"/>
+          <ellipse cx="11.5" cy="-4.5" rx="1.4" ry="1.4" fill="#fff" opacity="0.8"/>
+          <ellipse cx="0" cy="9" rx="5" ry="3.5" fill="#4A3728"/>
+          <path d="M0 12 Q0 18 -8 19" stroke="#4A3728" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+          <path d="M0 12 Q0 18 8 19" stroke="#4A3728" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="-7" cy="-42" rx="8" ry="5" fill="#FFC93C" transform="rotate(-25 -7 -42)"/>
+          <ellipse cx="7" cy="-42" rx="8" ry="5" fill="#FFC93C" transform="rotate(25 7 -42)"/>
+          <circle cx="0" cy="-42" r="3.5" fill="#B8790A"/>
+        </g>
+
+        <!-- center puppy (main, front) -->
+        <g transform="translate(130,98) scale(1)">
+          <ellipse cx="-46" cy="8" rx="15" ry="25" fill="#E6D3AE" transform="rotate(-15)"/>
+          <ellipse cx="46" cy="8" rx="15" ry="25" fill="#E6D3AE" transform="rotate(15)"/>
+          <circle cx="45" cy="0" r="16" fill="url(#furGradW)"/>
+          <circle cx="32" cy="32" r="16" fill="url(#furGradW)"/>
+          <circle cx="0" cy="45" r="16" fill="url(#furGradW)"/>
+          <circle cx="-32" cy="32" r="16" fill="url(#furGradW)"/>
+          <circle cx="-45" cy="0" r="16" fill="url(#furGradW)"/>
+          <circle cx="-32" cy="-32" r="16" fill="url(#furGradW)"/>
+          <circle cx="0" cy="-45" r="16" fill="url(#furGradW)"/>
+          <circle cx="32" cy="-32" r="16" fill="url(#furGradW)"/>
+          <circle cx="0" cy="0" r="43" fill="url(#furGradW)"/>
+          <ellipse cx="-25" cy="7" rx="8" ry="5.5" fill="#FFB0A8" opacity="0.55"/>
+          <ellipse cx="25" cy="7" rx="8" ry="5.5" fill="#FFB0A8" opacity="0.55"/>
+          <circle cx="-14" cy="-3" r="5" fill="#4A3728"/>
+          <circle cx="14" cy="-3" r="5" fill="#4A3728"/>
+          <ellipse cx="-15.7" cy="-4.7" rx="1.6" ry="1.6" fill="#fff" opacity="0.85"/>
+          <ellipse cx="12.3" cy="-4.7" rx="1.6" ry="1.6" fill="#fff" opacity="0.85"/>
+          <ellipse cx="0" cy="10" rx="5.5" ry="4" fill="#4A3728"/>
+          <path d="M0 13 Q0 20 -9 21" stroke="#4A3728" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path d="M0 13 Q0 20 9 21" stroke="#4A3728" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <ellipse cx="0" cy="26" rx="6" ry="4" fill="#FF9E92"/>
+          <ellipse cx="-7.5" cy="-45" rx="9" ry="5.5" fill="#FF6F9E" transform="rotate(-25 -7.5 -45)"/>
+          <ellipse cx="7.5" cy="-45" rx="9" ry="5.5" fill="#FF6F9E" transform="rotate(25 7.5 -45)"/>
+          <circle cx="0" cy="-45" r="4" fill="#C43E6F"/>
+        </g>
+      </svg>
+
+      <button class="menu-btn btn-exchange side-btn" id="exchangeMenuBtn">🎁<br>交換</button>
+    </div>
+
+    <div class="title">まなび<span>ランド</span></div>
+    <div class="subtitle">きょうかを えらんでね</div>
+    <div class="title-remaining" id="titleRemaining"></div>
+
+    <div class="hub-select">
+      <button class="hub-btn" id="hubMathBtn"><span class="hub-icon">🔢</span>算数</button>
+      <button class="hub-btn" id="hubKanjiBtn"><span class="hub-icon">🈵</span>漢字</button>
+      <button class="hub-btn" id="hubEnglishBtn"><span class="hub-icon">🔤</span>英語</button>
+      <button class="hub-btn" id="hubMojiBtn"><span class="hub-icon">🐛</span>もじ虫食い</button>
+    </div>
+    <div class="title-status" id="hubStatus"></div>
+  </div>
+
+  <div id="titleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtn">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">漢字の読みチャレンジ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">漢字の読み<span>チャレンジ</span></div>
+    <div class="subtitle">がくねんを えらんでね</div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeNormalBtn">つうじょう</button>
+      <button class="mode-btn" id="modeReviewBtn">復習（まちがえた問題）</button>
+    </div>
+
+    <div class="grade-select">
+      <button class="grade-btn" data-lockid="kanji1" data-grade="1" data-base="1年生の漢字">1年生の漢字</button>
+      <button class="grade-btn" data-lockid="kanji2" data-grade="2" data-base="2年生の漢字">2年生の漢字</button>
+      <button class="grade-btn" data-lockid="kanji3" data-grade="3" data-base="3年生の漢字">3年生の漢字</button>
+      <button class="grade-btn locked" data-lockid="g4" data-grade="4" data-base="4年生の漢字">4年生の漢字</button>
+      <button class="grade-btn locked" data-lockid="g5" data-grade="5" data-base="5年生の漢字">5年生の漢字</button>
+      <button class="grade-btn locked" data-lockid="g6" data-grade="6" data-base="6年生の漢字">6年生の漢字</button>
+      <button class="grade-btn locked" data-lockid="yoji" data-grade="yoji" data-base="四字熟語">四字熟語</button>
+      <button class="grade-btn extra-btn" data-lockid="kanjiExtra" data-grade="extra" data-base="🔥 エクストラ">🔥 エクストラ</button>
+    </div>
+    <div class="title-status" id="titleStatus"></div>
+  </div>
+
+  <div id="englishTitleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnEn">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">英単語チャレンジ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">英単語<span>チャレンジ</span></div>
+    <div class="subtitle">きゅうを えらんでね</div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeNormalBtnEn">つうじょう</button>
+      <button class="mode-btn" id="modeReviewBtnEn">復習（まちがえた問題）</button>
+    </div>
+
+    <div class="grade-select">
+      <button class="grade-btn" data-lockid="english5" data-grade="5" data-base="英検5級">英検5級</button>
+      <button class="grade-btn" data-lockid="english4" data-grade="4" data-base="英検4級">英検4級</button>
+      <button class="grade-btn locked" data-lockid="g3" data-grade="3" data-base="英検3級">英検3級</button>
+      <button class="grade-btn locked" data-lockid="pre2" data-grade="pre2" data-base="英検準2級">英検準2級</button>
+      <button class="grade-btn locked" data-lockid="g2" data-grade="2" data-base="英検2級">英検2級</button>
+    </div>
+    <div class="title-status" id="titleStatusEn"></div>
+  </div>
+
+  <div id="mathTitleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnMath">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">算数チャレンジ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">算数<span>チャレンジ</span></div>
+    <div class="subtitle">しゅるいを えらんでね</div>
+
+    <div class="category-select">
+      <button class="category-btn" data-lockid="mathDivision" data-category="division">わり算<small>÷</small></button>
+      <button class="category-btn" data-lockid="mathMultiply" data-category="multiply">かけ算<small>×</small></button>
+      <button class="category-btn" data-lockid="mathAddBasic" data-category="add_basic">足し算<small>初級</small></button>
+      <button class="category-btn" data-lockid="mathAddAdvanced" data-category="add_advanced">足し算<small>上級</small></button>
+      <button class="category-btn locked" data-lockid="subtract" data-category="subtract" data-base="ひきざん">ひきざん</button>
+      <button class="category-btn locked" data-lockid="fraction" data-category="fraction" data-base="分数">分数</button>
+    </div>
+    <div class="title-status" id="titleStatusMath"></div>
+  </div>
+
+  <div id="mojiTitleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnMoji">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">もじ虫食いチャレンジ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">もじ虫食い<span>チャレンジ</span></div>
+    <div class="subtitle">ジャンルを えらんでね</div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="scriptHiraganaBtn">ひらがな</button>
+      <button class="mode-btn" id="scriptKatakanaBtn">カタカナ</button>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeNormalBtnMoji">つうじょう</button>
+      <button class="mode-btn" id="modeReviewBtnMoji">復習（まちがえた問題）</button>
+    </div>
+
+    <div class="grade-select">
+      <button class="grade-btn" data-lockid="mojiAnimals" data-grade="animals" data-base="どうぶつ">どうぶつ</button>
+      <button class="grade-btn" data-lockid="mojiFood" data-grade="food" data-base="たべもの">たべもの</button>
+      <button class="grade-btn" data-lockid="mojiVehicles" data-grade="vehicles" data-base="のりもの・もの">のりもの・もの</button>
+      <button class="grade-btn" data-lockid="mojiNature" data-grade="nature" data-base="しぜん">しぜん</button>
+      <button class="grade-btn locked" data-lockid="mojiAdvanced" data-grade="advanced" data-base="むずかしいことば">むずかしいことば</button>
+      <button class="grade-btn locked" data-lockid="mojiDescriptive" data-grade="descriptive" data-base="ようすのことば">ようすのことば</button>
+    </div>
+    <div class="title-status" id="titleStatusMoji"></div>
+  </div>
+
+  <div id="mainScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="backToTitleBtn">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">漢字の読みチャレンジ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="subtitle" id="gradeSubtitle">小学3年生の漢字・読み方選択式</div>
+
+    <div class="streak-endpoints">
+      <span>🚩 スタート</span>
+      <span>ゴール 🏆</span>
+    </div>
+    <div class="streak-track" id="streakTrack">
+      <div class="streak-steps">
+        <div class="streak-step"></div>
+        <div class="streak-step"></div>
+        <div class="streak-step"></div>
+        <div class="streak-step"></div>
+        <div class="streak-step"></div>
+      </div>
+      <div class="streak-food">🦴</div>
+      <div class="streak-dog" id="streakDog">🐶</div>
+    </div>
+    <div class="streak-label" id="streakLabel">れんぞく正解: 0問</div>
+
+    <div class="card" id="quizCard">
+      <div class="answer-mark" id="answerMark"></div>
+      <div class="sp-lamp-wrap sp-lamp-left" id="spLampLeft">
+        <div class="sp-lamp-ring"></div>
+        <div class="sp-lamp-core">SP</div>
+      </div>
+      <div class="sp-lamp-wrap" id="spLampRight">
+        <div class="sp-lamp-ring"></div>
+        <div class="sp-lamp-core">SP</div>
+      </div>
+      <div class="special-caption" id="specialCaption">✨ スペシャル問題！せいかいでスペシャルチケット</div>
+      <div class="special-banner" id="specialBanner">🌟 スペシャル問題！たしざんもチャレンジ 🌟</div>
+      <div class="count" id="count">1問目</div>
+      <div class="illustration hidden" id="illustration">🐶</div>
+      <div class="problem" id="problem">-</div>
+      <div class="choices" id="choices"></div>
+
+      <div class="answer-row" id="divisionAnswerRow" style="display:none;">
+        <div class="field">
+          <label>しょう</label>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" id="quotientInput" maxlength="3">
+        </div>
+        <div class="amari-tag">あまり</div>
+        <div class="field">
+          <label>あまり</label>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" id="remainderInput" maxlength="3">
+        </div>
+      </div>
+      <div class="answer-row" id="singleAnswerRow" style="display:none;">
+        <div class="field">
+          <label>こたえ</label>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" id="singleAnswerInput" maxlength="5">
+        </div>
+      </div>
+      <div class="special-block" id="specialBlock">
+        <div class="special-label">ボーナス たしざん もんだい</div>
+        <div class="problem" id="specialProblem">-- <span class="op">+</span> --</div>
+        <div class="answer-row" style="margin-bottom:0;">
+          <div class="field">
+            <label>こたえ</label>
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="specialAnswerInput" maxlength="4">
+          </div>
+        </div>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn btn-secondary hidden" id="speakBtn" style="margin-bottom:10px;">🔊 もう一度きく</button>
+      <button class="btn btn-check hidden" id="checkBtn">こたえあわせ</button>
+      <button class="btn btn-next hidden" id="nextBtn">つぎへ</button>
+      <button class="btn btn-end" id="endBtn">ここで終了する</button>
+    </div>
+
+    <div class="card result hidden" id="resultCard">
+      <div class="count">けっか</div>
+      <div class="big" id="scoreText">0 / 5</div>
+      <div class="earned" id="earnedText">+0枚 獲得</div>
+      <div class="msg" id="scoreMsg"></div>
+      <div class="review" id="review"></div>
+      <button class="btn btn-retry" id="retryBtn">もういちど</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="gachaScreenOverlay">
+  <div class="overlay-card">
+    <h2>ふくびき</h2>
+    <div class="gacha-limit-info" id="gachaLimitInfo"></div>
+
+    <div class="gacha-panel">
+      <div class="gacha-panel-title">📦 ふくびき</div>
+      <div class="gacha-panel-balance">ふくびきチケット: <b id="walletBalanceText">0</b>枚</div>
+      <div class="gacha-panel-cost">1回: <span id="normalCostText">5</span>枚</div>
+      <button class="btn btn-check" id="spinNormalBtn">ふくびきを回す</button>
+    </div>
+
+    <div class="gacha-panel special-panel">
+      <div class="gacha-panel-title">✨ スペシャルふくびき</div>
+      <div class="gacha-panel-balance">スペシャルチケット: <b id="specialBalanceText">0</b>枚</div>
+      <div class="gacha-panel-cost">1回: <span id="specialCostText">1</span>枚</div>
+      <button class="btn btn-check" id="spinSpecialBtn">スペシャルふくびきを回す</button>
+    </div>
+
+    <button class="btn btn-close" id="gachaScreenCloseBtn">とじる</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="gachaOverlay">
+  <div class="overlay-card">
+    <h2 id="gachaOverlayTitle">ふくびき けっか</h2>
+    <div class="gacha-result-icon" id="gachaIcon">🎁</div>
+    <div class="gacha-result-title" id="gachaTitle">-</div>
+    <div class="gacha-result-sub" id="gachaSub">-</div>
+    <button class="btn btn-close" id="gachaCloseBtn">とじる</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="exchangeOverlay">
+  <div class="overlay-card">
+    <h2>交換</h2>
+    <div style="font-size:13px;color:var(--chalk-dim);text-align:center;margin-bottom:2px;">こうかんできるポイント</div>
+    <div style="font-size:34px;font-weight:900;color:var(--yellow-text);text-align:center;margin-bottom:20px;"><span id="exchangeBalanceText">0</span> pt</div>
+    <div class="settings-cost-row">
+      <label for="exchangeAmountInput">こうかんするポイント</label>
+      <input type="number" id="exchangeAmountInput" min="1">
+    </div>
+    <div class="settings-status" id="exchangeStatus"></div>
+    <button class="btn btn-check" id="exchangeBtn">交換する</button>
+    <button class="btn btn-close" id="exchangeCloseBtn" style="margin-top:10px;">とじる</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="passwordOverlay">
+  <div class="overlay-card">
+    <h2 id="passwordOverlayTitle">パスワードを入力</h2>
+    <input type="password" inputmode="numeric" class="pw-input" id="passwordInput" maxlength="12" placeholder="••••">
+    <div class="settings-status" id="passwordStatus"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="passwordCancelBtn">キャンセル</button>
+      <button class="btn btn-check" id="passwordSubmitBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="historyOverlay">
+  <div class="overlay-card">
+    <h2>学習履歴</h2>
+    <div class="history-list" id="historyList"></div>
+    <div class="settings-status" id="historyStatus"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="historyResetBtn">リセットする</button>
+      <button class="btn btn-close" id="historyCloseBtn">とじる</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="settingsOverlay">
+  <div class="overlay-card">
+    <h2>設定</h2>
+
+    <div class="settings-section">
+      <h3>保有数の編集</h3>
+      <h4>🎫 チケット</h4>
+      <div class="settings-cost-row"><label>ふくびきチケット</label><input type="number" id="editWalletInput" min="0"></div>
+      <div class="settings-cost-row"><label>スペシャルチケット</label><input type="number" id="editSpecialInput" min="0"></div>
+      <h4>🎁 ふくびきポイント</h4>
+      <div class="settings-cost-row"><label>こうかんポイント残高</label><input type="number" id="editPrizePointsInput" min="0"></div>
+      <div class="settings-status" id="holdingsStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="holdingsCloseBtn">とじる</button>
+        <button class="btn btn-check" id="updateHoldingsBtn">保存する</button>
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>ふくびきの内容とかくりつ</h3>
+      <div class="settings-cost-row">
+        <label for="costInput">1回のチケット</label>
+        <input type="number" id="costInput" min="1" max="9999">
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">1等<b>100pt</b></div>
+        <input type="number" id="rank1ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">2等<b>50pt</b></div>
+        <input type="number" id="rank2ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">3等<b>20pt</b></div>
+        <input type="number" id="rank3ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">4等<b>10pt</b></div>
+        <input type="number" id="rank4ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row readonly">
+        <div class="rank-badge">5等<b>5pt</b></div>
+        <input type="number" id="rank5ProbDisplay" disabled>
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-status" id="normalGachaStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="normalGachaCloseBtn">とじる</button>
+        <button class="btn btn-check" id="normalGachaSaveBtn">保存する</button>
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>スペシャル問題</h3>
+      <div class="settings-cost-row">
+        <label for="specialProbInput">出現確率（もんだいごと）</label>
+        <input type="number" id="specialProbInput" min="0" max="100">
+        <span class="pct-suffix">%</span>
+      </div>
+      <div style="font-size:11px;color:var(--chalk-dim);margin-bottom:10px;">せいかいすると、スペシャルチケットが1枚もらえます</div>
+      <div class="settings-status" id="specialProbStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="specialProbCloseBtn">とじる</button>
+        <button class="btn btn-check" id="specialProbSaveBtn">保存する</button>
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>スペシャルふくびきの内容とかくりつ</h3>
+      <div class="settings-cost-row">
+        <label for="specialCostInput">1回のスペシャルチケット</label>
+        <input type="number" id="specialCostInput" min="1" max="9999">
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">1等<b>100pt</b></div>
+        <input type="number" id="sRank1ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">2等<b>50pt</b></div>
+        <input type="number" id="sRank2ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">3等<b>20pt</b></div>
+        <input type="number" id="sRank3ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row">
+        <div class="rank-badge">4等<b>10pt</b></div>
+        <input type="number" id="sRank4ProbInput" min="0" max="100">
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-row readonly">
+        <div class="rank-badge">5等<b>5pt</b></div>
+        <input type="number" id="sRank5ProbDisplay" disabled>
+        <div class="pct-label">%</div>
+      </div>
+      <div class="settings-status" id="specialGachaStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="specialGachaCloseBtn">とじる</button>
+        <button class="btn btn-check" id="specialGachaSaveBtn">保存する</button>
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>チケット配布の上限</h3>
+      <div class="settings-cost-row">
+        <label for="gachaLimitInput">1日の配布上限・合計（0で無制限）</label>
+        <input type="number" id="gachaLimitInput" min="0" max="9999">
+      </div>
+      <div style="font-size:11px;color:var(--chalk-dim);margin-top:-6px;margin-bottom:10px;">ふくびきチケット＋スペシャルチケットの合計に適用され、日付が変わると自動でリセットされます</div>
+      <div style="font-size:12px;color:var(--chalk-dim);margin-bottom:10px;">本日の配布数: <span id="currentPlayCountText">0</span>枚</div>
+
+      <div class="ev-box">
+        <div class="ev-title">配布上限をすべて使った場合の予想ポイント（かくりつをもとに計算）</div>
+        <div class="ev-row">📦 ノーマルのみで使った場合: <b id="evNormalText">0</b> pt</div>
+        <div class="ev-row">✨ スペシャルのみで使った場合: <b id="evSpecialText">0</b> pt</div>
+        <div class="ev-row ev-row-highlight">🎯 実際の配布比率で計算: <b id="evMixedText">0</b> pt</div>
+        <div class="ev-note">スペシャル問題の出現確率から、ふくびき／スペシャル各チケットの配布比率を計算しています</div>
+      </div>
+
+      <button class="btn btn-secondary" id="resetPlayCountBtn" style="margin-bottom:10px;">強制リセットする</button>
+      <div class="settings-status" id="limitStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="limitCloseBtn">とじる</button>
+        <button class="btn btn-check" id="limitSaveBtn">保存する</button>
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>タイトルのロック解放</h3>
+      <div style="font-size:11px;color:var(--chalk-dim);margin-bottom:10px;">オンにすると開放され、タイトル画面からえらべるようになります（問題データが未整備の場合は「準備中」と表示されます）</div>
+
+      <h4>漢字</h4>
+      <div class="settings-cost-row"><label>1年生の漢字を開放</label>
+        <input type="checkbox" id="lockCk_kanji1" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>2年生の漢字を開放</label>
+        <input type="checkbox" id="lockCk_kanji2" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>3年生の漢字を開放</label>
+        <input type="checkbox" id="lockCk_kanji3" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>4年生の漢字を開放</label>
+        <input type="checkbox" id="lockCk_g4" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>5年生の漢字を開放</label>
+        <input type="checkbox" id="lockCk_g5" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>6年生の漢字を開放</label>
+        <input type="checkbox" id="lockCk_g6" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>四字熟語を開放</label>
+        <input type="checkbox" id="lockCk_yoji" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>🔥エクストラを開放</label>
+        <input type="checkbox" id="lockCk_kanjiExtra" style="width:22px;height:22px;">
+      </div>
+
+      <h4>算数</h4>
+      <div class="settings-cost-row"><label>わり算を開放</label>
+        <input type="checkbox" id="lockCk_mathDivision" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>かけ算を開放</label>
+        <input type="checkbox" id="lockCk_mathMultiply" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>足し算（初級）を開放</label>
+        <input type="checkbox" id="lockCk_mathAddBasic" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>足し算（上級）を開放</label>
+        <input type="checkbox" id="lockCk_mathAddAdvanced" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>ひきざんを開放</label>
+        <input type="checkbox" id="lockCk_subtract" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>分数を開放</label>
+        <input type="checkbox" id="lockCk_fraction" style="width:22px;height:22px;">
+      </div>
+
+      <h4>英語</h4>
+      <div class="settings-cost-row"><label>英検5級を開放</label>
+        <input type="checkbox" id="lockCk_english5" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>英検4級を開放</label>
+        <input type="checkbox" id="lockCk_english4" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>英検3級を開放</label>
+        <input type="checkbox" id="lockCk_g3" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>英検準2級を開放</label>
+        <input type="checkbox" id="lockCk_pre2" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>英検2級を開放</label>
+        <input type="checkbox" id="lockCk_g2" style="width:22px;height:22px;">
+      </div>
+
+      <h4>もじ虫食い</h4>
+      <div class="settings-cost-row"><label>どうぶつを開放</label>
+        <input type="checkbox" id="lockCk_mojiAnimals" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>たべものを開放</label>
+        <input type="checkbox" id="lockCk_mojiFood" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>のりもの・ものを開放</label>
+        <input type="checkbox" id="lockCk_mojiVehicles" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>しぜんを開放</label>
+        <input type="checkbox" id="lockCk_mojiNature" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>むずかしいことばを開放</label>
+        <input type="checkbox" id="lockCk_mojiAdvanced" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>ようすのことばを開放</label>
+        <input type="checkbox" id="lockCk_mojiDescriptive" style="width:22px;height:22px;">
+      </div>
+
+      <div class="settings-status" id="lockVisibleStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="lockVisibleCloseBtn">とじる</button>
+        <button class="btn btn-check" id="lockVisibleSaveBtn">保存する</button>
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section" style="margin-bottom:0;">
+      <h3>パスワードの変更</h3>
+      <input type="password" inputmode="numeric" class="pw-input" id="newPasswordInput" maxlength="12" placeholder="新しいパスワード" style="margin-bottom:8px;">
+      <input type="password" inputmode="numeric" class="pw-input" id="newPasswordConfirmInput" maxlength="12" placeholder="もう一度入力">
+      <div class="settings-status" id="passwordChangeStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="passwordSectionCloseBtn">とじる</button>
+        <button class="btn btn-check" id="changePasswordBtn">保存する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var WALLET_KEY = 'kanjiQuizGachaTickets';
+  var SPECIAL_KEY = 'kanjiQuizSpecialTickets';
+  var PRIZE_KEY = 'kanjiQuizPrizes';
+  var CONFIG_KEY = 'kanjiQuizGachaConfig';
+  var PASSWORD_KEY = 'kanjiQuizGachaPassword';
+  var PLAYCOUNT_KEY = 'kanjiQuizGachaPlayCount';
+  var DEFAULT_PASSWORD = '0000';
+  var TOTAL = 5;
+  var RANK_POINTS = [100, 50, 20, 10, 5];
+  var RANK_ICONS = ['🥇','🥈','🥉','🏅','🎖'];
+
+  var LOCK_DEFAULTS = {
+    kanji1: true, kanji2: true, kanji3: true, kanjiExtra: true,
+    g4: false, g5: false, g6: false, yoji: false,
+    english5: true, english4: true,
+    g3: false, pre2: false, g2: false,
+    mathDivision: true, mathMultiply: true, mathAddBasic: true, mathAddAdvanced: true,
+    subtract: false, fraction: false,
+    mojiAnimals: true, mojiFood: true, mojiVehicles: true, mojiNature: true,
+    mojiAdvanced: false, mojiDescriptive: false
+  };
+
+  function defaultConfig(){
+    return {
+      cost: 5,
+      probs: [5, 10, 20, 25], // rank1..4, rank5 = remainder
+      specialQuizProb: 2,
+      specialCost: 1,
+      specialProbs: [10, 20, 30, 25], // rank1..4, rank5 = remainder
+      gachaLimit: 0,
+      unlocked: Object.assign({}, LOCK_DEFAULTS)
+    };
+  }
+
+  function loadConfig(){
+    try {
+      var v = window.localStorage.getItem(CONFIG_KEY);
+      var parsed = v ? JSON.parse(v) : null;
+      var d = defaultConfig();
+      if(parsed && typeof parsed === 'object' && Array.isArray(parsed.probs) && parsed.probs.length === 4){
+        var lv = (parsed.unlocked && typeof parsed.unlocked === 'object') ? parsed.unlocked : {};
+        var unlocked = {};
+        Object.keys(LOCK_DEFAULTS).forEach(function(key){
+          unlocked[key] = (typeof lv[key] === 'boolean') ? lv[key] : d.unlocked[key];
+        });
+        return {
+          cost: parseInt(parsed.cost, 10) || d.cost,
+          probs: parsed.probs.map(function(p, i){ return (typeof p === 'number' && p >= 0) ? p : d.probs[i]; }),
+          specialQuizProb: (typeof parsed.specialQuizProb === 'number') ? parsed.specialQuizProb : d.specialQuizProb,
+          specialCost: parseInt(parsed.specialCost, 10) || d.specialCost,
+          specialProbs: (Array.isArray(parsed.specialProbs) && parsed.specialProbs.length === 4)
+            ? parsed.specialProbs.map(function(p, i){ return (typeof p === 'number' && p >= 0) ? p : d.specialProbs[i]; })
+            : d.specialProbs,
+          gachaLimit: (typeof parsed.gachaLimit === 'number') ? parsed.gachaLimit : d.gachaLimit,
+          unlocked: unlocked
+        };
+      }
+    } catch(e){}
+    return defaultConfig();
+  }
+  function saveConfig(cfg){
+    try {
+      window.localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+    } catch(e){}
+  }
+
+  function loadPassword(){
+    try {
+      var v = window.localStorage.getItem(PASSWORD_KEY);
+      return v || DEFAULT_PASSWORD;
+    } catch(e){
+      return DEFAULT_PASSWORD;
+    }
+  }
+  function savePassword(pw){
+    try {
+      window.localStorage.setItem(PASSWORD_KEY, pw);
+    } catch(e){}
+  }
+
+  function loadWallet(){
+    try {
+      var v = window.localStorage.getItem(WALLET_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveWallet(n){
+    try {
+      window.localStorage.setItem(WALLET_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadSpecialTickets(){
+    try {
+      var v = window.localStorage.getItem(SPECIAL_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveSpecialTickets(n){
+    try {
+      window.localStorage.setItem(SPECIAL_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadPrizes(){
+    try {
+      var v = window.localStorage.getItem(PRIZE_KEY);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && Array.isArray(parsed.counts) && parsed.counts.length === 5 && typeof parsed.points === 'number'){
+        return { counts: parsed.counts.slice(), points: parsed.points };
+      }
+    } catch(e){}
+    return { counts: [0,0,0,0,0], points: 0 };
+  }
+  function savePrizes(p){
+    try {
+      window.localStorage.setItem(PRIZE_KEY, JSON.stringify(p));
+    } catch(e){}
+  }
+
+  function todayString(){
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function loadPlayCount(){
+    try {
+      var v = window.localStorage.getItem(PLAYCOUNT_KEY);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && typeof parsed.date === 'string' && typeof parsed.count === 'number'){
+        if(parsed.date !== todayString()){
+          return { date: todayString(), count: 0 };
+        }
+        return parsed;
+      }
+    } catch(e){}
+    return { date: todayString(), count: 0 };
+  }
+  function savePlayCount(state){
+    try {
+      window.localStorage.setItem(PLAYCOUNT_KEY, JSON.stringify(state));
+    } catch(e){}
+  }
+
+  var CORRECT_KEY = 'kanjiQuizCorrectCount';
+  function loadCorrectCount(){
+    try {
+      var v = window.localStorage.getItem(CORRECT_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveCorrectCount(n){
+    try {
+      window.localStorage.setItem(CORRECT_KEY, String(n));
+    } catch(e){}
+  }
+
+  var MISSED_KEY = 'kanjiQuizMissedWords';
+
+  function loadMissed(){
+    try {
+      var v = window.localStorage.getItem(MISSED_KEY);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && typeof parsed === 'object'){
+        return {
+          1: Array.isArray(parsed['1']) ? parsed['1'] : [],
+          2: Array.isArray(parsed['2']) ? parsed['2'] : [],
+          3: Array.isArray(parsed['3']) ? parsed['3'] : [],
+          extra: Array.isArray(parsed['extra']) ? parsed['extra'] : []
+        };
+      }
+    } catch(e){}
+    return { 1: [], 2: [], 3: [], extra: [] };
+  }
+  function saveMissed(m){
+    try {
+      window.localStorage.setItem(MISSED_KEY, JSON.stringify(m));
+    } catch(e){}
+  }
+
+  var missedWords = loadMissed();
+
+  function addMissed(grade, word){
+    var list = missedWords[grade];
+    if(!list) return;
+    if(list.indexOf(word) === -1){
+      list.push(word);
+      saveMissed(missedWords);
+    }
+  }
+  function removeMissed(grade, word){
+    var list = missedWords[grade];
+    if(!list) return;
+    var i = list.indexOf(word);
+    if(i !== -1){
+      list.splice(i, 1);
+      saveMissed(missedWords);
+    }
+  }
+
+  var WORD_STATS_KEY = 'kanjiQuizWordStats';
+  function loadWordStats(){
+    try {
+      var v = window.localStorage.getItem(WORD_STATS_KEY);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && typeof parsed === 'object') return parsed;
+    } catch(e){}
+    return {};
+  }
+  function saveWordStats(stats){
+    try {
+      window.localStorage.setItem(WORD_STATS_KEY, JSON.stringify(stats));
+    } catch(e){}
+  }
+  var wordStats = loadWordStats();
+
+  function recordWordAttempt(categoryKey, word, ok){
+    if(!wordStats[categoryKey]) wordStats[categoryKey] = {};
+    if(!wordStats[categoryKey][word]) wordStats[categoryKey][word] = { attempts: 0, correct: 0 };
+    wordStats[categoryKey][word].attempts++;
+    if(ok) wordStats[categoryKey][word].correct++;
+    saveWordStats(wordStats);
+  }
+
+  var CATEGORY_DISPLAY_LABELS = {
+    'kanji:1': '1年生の漢字', 'kanji:2': '2年生の漢字', 'kanji:3': '3年生の漢字',
+    'kanji:4': '4年生の漢字', 'kanji:5': '5年生の漢字', 'kanji:6': '6年生の漢字',
+    'kanji:yoji': '四字熟語', 'kanji:extra': 'エクストラ',
+    'english:5': '英検5級', 'english:4': '英検4級', 'english:3': '英検3級',
+    'english:pre2': '英検準2級', 'english:2': '英検2級',
+    'math:division': 'わり算', 'math:multiply': 'かけ算',
+    'math:add_basic': '足し算（初級）', 'math:add_advanced': '足し算（上級）',
+    'math:subtract': 'ひきざん', 'math:fraction': '分数',
+    'moji:animals': 'どうぶつ', 'moji:food': 'たべもの',
+    'moji:vehicles': 'のりもの・もの', 'moji:nature': 'しぜん',
+    'moji:advanced': 'むずかしいことば', 'moji:descriptive': 'ようすのことば'
+  };
+  function getCategoryDisplayLabel(categoryKey){
+    return CATEGORY_DISPLAY_LABELS[categoryKey] || categoryKey;
+  }
+  var SUBJECT_ORDER = ['math', 'kanji', 'english', 'moji'];
+  var SUBJECT_LABELS = {
+    math: '🔢 算数', kanji: '🈵 漢字', english: '🔤 英語', moji: '🐛 もじ虫食い'
+  };
+  var CATEGORY_ORDER_WITHIN_SUBJECT = [
+    'kanji:1', 'kanji:2', 'kanji:3', 'kanji:4', 'kanji:5', 'kanji:6', 'kanji:yoji', 'kanji:extra',
+    'english:5', 'english:4', 'english:3', 'english:pre2', 'english:2',
+    'math:division', 'math:multiply', 'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:fraction',
+    'moji:animals', 'moji:food', 'moji:vehicles', 'moji:nature', 'moji:advanced', 'moji:descriptive'
+  ];
+
+  var KANJI_POOL_G1 = [
+    ['一','いち'],['右','みぎ'],['雨','あめ'],['円','えん'],['王様','おうさま'],
+    ['音','おと'],['下','した'],['火','ひ'],['花','はな'],['貝','かい'],
+    ['学校','がっこう'],['気持ち','きもち'],['九','きゅう'],['休む','やすむ'],['玉','たま'],
+    ['金曜日','きんようび'],['空','そら'],['月','つき'],['犬','いぬ'],['見る','みる'],
+    ['五','ご'],['口','くち'],['校長','こうちょう'],['左','ひだり'],['三','さん'],
+    ['山','やま'],['子ども','こども'],['四','よん'],['糸','いと'],['字','じ'],
+    ['耳','みみ'],['七','なな'],['車','くるま'],['手','て'],['十','じゅう'],
+    ['出る','でる'],['女の子','おんなのこ'],['小さい','ちいさい'],['上','うえ'],['森','もり'],
+    ['人','ひと'],['水','みず'],['正しい','ただしい'],['生まれる','うまれる'],['青','あお'],
+    ['夕方','ゆうがた'],['石','いし'],['赤い','あかい'],['千','せん'],['川','かわ'],
+    ['先生','せんせい'],['早い','はやい'],['草','くさ'],['足','あし'],['村','むら'],
+    ['大きい','おおきい'],['男の子','おとこのこ'],['竹','たけ'],['中','なか'],['虫','むし'],
+    ['町','まち'],['天気','てんき'],['田んぼ','たんぼ'],['土','つち'],['二','に'],
+    ['日曜日','にちようび'],['入る','はいる'],['年','とし'],['白い','しろい'],['八','はち'],
+    ['百','ひゃく'],['文字','もじ'],['木','き'],['本','ほん'],['名前','なまえ'],
+    ['目','め'],['立つ','たつ'],['力','ちから'],['林','はやし'],['六','ろく'],
+  ];
+
+  var KANJI_POOL_G2 = [
+    ['引く','ひく'],['羽','はね'],['雲','くも'],['公園','こうえん'],['遠い','とおい'],
+    ['何','なに'],['理科','りか'],['夏休み','なつやすみ'],['家','いえ'],['歌','うた'],
+    ['画用紙','がようし'],['回る','まわる'],['会う','あう'],['海','うみ'],['絵','え'],
+    ['外','そと'],['角','かど'],['音楽','おんがく'],['生活','せいかつ'],['時間','じかん'],
+    ['丸い','まるい'],['岩','いわ'],['顔','かお'],['汽車','きしゃ'],['日記','にっき'],
+    ['帰る','かえる'],['弓','ゆみ'],['牛','うし'],['魚','さかな'],['東京','とうきょう'],
+    ['強い','つよい'],['教える','おしえる'],['近い','ちかい'],['兄','あに'],['形','かたち'],
+    ['計算','けいさん'],['元気','げんき'],['言う','いう'],['原っぱ','はらっぱ'],['戸','と'],
+    ['古い','ふるい'],['午前','ごぜん'],['後ろ','うしろ'],['国語','こくご'],['工作','こうさく'],
+    ['広い','ひろい'],['交番','こうばん'],['光','ひかり'],['考える','かんがえる'],['旅行','りょこう'],
+    ['高い','たかい'],['黄色','きいろ'],['合う','あう'],['谷','たに'],['黒い','くろい'],
+    ['今','いま'],['天才','てんさい'],['細い','ほそい'],['作る','つくる'],['止まる','とまる'],
+    ['市場','いちば'],['矢','や'],['お姉さん','おねえさん'],['思う','おもう'],['紙','かみ'],
+    ['お寺','おてら'],['自分','じぶん'],['教室','きょうしつ'],['会社','かいしゃ'],['弱い','よわい'],
+    ['首','くび'],['秋','あき'],['今週','こんしゅう'],['春','はる'],['読書','どくしょ'],
+    ['少ない','すくない'],['広場','ひろば'],['色','いろ'],['食べる','たべる'],['心配','しんぱい'],
+    ['新しい','あたらしい'],['親','おや'],['地図','ちず'],['数える','かぞえる'],['西','にし'],
+    ['声','こえ'],['星','ほし'],['晴れる','はれる'],['切る','きる'],['雪','ゆき'],
+    ['船','ふね'],['線','せん'],['前','まえ'],['組','くみ'],['走る','はしる'],
+    ['多い','おおい'],['太い','ふとい'],['体育','たいいく'],['台所','だいどころ'],['池','いけ'],
+    ['知る','しる'],['お茶','おちゃ'],['昼','ひる'],['長い','ながい'],['鳥','とり'],
+    ['朝','あさ'],['直す','なおす'],['通る','とおる'],['弟','おとうと'],['お店','おみせ'],
+    ['点数','てんすう'],['電気','でんき'],['刀','かたな'],['冬','ふゆ'],['本当','ほんとう'],
+    ['東','ひがし'],['答える','こたえる'],['頭','あたま'],['同じ','おなじ'],['道','みち'],
+    ['内側','うちがわ'],['南','みなみ'],['肉','にく'],['馬','うま'],['売る','うる'],
+    ['買う','かう'],['麦','むぎ'],['半分','はんぶん'],['番号','ばんごう'],['父','ちち'],
+    ['台風','たいふう'],['分かる','わかる'],['新聞','しんぶん'],['お米','おこめ'],['歩く','あるく'],
+    ['母','はは'],['方向','ほうこう'],['北','きた'],['毎日','まいにち'],['妹','いもうと'],
+    ['一万','いちまん'],['明るい','あかるい'],['鳴く','なく'],['毛','け'],['校門','こうもん'],
+    ['夜','よる'],['野菜','やさい'],['友だち','ともだち'],['用意','ようい'],['日曜日','にちようび'],
+    ['来る','くる'],['里','さと'],['料理','りょうり'],['話す','はなす']
+  ];
+
+  var KANJI_POOL_EXTRA = [
+    ['秋刀魚','さんま'],['鮪','まぐろ'],['鰹','かつお'],['鮭','さけ'],['鰻','うなぎ'],
+    ['海老','えび'],['栄螺','さざえ'],['西瓜','すいか'],['南瓜','かぼちゃ'],['胡瓜','きゅうり'],
+    ['向日葵','ひまわり'],['蒲公英','たんぽぽ'],['紫陽花','あじさい'],['土筆','つくし'],['案山子','かかし'],
+    ['啄木鳥','きつつき'],['百舌','もず'],['梟','ふくろう'],['蝙蝠','こうもり'],['海豚','いるか'],
+    ['麒麟','きりん'],['駱駝','らくだ'],['栗鼠','りす'],['狸','たぬき'],['狐','きつね'],
+    ['百足','むかで'],['蝸牛','かたつむり'],['蜥蜴','とかげ'],['西班牙','スペイン'],['仏蘭西','フランス'],
+    ['独逸','ドイツ'],['英吉利','イギリス'],['亜米利加','アメリカ'],['阿蘭陀','オランダ'],['露西亜','ロシア'],
+    ['埃及','エジプト'],['玄人','くろうと'],['素人','しろうと'],['土産','みやげ'],['時雨','しぐれ'],
+    ['吹雪','ふぶき'],['雪崩','なだれ'],['老舗','しにせ'],['名残','なごり'],['足袋','たび'],
+    ['浴衣','ゆかた'],['為替','かわせ'],['硝子','ガラス'],['煙草','たばこ'],['河豚','ふぐ'],
+    ['海月','くらげ'],['烏賊','いか'],['蛸','たこ'],['柳葉魚','ししゃも'],['公魚','わかさぎ'],
+    ['鱒','ます'],['鰈','かれい'],['鮃','ひらめ'],['鰯','いわし'],['鯖','さば'],
+    ['鯵','あじ'],['太刀魚','たちうお'],['鰆','さわら'],['鱚','きす'],['鮎','あゆ'],
+    ['秋桜','コスモス'],['金木犀','きんもくせい'],['薔薇','ばら'],['百合','ゆり'],['石榴','ざくろ'],
+    ['無花果','いちじく'],['林檎','りんご'],['葡萄','ぶどう'],['伊太利亜','イタリア'],['瑞西','スイス'],
+    ['白耳義','ベルギー'],['希臘','ギリシャ'],['波蘭','ポーランド'],['泰','タイ'],['越南','ベトナム'],
+    ['加奈陀','カナダ'],['墨西哥','メキシコ'],['比律賓','フィリピン'],['海女','あま'],['乙女','おとめ'],
+    ['昨日','きのう'],['明日','あす'],['一昨日','おととい'],['七夕','たなばた'],['五月雨','さみだれ'],
+    ['迷子','まいご'],['真面目','まじめ'],['凸凹','でこぼこ'],['田舎','いなか'],['最寄り','もより'],
+    ['芝生','しばふ'],['小豆','あずき'],['八百屋','やおや'],['師走','しわす'],['弥生','やよい'],
+  ];
+
+  var KANJI_POOL_G3 = [
+    ['悪い','わるい'],['安心','あんしん'],['暗い','くらい'],['医者','いしゃ'],['委員','いいん'],
+    ['意味','いみ'],['育てる','そだてる'],['院長','いんちょう'],['飲む','のむ'],['運動','うんどう'],
+    ['泳ぐ','およぐ'],['駅','えき'],['中央','ちゅうおう'],['横','よこ'],['屋根','やね'],
+    ['温度','おんど'],['化ける','ばける'],['荷物','にもつ'],['世界','せかい'],['開く','ひらく'],
+    ['階段','かいだん'],['寒い','さむい'],['感想','かんそう'],['漢字','かんじ'],['図書館','としょかん'],
+    ['岸','きし'],['起きる','おきる'],['時期','じき'],['お客','おきゃく'],['研究','けんきゅう'],
+    ['薬局','やっきょく'],['君','きみ'],['関係','かんけい'],['軽い','かるい'],['血','ち'],
+    ['決める','きめる'],['県','けん'],['車庫','しゃこ'],['湖','みずうみ'],['方向','ほうこう'],
+    ['幸せ','しあわせ'],['港','みなと'],['番号','ばんごう'],['根','ね'],['祭り','まつり'],
+    ['皿','さら'],['仕事','しごと'],['死ぬ','しぬ'],['使う','つかう'],['始める','はじめる'],
+    ['指','ゆび'],['歯','は'],['詩','し'],['次','つぎ'],['事件','じけん'],
+    ['持つ','もつ'],['式','しき'],['実る','みのる'],['写真','しゃしん'],['主人','しゅじん'],
+    ['留守','るす'],['取る','とる'],['お酒','おさけ'],['受ける','うける'],['九州','きゅうしゅう'],
+    ['拾う','ひろう'],['終わる','おわる'],['習う','ならう'],['集める','あつめる'],['住む','すむ'],
+    ['重い','おもい'],['宿題','しゅくだい'],['場所','ばしょ'],['暑い','あつい'],['助ける','たすける'],
+    ['昭和','しょうわ'],['消す','けす'],['商店','しょうてん'],['文章','ぶんしょう'],['勝つ','かつ'],
+    ['乗る','のる'],['植える','うえる'],['申す','もうす'],['中身','なかみ'],['神様','かみさま'],
+    ['真実','しんじつ'],['深い','ふかい'],['進む','すすむ'],['世話','せわ'],['整理','せいり'],
+    ['昔','むかし'],['全部','ぜんぶ'],['相談','そうだん'],['送る','おくる'],['想像','そうぞう'],
+    ['息','いき'],['速い','はやい'],['家族','かぞく'],['他','ほか'],['打つ','うつ'],
+    ['時代','じだい'],['第一','だいいち'],['問題','もんだい'],['炭','すみ'],['短い','みじかい'],
+    ['着る','きる'],['注意','ちゅうい'],['柱','はしら'],['丁寧','ていねい'],['手帳','てちょう'],
+    ['調べる','しらべる'],['追いかける','おいかける'],['決定','けってい'],['庭','にわ'],['笛','ふえ'],
+    ['鉄','てつ'],['運転','うんてん'],['都会','とかい'],['今度','こんど'],['投げる','なげる'],
+    ['豆','まめ'],['島','しま'],['お湯','おゆ'],['登る','のぼる'],['等しい','ひとしい'],
+    ['動く','うごく'],['童話','どうわ'],['農業','のうぎょう'],['波','なみ'],['心配','しんぱい'],
+    ['倍','ばい'],['箱','はこ'],['畑','はたけ'],['発表','はっぴょう'],['反省','はんせい'],
+    ['坂','さか'],['板','いた'],['皮','かわ'],['悲しい','かなしい'],['美しい','うつくしい'],
+    ['鼻','はな'],['筆','ふで'],['氷','こおり'],['表す','あらわす'],['秒','びょう'],
+    ['病気','びょうき'],['品物','しなもの'],['負ける','まける'],['部屋','へや'],['洋服','ようふく'],
+    ['幸福','こうふく'],['物語','ものがたり'],['平和','へいわ'],['返す','かえす'],['勉強','べんきょう'],
+    ['放送','ほうそう'],['味','あじ'],['命','いのち'],['面白い','おもしろい'],['問う','とう'],
+    ['役割','やくわり'],['薬','くすり'],['理由','りゆう'],['油','あぶら'],['有名','ゆうめい'],
+    ['遊ぶ','あそぶ'],['予定','よてい'],['羊','ひつじ'],['西洋','せいよう'],['言葉','ことば'],
+    ['太陽','たいよう'],['様子','ようす'],['落ちる','おちる'],['流れる','ながれる'],['旅行','りょこう'],
+    ['両方','りょうほう'],['緑','みどり'],['お礼','おれい'],['列','れつ'],['練習','れんしゅう'],
+    ['道路','どうろ']
+  ];
+
+  function shuffleArray(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp = a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+
+  var KANJI_POOL_G4 = []; // 未整備：将来ここに4年生の漢字データを追加
+  var KANJI_POOL_G5 = []; // 未整備：将来ここに5年生の漢字データを追加
+  var KANJI_POOL_G6 = []; // 未整備：将来ここに6年生の漢字データを追加
+  var KANJI_POOL_YOJI = []; // 未整備：将来ここに四字熟語データを追加
+
+  function getPoolForGrade(grade){
+    if(grade === 1) return KANJI_POOL_G1;
+    if(grade === 2) return KANJI_POOL_G2;
+    if(grade === 'extra') return KANJI_POOL_EXTRA;
+    if(grade === 4) return KANJI_POOL_G4;
+    if(grade === 5) return KANJI_POOL_G5;
+    if(grade === 6) return KANJI_POOL_G6;
+    if(grade === 'yoji') return KANJI_POOL_YOJI;
+    return KANJI_POOL_G3;
+  }
+
+  var EIKEN_POOL_5 = [
+    ['apple','りんご','りんご'],['banana','バナナ','バナナ'],['orange','オレンジ','オレンジ'],
+    ['grape','ぶどう','ぶどう'],['strawberry','いちご','いちご'],['melon','メロン','メロン'],
+    ['dog','犬','いぬ'],['cat','猫','ねこ'],['bird','鳥','とり'],
+    ['fish','魚','さかな'],['rabbit','うさぎ','うさぎ'],['horse','馬','うま'],
+    ['cow','牛','うし'],['pig','ぶた','ぶた'],['lion','ライオン','ライオン'],
+    ['tiger','とら','とら'],['elephant','ぞう','ぞう'],['monkey','さる','さる'],
+    ['bear','くま','くま'],['book','本','ほん'],['pen','ペン','ペン'],
+    ['pencil','えんぴつ','えんぴつ'],['notebook','ノート','ノート'],['bag','かばん','かばん'],
+    ['desk','つくえ','つくえ'],['chair','いす','いす'],['door','ドア','ドア'],
+    ['window','まど','まど'],['table','テーブル','テーブル'],['bed','ベッド','ベッド'],
+    ['house','家','いえ'],['school','学校','がっこう'],['park','公園','こうえん'],
+    ['station','駅','えき'],['hospital','病院','びょういん'],['library','図書館','としょかん'],
+    ['restaurant','レストラン','レストラン'],['store','店','みせ'],['zoo','動物園','どうぶつえん'],
+    ['museum','博物館','はくぶつかん'],['run','走る','はしる'],['walk','歩く','あるく'],
+    ['jump','とぶ','とぶ'],['swim','泳ぐ','およぐ'],['eat','食べる','たべる'],
+    ['drink','飲む','のむ'],['sleep','ねる','ねる'],['read','読む','よむ'],
+    ['write','書く','かく'],['sing','歌う','うたう'],['dance','おどる','おどる'],
+    ['play','あそぶ','あそぶ'],['study','べんきょうする','べんきょうする'],['cook','料理する','りょうりする'],
+    ['red','赤い','あかい'],['blue','青い','あおい'],['yellow','黄色い','きいろい'],
+    ['green','緑の','みどりの'],['white','白い','しろい'],['black','黒い','くろい'],
+    ['big','大きい','おおきい'],['small','小さい','ちいさい'],['happy','幸せな','しあわせな'],
+    ['sad','悲しい','かなしい'],['hot','暑い','あつい'],['cold','寒い','さむい'],
+    ['new','新しい','あたらしい'],['old','古い','ふるい'],['long','長い','ながい'],
+    ['short','短い','みじかい'],['father','お父さん','おとうさん'],['mother','お母さん','おかあさん'],
+    ['brother','兄弟','きょうだい'],['sister','姉妹','しまい'],['friend','友だち','ともだち'],
+    ['teacher','先生','せんせい'],['student','生徒','せいと'],['doctor','医者','いしゃ'],
+    ['Monday','月曜日','げつようび'],['Tuesday','火曜日','かようび'],['Wednesday','水曜日','すいようび'],
+    ['morning','朝','あさ'],['afternoon','午後','ごご'],['evening','夕方','ゆうがた'],
+    ['night','夜','よる'],['today','今日','きょう'],['tomorrow','明日','あした'],
+    ['yesterday','昨日','きのう'],['spring','春','はる'],['summer','夏','なつ'],
+    ['autumn','秋','あき'],['winter','冬','ふゆ']
+  ];
+
+  var EIKEN_POOL_4 = [
+    ['weather','天気','てんき'],['rain','雨','あめ'],['snow','雪','ゆき'],
+    ['wind','風','かぜ'],['cloud','雲','くも'],['sunny','晴れた','はれた'],
+    ['cloudy','くもりの','くもりの'],['rainy','雨の','あめの'],['windy','風の','かぜの'],
+    ['temperature','気温','きおん'],['season','季節','きせつ'],['festival','祭り','まつり'],
+    ['vacation','休暇','きゅうか'],['travel','旅行','りょこう'],['trip','旅','たび'],
+    ['abroad','海外へ','かいがいへ'],['airport','空港','くうこう'],['airplane','飛行機','ひこうき'],
+    ['ship','船','ふね'],['train','電車','でんしゃ'],['bus','バス','バス'],
+    ['bicycle','自転車','じてんしゃ'],['ticket','切符','きっぷ'],['map','地図','ちず'],
+    ['camera','カメラ','カメラ'],['picture','写真','しゃしん'],['guitar','ギター','ギター'],
+    ['piano','ピアノ','ピアノ'],['music','音楽','おんがく'],['movie','映画','えいが'],
+    ['concert','コンサート','コンサート'],['news','ニュース','ニュース'],['newspaper','新聞','しんぶん'],
+    ['magazine','雑誌','ざっし'],['internet','インターネット','インターネット'],['computer','コンピューター','コンピューター'],
+    ['phone','電話','でんわ'],['e-mail','Eメール','イーメール'],['message','メッセージ','メッセージ'],
+    ['letter','手紙','てがみ'],['homework','宿題','しゅくだい'],['test','テスト','テスト'],
+    ['exam','試験','しけん'],['grade','学年','がくねん'],['subject','教科','きょうか'],
+    ['science','理科','りか'],['math','算数','さんすう'],['history','歴史','れきし'],
+    ['art','美術','びじゅつ'],['P.E.','体育','たいいく'],['English','英語','えいご'],
+    ['Japanese','国語','こくご'],['foreign country','外国','がいこく'],['language','言語','げんご'],
+    ['culture','文化','ぶんか'],['custom','習慣','しゅうかん'],['tradition','伝統','でんとう'],
+    ['world','世界','せかい'],['country','国','くに'],['city','都市','とし'],
+    ['village','村','むら'],['nature','自然','しぜん'],['mountain','山','やま'],
+    ['river','川','かわ'],['sea','海','うみ'],['lake','湖','みずうみ'],
+    ['forest','森','もり'],['sky','空','そら'],['star','星','ほし'],
+    ['moon','月','つき'],['sun','太陽','たいよう'],['earth','地球','ちきゅう'],
+    ['health','健康','けんこう'],['sick','病気の','びょうきの'],['tired','つかれた','つかれた'],
+    ['busy','いそがしい','いそがしい'],['free time','自由な時間','じゆうなじかん'],['hobby','趣味','しゅみ'],
+    ['job','仕事','しごと'],['work','働く','はたらく'],['future','未来','みらい'],
+    ['dream','夢','ゆめ'],['plan','計画','けいかく'],['promise','約束','やくそく'],
+    ['problem','問題','もんだい'],['answer','答え','こたえ'],['question','質問','しつもん'],
+    ['idea','考え','かんがえ'],['opinion','意見','いけん'],['decide','決める','きめる'],
+    ['choose','選ぶ','えらぶ'],['remember','覚えている','おぼえている'],['forget','忘れる','わすれる'],
+    ['understand','理解する','りかいする'],['explain','説明する','せつめいする']
+  ];
+
+  var EIKEN_POOL_3 = []; // 未整備：将来ここに英検3級の単語データを追加
+  var EIKEN_POOL_PRE2 = []; // 未整備：将来ここに英検準2級の単語データを追加
+  var EIKEN_POOL_2 = []; // 未整備：将来ここに英検2級の単語データを追加
+
+  function getPoolForGradeEn(grade){
+    if(grade === 4) return EIKEN_POOL_4;
+    if(grade === 3) return EIKEN_POOL_3;
+    if(grade === 'pre2') return EIKEN_POOL_PRE2;
+    if(grade === 2) return EIKEN_POOL_2;
+    return EIKEN_POOL_5;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function hasKanji(s){
+    return /[\u4E00-\u9FFF]/.test(s);
+  }
+  function setTextWithFurigana(el, text, reading){
+    if(reading && hasKanji(text)){
+      el.innerHTML = '<ruby>' + escapeHtml(text) + '<rt>' + escapeHtml(reading) + '</rt></ruby>';
+    } else {
+      el.textContent = text;
+    }
+  }
+
+  function buildChoiceObjectsEn(correctEntry, pool, direction){
+    var getValue, getReading;
+    if(direction === 'j2e'){
+      getValue = function(e){ return e[0]; };
+      getReading = function(){ return null; };
+    } else {
+      getValue = function(e){ return e[1]; };
+      getReading = function(e){ return e[2]; };
+    }
+    var correctValue = getValue(correctEntry);
+    var sameLen = [];
+    var otherLen = [];
+    for(var i=0;i<pool.length;i++){
+      var val = getValue(pool[i]);
+      if(val === correctValue) continue;
+      if(val.length === correctValue.length){
+        sameLen.push(pool[i]);
+      } else {
+        otherLen.push(pool[i]);
+      }
+    }
+    sameLen = shuffleArray(sameLen);
+    otherLen = shuffleArray(otherLen);
+    var combined = sameLen.concat(otherLen);
+    var seenValues = [correctValue];
+    var distractorEntries = [];
+    for(var k=0;k<combined.length && distractorEntries.length < 3;k++){
+      var v = getValue(combined[k]);
+      if(seenValues.indexOf(v) === -1){
+        seenValues.push(v);
+        distractorEntries.push(combined[k]);
+      }
+    }
+    var choiceEntries = [correctEntry].concat(distractorEntries);
+    var choiceObjs = choiceEntries.map(function(e){
+      return { value: getValue(e), reading: getReading(e) };
+    });
+    return shuffleArray(choiceObjs);
+  }
+
+  function buildQuestionObjectsEn(entries, pool, cfg){
+    var specialChance = (cfg && typeof cfg.specialQuizProb === 'number') ? cfg.specialQuizProb : 20;
+    return entries.map(function(entry){
+      var direction = Math.random() < 0.5 ? 'e2j' : 'j2e';
+      var isJ2E = direction === 'j2e';
+      return {
+        subject: 'english',
+        word: entry[0],
+        meaning: entry[1],
+        meaningReading: entry[2],
+        direction: direction,
+        promptText: isJ2E ? entry[1] : entry[0],
+        promptReading: isJ2E ? entry[2] : null,
+        answerValue: isJ2E ? entry[0] : entry[1],
+        choices: buildChoiceObjectsEn(entry, pool, direction),
+        special: Math.random()*100 < specialChance
+      };
+    });
+  }
+
+  function makeQuestionsEn(n, cfg, grade){
+    var pool = getPoolForGradeEn(grade);
+    var picks = shuffleArray(pool).slice(0, n);
+    return buildQuestionObjectsEn(picks, pool, cfg);
+  }
+
+  function missedCountEn(grade){
+    var list = missedWordsEn[grade];
+    return list ? list.length : 0;
+  }
+
+  function makeReviewQuestionsEn(cfg, grade){
+    var pool = getPoolForGradeEn(grade);
+    var list = missedWordsEn[grade] || [];
+    var entries = pool.filter(function(e){ return list.indexOf(e[0]) !== -1; });
+    entries = shuffleArray(entries);
+    return buildQuestionObjectsEn(entries, pool, cfg);
+  }
+
+  var MISSED_KEY_EN = 'eikenQuizMissedWords';
+  function loadMissedEn(){
+    try {
+      var v = window.localStorage.getItem(MISSED_KEY_EN);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && typeof parsed === 'object'){
+        return {
+          5: Array.isArray(parsed['5']) ? parsed['5'] : [],
+          4: Array.isArray(parsed['4']) ? parsed['4'] : [],
+          3: Array.isArray(parsed['3']) ? parsed['3'] : [],
+          pre2: Array.isArray(parsed['pre2']) ? parsed['pre2'] : [],
+          2: Array.isArray(parsed['2']) ? parsed['2'] : []
+        };
+      }
+    } catch(e){}
+    return { 5: [], 4: [], 3: [], pre2: [], 2: [] };
+  }
+  function saveMissedEn(m){
+    try {
+      window.localStorage.setItem(MISSED_KEY_EN, JSON.stringify(m));
+    } catch(e){}
+  }
+  var missedWordsEn = loadMissedEn();
+
+  var HIRAGANA_POOL_ANIMALS = [
+    ['いぬ','🐶'],['ねこ','🐱'],['とり','🐦'],['くま','🐻'],
+    ['うし','🐮'],['ぶた','🐷'],['うま','🐴'],['かに','🦀'],
+    ['たこ','🐙'],['かめ','🐢'],['へび','🐍'],['ぞう','🐘'],
+    ['とら','🐯'],['いか','🦑'],['はち','🐝'],['やぎ','🐐'],
+    ['さる','🐵'],['えび','🦐'],['かも','🦆'],['ひつじ','🐑'],
+    ['うさぎ','🐰'],['くじら','🐳'],['かえる','🐸'],['ちょう','🦋'],
+    ['らいおん','🦁'],['にわとり','🐔'],['ぱんだ','🐼'],['こあら','🐨'],
+    ['ぺんぎん','🐧'],['きりん','🦒'],['りす','🐿️'],['さかな','🐟'],
+    ['らくだ','🐫'],['しか','🦌'],['おおかみ','🐺'],['きつね','🦊'],
+    ['こうもり','🦇'],['ふくろう','🦉'],['わに','🐊'],['とかげ','🦎'],
+    ['かたつむり','🐌'],['いるか','🐬'],['さめ','🦈'],['てんとうむし','🐞'],
+    ['あり','🐜'],['ふぐ','🐡'],['はまぐり','🐚'],['くじゃく','🦚'],
+    ['おうむ','🦜'],['はと','🕊️']
+  ];
+
+  var HIRAGANA_POOL_FOOD = [
+    ['もも','🍑'],['なし','🍐'],['りんご','🍎'],['みかん','🍊'],
+    ['ぶどう','🍇'],['いちご','🍓'],['すいか','🍉'],['ばなな','🍌'],
+    ['たまご','🥚'],['やさい','🥬'],['おにぎり','🍙'],['すし','🍣'],
+    ['にく','🥩'],['ぱん','🍞'],['からあげ','🍗'],['まめ','🫘'],
+    ['おちゃ','🍵'],['みず','💧'],['ぎゅうにゅう','🥛'],['れもん','🍋'],
+    ['とまと','🍅'],['にんじん','🥕'],['じゃがいも','🥔'],['たまねぎ','🧅'],
+    ['とうもろこし','🌽'],['きゅうり','🥒'],['なす','🍆'],['きのこ','🍄'],
+    ['はちみつ','🍯'],['そば','🍜'],['うどん','🍜'],['やきにく','🥩'],
+    ['おかし','🍬'],['くり','🌰']
+  ];
+
+  var HIRAGANA_POOL_VEHICLES = [
+    ['くるま','🚗'],['ふね','🚢'],['ばす','🚌'],['でんしゃ','🚃'],
+    ['ひこうき','✈️'],['じてんしゃ','🚲'],['ほん','📕'],['くつ','👞'],
+    ['ふく','👕'],['めがね','👓'],['ぼうし','🧢'],['えんぴつ','✏️'],
+    ['とけい','⏰'],['かばん','🎒'],['かさ','☂️'],['とらっく','🚚'],
+    ['しょうぼうしゃ','🚒'],['きゅうきゅうしゃ','🚑'],['ろけっと','🚀'],['ふうせん','🎈'],
+    ['たいこ','🥁'],['ぴあの','🎹'],['かぎ','🔑'],['はさみ','✂️'],
+    ['いす','🪑'],['とびら','🚪']
+  ];
+
+  var HIRAGANA_POOL_NATURE = [
+    ['つき','🌙'],['ほし','⭐'],['ゆき','❄️'],['やま','⛰️'],
+    ['うみ','🌊'],['はな','🌸'],['くさ','🌿'],['くも','☁️'],
+    ['あめ','🌧️'],['たいよう','🌞'],['かわ','🏞️'],['そら','🌌'],
+    ['にじ','🌈'],['かみなり','⚡'],['いわ','🪨'],['もり','🌲'],
+    ['たきび','🔥'],['かぜ','🌬️'],['なみ','🌊'],['ほのお','🔥'],
+  ];
+
+  var HIRAGANA_POOL_ADVANCED = []; // 未整備：将来ここにむずかしいことばデータを追加
+  var HIRAGANA_POOL_DESCRIPTIVE = []; // 未整備：将来ここにようすをあらわすことばデータを追加
+
+  var HIRAGANA_CHARS_MOJI = 'あいうえおかがきぎくけげこごさしじすずそぞただちっつてでとどなにぬねはばぱひびぴふぶへぺほぼまみめもゃやゅゆょよらりるわん'.split('');
+
+  function toKatakana(str){
+    return str.split('').map(function(ch){
+      var code = ch.charCodeAt(0);
+      if(code >= 0x3041 && code <= 0x3096){
+        return String.fromCharCode(code + 0x60);
+      }
+      return ch;
+    }).join('');
+  }
+  var KATAKANA_CHARS_MOJI = HIRAGANA_CHARS_MOJI.map(toKatakana);
+
+  function getPoolForCategoryMoji(category){
+    if(category === 'food') return HIRAGANA_POOL_FOOD;
+    if(category === 'vehicles') return HIRAGANA_POOL_VEHICLES;
+    if(category === 'nature') return HIRAGANA_POOL_NATURE;
+    if(category === 'advanced') return HIRAGANA_POOL_ADVANCED;
+    if(category === 'descriptive') return HIRAGANA_POOL_DESCRIPTIVE;
+    return HIRAGANA_POOL_ANIMALS;
+  }
+
+  function buildBlankChoicesMoji(correctChar, charPool){
+    var pool = [];
+    for(var i=0;i<charPool.length;i++){
+      if(charPool[i] !== correctChar) pool.push(charPool[i]);
+    }
+    pool = shuffleArray(pool);
+    var distractors = pool.slice(0, 3);
+    return shuffleArray([correctChar].concat(distractors));
+  }
+
+  function buildQuestionObjectsMoji(entries, cfg, script){
+    var specialChance = (cfg && typeof cfg.specialQuizProb === 'number') ? cfg.specialQuizProb : 20;
+    var isKatakana = script === 'katakana';
+    var charPool = isKatakana ? KATAKANA_CHARS_MOJI : HIRAGANA_CHARS_MOJI;
+    return entries.map(function(entry){
+      var baseWord = entry[0];
+      var emoji = entry[1];
+      var displayBaseWord = isKatakana ? toKatakana(baseWord) : baseWord;
+      var blankIndex = Math.floor(Math.random() * displayBaseWord.length);
+      var answerChar = displayBaseWord[blankIndex];
+      var displayWord = displayBaseWord.slice(0, blankIndex) + '□' + displayBaseWord.slice(blankIndex + 1);
+      return {
+        subject: 'moji',
+        word: baseWord,
+        displayFullWord: displayBaseWord,
+        emoji: emoji,
+        displayWord: displayWord,
+        answer: answerChar,
+        choices: buildBlankChoicesMoji(answerChar, charPool),
+        special: Math.random()*100 < specialChance
+      };
+    });
+  }
+
+  function makeQuestionsMoji(n, cfg, category, script){
+    var pool = getPoolForCategoryMoji(category);
+    var picks = shuffleArray(pool).slice(0, n);
+    return buildQuestionObjectsMoji(picks, cfg, script);
+  }
+
+  function missedCountMoji(category){
+    var list = missedWordsMoji[category];
+    return list ? list.length : 0;
+  }
+
+  function makeReviewQuestionsMoji(cfg, category, script){
+    var pool = getPoolForCategoryMoji(category);
+    var list = missedWordsMoji[category] || [];
+    var entries = pool.filter(function(e){ return list.indexOf(e[0]) !== -1; });
+    entries = shuffleArray(entries);
+    return buildQuestionObjectsMoji(entries, cfg, script);
+  }
+
+  var MISSED_KEY_MOJI = 'hiraganaQuizMissedWords';
+  function loadMissedMoji(){
+    try {
+      var v = window.localStorage.getItem(MISSED_KEY_MOJI);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && typeof parsed === 'object'){
+        return {
+          animals: Array.isArray(parsed['animals']) ? parsed['animals'] : [],
+          food: Array.isArray(parsed['food']) ? parsed['food'] : [],
+          vehicles: Array.isArray(parsed['vehicles']) ? parsed['vehicles'] : [],
+          nature: Array.isArray(parsed['nature']) ? parsed['nature'] : [],
+          advanced: Array.isArray(parsed['advanced']) ? parsed['advanced'] : [],
+          descriptive: Array.isArray(parsed['descriptive']) ? parsed['descriptive'] : []
+        };
+      }
+    } catch(e){}
+    return { animals: [], food: [], vehicles: [], nature: [], advanced: [], descriptive: [] };
+  }
+  function saveMissedMoji(m){
+    try {
+      window.localStorage.setItem(MISSED_KEY_MOJI, JSON.stringify(m));
+    } catch(e){}
+  }
+  var missedWordsMoji = loadMissedMoji();
+  function addMissedMoji(category, word){
+    var list = missedWordsMoji[category];
+    if(!list) return;
+    if(list.indexOf(word) === -1){
+      list.push(word);
+      saveMissedMoji(missedWordsMoji);
+    }
+  }
+  function removeMissedMoji(category, word){
+    var list = missedWordsMoji[category];
+    if(!list) return;
+    var i = list.indexOf(word);
+    if(i !== -1){
+      list.splice(i, 1);
+      saveMissedMoji(missedWordsMoji);
+    }
+  }
+
+
+  function makeQuestionsMath(n, cfg, category){
+    var qs = [];
+    var specialChance = (cfg && typeof cfg.specialQuizProb === 'number') ? cfg.specialQuizProb : 20;
+    for(var i=0;i<n;i++){
+      var q;
+      var isSpecial = Math.random()*100 < specialChance;
+      if(category === 'multiply'){
+        var f1 = 2 + Math.floor(Math.random()*8); // 2-9
+        var f2 = 2 + Math.floor(Math.random()*8); // 2-9
+        q = { subject: 'math', category: 'multiply', a: f1, b: f2, op: '×', answer: f1*f2, special: isSpecial };
+      } else if(category === 'add_basic'){
+        var a1 = 1 + Math.floor(Math.random()*20); // 1-20
+        var b1 = 1 + Math.floor(Math.random()*20); // 1-20
+        q = { subject: 'math', category: 'add_basic', a: a1, b: b1, op: '+', answer: a1+b1, special: isSpecial };
+      } else if(category === 'add_advanced'){
+        var a2 = 10 + Math.floor(Math.random()*90); // 10-99
+        var b2 = 10 + Math.floor(Math.random()*90); // 10-99
+        q = { subject: 'math', category: 'add_advanced', a: a2, b: b2, op: '+', answer: a2+b2, special: isSpecial };
+      } else {
+        var divisor = 2 + Math.floor(Math.random()*8); // 2-9
+        var wantRemainder = Math.random() < 0.75;
+        var quotientPart = 2 + Math.floor(Math.random()*9); // 2-10
+        var dividend;
+        if(wantRemainder){
+          var r = 1 + Math.floor(Math.random()*(divisor-1));
+          dividend = quotientPart*divisor + r;
+        } else {
+          dividend = quotientPart*divisor;
+        }
+        q = {
+          subject: 'math',
+          category: 'division',
+          dividend: dividend,
+          divisor: divisor,
+          quotient: Math.floor(dividend/divisor),
+          remainder: dividend % divisor,
+          special: isSpecial
+        };
+      }
+      q.word = (q.category === 'division')
+        ? (q.dividend + '÷' + q.divisor)
+        : (q.a + (q.op) + q.b);
+      qs.push(q);
+    }
+    return qs;
+  }
+
+  var CATEGORY_LABELS_MATH = {
+    division: 'わり算編',
+    multiply: 'かけ算編',
+    add_basic: '足し算編（初級）',
+    add_advanced: '足し算編（上級）',
+    subtract: 'ひきざん編',
+    fraction: '分数編'
+  };
+  var CATEGORY_MASTER_MATH = {
+    division: 'わり算マスター',
+    multiply: 'かけ算マスター',
+    add_basic: 'たし算マスター',
+    add_advanced: 'たし算マスター'
+  };
+  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced'];
+
+  function addMissedEn(grade, word){
+    var list = missedWordsEn[grade];
+    if(!list) return;
+    if(list.indexOf(word) === -1){
+      list.push(word);
+      saveMissedEn(missedWordsEn);
+    }
+  }
+  function removeMissedEn(grade, word){
+    var list = missedWordsEn[grade];
+    if(!list) return;
+    var i = list.indexOf(word);
+    if(i !== -1){
+      list.splice(i, 1);
+      saveMissedEn(missedWordsEn);
+    }
+  }
+
+
+  function buildChoices(correctReading, pool){
+    var sameLen = [];
+    var otherLen = [];
+    for(var i=0;i<pool.length;i++){
+      var reading = pool[i][1];
+      if(reading === correctReading) continue;
+      if(reading.length === correctReading.length){
+        sameLen.push(reading);
+      } else {
+        otherLen.push(reading);
+      }
+    }
+    sameLen = shuffleArray(sameLen);
+    otherLen = shuffleArray(otherLen);
+    var distractors = [];
+    var combined = sameLen.concat(otherLen);
+    for(var k=0;k<combined.length && distractors.length < 3;k++){
+      if(distractors.indexOf(combined[k]) === -1){
+        distractors.push(combined[k]);
+      }
+    }
+    return shuffleArray([correctReading].concat(distractors));
+  }
+
+  function buildQuestionObjects(entries, pool, cfg){
+    var specialChance = (cfg && typeof cfg.specialQuizProb === 'number') ? cfg.specialQuizProb : 20;
+    return entries.map(function(entry){
+      return {
+        word: entry[0],
+        answer: entry[1],
+        choices: buildChoices(entry[1], pool),
+        special: Math.random()*100 < specialChance
+      };
+    });
+  }
+
+  function makeQuestions(n, cfg, grade){
+    var pool = getPoolForGrade(grade);
+    var picks = shuffleArray(pool).slice(0, n);
+    return buildQuestionObjects(picks, pool, cfg);
+  }
+
+  function missedCount(grade){
+    var list = missedWords[grade];
+    return list ? list.length : 0;
+  }
+
+  function makeReviewQuestions(cfg, grade){
+    var pool = getPoolForGrade(grade);
+    var list = missedWords[grade] || [];
+    var entries = pool.filter(function(e){ return list.indexOf(e[0]) !== -1; });
+    entries = shuffleArray(entries);
+    return buildQuestionObjects(entries, pool, cfg);
+  }
+
+  var walletTickets = loadWallet();
+  var specialTickets = loadSpecialTickets();
+  var prizes = loadPrizes();
+  var gachaConfig = loadConfig();
+  var gachaPassword = loadPassword();
+  var playCountState = loadPlayCount();
+
+  function ensureCurrentDay(){
+    var today = todayString();
+    if(playCountState.date !== today){
+      playCountState = { date: today, count: 0 };
+      savePlayCount(playCountState);
+    }
+  }
+
+  var selectedGrade = null;
+  var questionQueue = [];
+  var currentQuestion = null;
+  var results = [];
+  var isReviewSession = false;
+  var correctCount = loadCorrectCount();
+  var sessionTicketsEarned = 0;
+
+  var streakDog = document.getElementById('streakDog');
+  var streakLabel = document.getElementById('streakLabel');
+  var countEl = document.getElementById('count');
+  var problemEl = document.getElementById('problem');
+  var choicesEl = document.getElementById('choices');
+  var quizCardEl = document.getElementById('quizCard');
+  var feedbackEl = document.getElementById('feedback');
+  var answerMark = document.getElementById('answerMark');
+  var nextBtn = document.getElementById('nextBtn');
+  var speakBtn = document.getElementById('speakBtn');
+  var resultCard = document.getElementById('resultCard');
+  var scoreText = document.getElementById('scoreText');
+  var earnedText = document.getElementById('earnedText');
+  var scoreMsg = document.getElementById('scoreMsg');
+  var reviewEl = document.getElementById('review');
+  var retryBtn = document.getElementById('retryBtn');
+  var endBtn = document.getElementById('endBtn');
+  var hubPointsText = document.getElementById('hubPointsText');
+
+  var spLampLeft = document.getElementById('spLampLeft');
+  var spLampRight = document.getElementById('spLampRight');
+  var specialCaption = document.getElementById('specialCaption');
+  var specialBanner = document.getElementById('specialBanner');
+  var divisionAnswerRow = document.getElementById('divisionAnswerRow');
+  var singleAnswerRow = document.getElementById('singleAnswerRow');
+  var specialBlock = document.getElementById('specialBlock');
+  var specialProblemEl = document.getElementById('specialProblem');
+  var quotientInput = document.getElementById('quotientInput');
+  var remainderInput = document.getElementById('remainderInput');
+  var singleAnswerInput = document.getElementById('singleAnswerInput');
+  var specialAnswerInput = document.getElementById('specialAnswerInput');
+  var checkBtn = document.getElementById('checkBtn');
+
+  var mathTitleScreen = document.getElementById('mathTitleScreen');
+  var hubBackBtnMath = document.getElementById('hubBackBtnMath');
+  var titleStatusMath = document.getElementById('titleStatusMath');
+  var categoryBtnsMath = document.querySelectorAll('#mathTitleScreen .category-btn');
+  var selectedCategoryMath = 'division';
+
+  var mojiTitleScreen = document.getElementById('mojiTitleScreen');
+  var hubMojiBtn = document.getElementById('hubMojiBtn');
+  var hubBackBtnMoji = document.getElementById('hubBackBtnMoji');
+  var titleStatusMoji = document.getElementById('titleStatusMoji');
+  var gradeBtnsMoji = document.querySelectorAll('#mojiTitleScreen .grade-btn');
+  var scriptHiraganaBtn = document.getElementById('scriptHiraganaBtn');
+  var scriptKatakanaBtn = document.getElementById('scriptKatakanaBtn');
+  var modeNormalBtnMoji = document.getElementById('modeNormalBtnMoji');
+  var modeReviewBtnMoji = document.getElementById('modeReviewBtnMoji');
+  var illustrationEl = document.getElementById('illustration');
+  var selectedGradeMoji = 'animals';
+  var titleScriptMoji = 'hiragana';
+  var titleModeMoji = 'normal';
+
+  var gachaBtn = document.getElementById('gachaBtn');
+  var exchangeMenuBtn = document.getElementById('exchangeMenuBtn');
+
+  var gachaScreenOverlay = document.getElementById('gachaScreenOverlay');
+  var gachaScreenCloseBtn = document.getElementById('gachaScreenCloseBtn');
+  var gachaLimitInfo = document.getElementById('gachaLimitInfo');
+  var walletBalanceText = document.getElementById('walletBalanceText');
+  var normalCostText = document.getElementById('normalCostText');
+  var spinNormalBtn = document.getElementById('spinNormalBtn');
+  var specialBalanceText = document.getElementById('specialBalanceText');
+  var specialCostText = document.getElementById('specialCostText');
+  var spinSpecialBtn = document.getElementById('spinSpecialBtn');
+
+  var gachaOverlay = document.getElementById('gachaOverlay');
+  var gachaOverlayTitle = document.getElementById('gachaOverlayTitle');
+  var gachaIcon = document.getElementById('gachaIcon');
+  var gachaTitle = document.getElementById('gachaTitle');
+  var gachaSub = document.getElementById('gachaSub');
+  var gachaCloseBtn = document.getElementById('gachaCloseBtn');
+
+  var exchangeOverlay = document.getElementById('exchangeOverlay');
+  var exchangeBalanceText = document.getElementById('exchangeBalanceText');
+  var exchangeAmountInput = document.getElementById('exchangeAmountInput');
+  var exchangeStatus = document.getElementById('exchangeStatus');
+  var exchangeBtn = document.getElementById('exchangeBtn');
+  var exchangeCloseBtn = document.getElementById('exchangeCloseBtn');
+
+  var hubScreen = document.getElementById('hubScreen');
+  var hubMathBtn = document.getElementById('hubMathBtn');
+  var hubKanjiBtn = document.getElementById('hubKanjiBtn');
+  var hubEnglishBtn = document.getElementById('hubEnglishBtn');
+  var hubStatus = document.getElementById('hubStatus');
+  var hubBackBtn = document.getElementById('hubBackBtn');
+  var titleScreen = document.getElementById('titleScreen');
+  var mainScreen = document.getElementById('mainScreen');
+  var gradeSubtitle = document.getElementById('gradeSubtitle');
+  var gradeBtns = document.querySelectorAll('#titleScreen .grade-btn');
+  var titleStatus = document.getElementById('titleStatus');
+  var titleRemaining = document.getElementById('titleRemaining');
+  var backToTitleBtn = document.getElementById('backToTitleBtn');
+
+  var englishTitleScreen = document.getElementById('englishTitleScreen');
+  var hubBackBtnEn = document.getElementById('hubBackBtnEn');
+  var modeNormalBtnEn = document.getElementById('modeNormalBtnEn');
+  var modeReviewBtnEn = document.getElementById('modeReviewBtnEn');
+  var gradeBtnsEn = document.querySelectorAll('#englishTitleScreen .grade-btn');
+  var titleStatusEn = document.getElementById('titleStatusEn');
+  var selectedGradeEn = null;
+  var titleModeEn = 'normal';
+  var currentSubject = 'kanji';
+
+  var settingsLinkBtn = document.getElementById('settingsLinkBtn');
+  var passwordOverlay = document.getElementById('passwordOverlay');
+  var passwordOverlayTitle = document.getElementById('passwordOverlayTitle');
+  var passwordInput = document.getElementById('passwordInput');
+  var passwordStatus = document.getElementById('passwordStatus');
+  var passwordCancelBtn = document.getElementById('passwordCancelBtn');
+  var passwordSubmitBtn = document.getElementById('passwordSubmitBtn');
+  var settingsOverlay = document.getElementById('settingsOverlay');
+
+  var historyLinkBtn = document.getElementById('historyLinkBtn');
+  var historyOverlay = document.getElementById('historyOverlay');
+  var historyList = document.getElementById('historyList');
+  var historyStatus = document.getElementById('historyStatus');
+  var historyResetBtn = document.getElementById('historyResetBtn');
+  var historyCloseBtn = document.getElementById('historyCloseBtn');
+
+  var editWalletInput = document.getElementById('editWalletInput');
+  var editSpecialInput = document.getElementById('editSpecialInput');
+  var editPrizePointsInput = document.getElementById('editPrizePointsInput');
+  var updateHoldingsBtn = document.getElementById('updateHoldingsBtn');
+  var holdingsStatus = document.getElementById('holdingsStatus');
+  var holdingsCloseBtn = document.getElementById('holdingsCloseBtn');
+
+  var costInput = document.getElementById('costInput');
+  var rankProbInputs = [
+    document.getElementById('rank1ProbInput'), document.getElementById('rank2ProbInput'),
+    document.getElementById('rank3ProbInput'), document.getElementById('rank4ProbInput')
+  ];
+  var rank5ProbDisplay = document.getElementById('rank5ProbDisplay');
+  var normalGachaStatus = document.getElementById('normalGachaStatus');
+  var normalGachaCloseBtn = document.getElementById('normalGachaCloseBtn');
+  var normalGachaSaveBtn = document.getElementById('normalGachaSaveBtn');
+
+  var specialProbInput = document.getElementById('specialProbInput');
+  var specialProbStatus = document.getElementById('specialProbStatus');
+  var specialProbCloseBtn = document.getElementById('specialProbCloseBtn');
+  var specialProbSaveBtn = document.getElementById('specialProbSaveBtn');
+
+  var specialCostInput = document.getElementById('specialCostInput');
+  var sRankProbInputs = [
+    document.getElementById('sRank1ProbInput'), document.getElementById('sRank2ProbInput'),
+    document.getElementById('sRank3ProbInput'), document.getElementById('sRank4ProbInput')
+  ];
+  var sRank5ProbDisplay = document.getElementById('sRank5ProbDisplay');
+  var specialGachaStatus = document.getElementById('specialGachaStatus');
+  var specialGachaCloseBtn = document.getElementById('specialGachaCloseBtn');
+  var specialGachaSaveBtn = document.getElementById('specialGachaSaveBtn');
+
+  var gachaLimitInput = document.getElementById('gachaLimitInput');
+  var evNormalText = document.getElementById('evNormalText');
+  var evSpecialText = document.getElementById('evSpecialText');
+  var evMixedText = document.getElementById('evMixedText');
+  var currentPlayCountText = document.getElementById('currentPlayCountText');
+  var resetPlayCountBtn = document.getElementById('resetPlayCountBtn');
+  var limitStatus = document.getElementById('limitStatus');
+  var limitCloseBtn = document.getElementById('limitCloseBtn');
+  var limitSaveBtn = document.getElementById('limitSaveBtn');
+
+  var newPasswordInput = document.getElementById('newPasswordInput');
+  var newPasswordConfirmInput = document.getElementById('newPasswordConfirmInput');
+  var changePasswordBtn = document.getElementById('changePasswordBtn');
+  var passwordChangeStatus = document.getElementById('passwordChangeStatus');
+  var passwordSectionCloseBtn = document.getElementById('passwordSectionCloseBtn');
+
+  var lockCheckboxes = {};
+  Object.keys(LOCK_DEFAULTS).forEach(function(key){
+    lockCheckboxes[key] = document.getElementById('lockCk_' + key);
+  });
+  var lockVisibleStatus = document.getElementById('lockVisibleStatus');
+  var lockVisibleCloseBtn = document.getElementById('lockVisibleCloseBtn');
+  var lockVisibleSaveBtn = document.getElementById('lockVisibleSaveBtn');
+
+  var pendingAction = null; // 'settings' | 'exchange:<amount>'
+
+  function renderWalletTop(){
+    // ticket counts are no longer displayed in the quiz screen
+  }
+
+  function renderHubPoints(){
+    hubPointsText.textContent = prizes.points;
+  }
+
+  function canDistribute(){
+    ensureCurrentDay();
+    var limit = gachaConfig.gachaLimit || 0;
+    if(limit <= 0) return true;
+    return playCountState.count < limit;
+  }
+  function recordDistribution(){
+    ensureCurrentDay();
+    playCountState.count++;
+    savePlayCount(playCountState);
+  }
+  function distributionRemaining(){
+    ensureCurrentDay();
+    var limit = gachaConfig.gachaLimit || 0;
+    if(limit <= 0) return null;
+    return Math.max(0, limit - playCountState.count);
+  }
+
+  function renderTitleRemaining(){
+    var remaining = distributionRemaining();
+    if(remaining === null){
+      titleRemaining.textContent = '';
+    } else {
+      titleRemaining.innerHTML = '本日のチケット配布のこり: <b>' + remaining + '</b>枚';
+    }
+  }
+
+  function renderGachaScreen(){
+    ensureCurrentDay();
+    walletBalanceText.textContent = walletTickets;
+    normalCostText.textContent = gachaConfig.cost;
+    specialBalanceText.textContent = specialTickets;
+    specialCostText.textContent = gachaConfig.specialCost;
+    var limit = gachaConfig.gachaLimit || 0;
+    if(limit > 0){
+      gachaLimitInfo.textContent = '本日のチケット配布: ' + playCountState.count + ' / ' + limit + '枚';
+    } else {
+      gachaLimitInfo.textContent = '';
+    }
+    spinNormalBtn.disabled = walletTickets < gachaConfig.cost;
+    spinSpecialBtn.disabled = specialTickets < gachaConfig.specialCost;
+  }
+
+  function expandProbs(probs4){
+    // probs4[0..3] user-configured, rank5 = remainder
+    var sum4 = probs4[0]+probs4[1]+probs4[2]+probs4[3];
+    var p5 = Math.max(0, 100 - sum4);
+    return [probs4[0], probs4[1], probs4[2], probs4[3], p5];
+  }
+
+  function runGacha(opts){
+    var balance = opts.getBalance();
+    if(balance < opts.cost){
+      gachaOverlayTitle.textContent = opts.title;
+      gachaIcon.textContent = '😢';
+      gachaTitle.textContent = opts.costUnit + 'が足りません';
+      gachaTitle.className = 'gacha-result-title miss';
+      gachaSub.textContent = opts.cost + opts.costUnit + '必要です（いま ' + balance + opts.costUnit + '）';
+      gachaOverlay.classList.remove('hidden');
+      return;
+    }
+
+    opts.spend(opts.cost);
+
+    var probs = expandProbs(opts.probs4);
+    var roll = Math.random() * 100;
+    var acc = 0;
+    var rankIdx = 4;
+    for(var i=0;i<5;i++){
+      acc += probs[i];
+      if(roll < acc){ rankIdx = i; break; }
+    }
+
+    prizes.counts[rankIdx]++;
+    prizes.points += RANK_POINTS[rankIdx];
+    savePrizes(prizes);
+    renderHubPoints();
+
+    renderGachaScreen();
+
+    gachaOverlayTitle.textContent = opts.title;
+    gachaIcon.textContent = RANK_ICONS[rankIdx];
+    gachaTitle.textContent = (rankIdx+1) + '等！';
+    gachaTitle.className = 'gacha-result-title';
+    gachaSub.textContent = '+' + RANK_POINTS[rankIdx] + 'ポイント 獲得！';
+    gachaOverlay.classList.remove('hidden');
+  }
+
+  function drawMainGacha(){
+    runGacha({
+      title: 'ふくびき けっか',
+      cost: gachaConfig.cost,
+      costUnit: '枚',
+      probs4: gachaConfig.probs,
+      getBalance: function(){ return walletTickets; },
+      spend: function(amt){
+        walletTickets -= amt;
+        saveWallet(walletTickets);
+        renderWalletTop();
+      }
+    });
+  }
+
+  function drawSpecialGacha(){
+    runGacha({
+      title: 'スペシャルふくびき けっか',
+      cost: gachaConfig.specialCost,
+      costUnit: '枚',
+      probs4: gachaConfig.specialProbs,
+      getBalance: function(){ return specialTickets; },
+      spend: function(amt){
+        specialTickets -= amt;
+        saveSpecialTickets(specialTickets);
+        renderWalletTop();
+      }
+    });
+  }
+
+  function renderExchangeScreen(){
+    exchangeBalanceText.textContent = prizes.points;
+    exchangeAmountInput.value = '';
+    exchangeStatus.textContent = '';
+    exchangeStatus.className = 'settings-status';
+  }
+
+  function performExchange(amount){
+    prizes.points -= amount;
+    savePrizes(prizes);
+    renderHubPoints();
+    renderExchangeScreen();
+    exchangeStatus.textContent = amount + 'pt こうかんしました';
+    exchangeStatus.className = 'settings-status ok';
+  }
+
+  function renderStreakTrack(justReset){
+    var lapPos = correctCount % 5;
+    if(correctCount > 0 && lapPos === 0) lapPos = 5;
+    var pct = (lapPos / 5) * 82; // leave headroom so the dog doesn't sit under the bone
+    streakDog.style.left = (8 + pct) + '%';
+    streakLabel.textContent = 'れんぞく正解: ' + correctCount + '問';
+    streakDog.classList.remove('at-food');
+    if(lapPos === 5 && !justReset){
+      void streakDog.offsetWidth; // restart animation
+      streakDog.classList.add('at-food');
+    }
+  }
+
+  function loadNextQuestion(){
+    if(questionQueue.length === 0){
+      if(isReviewSession){
+        showResult();
+        return;
+      }
+      if(currentSubject === 'english'){
+        questionQueue = makeQuestionsEn(1, gachaConfig, selectedGradeEn);
+      } else if(currentSubject === 'math'){
+        questionQueue = makeQuestionsMath(1, gachaConfig, selectedCategoryMath);
+      } else if(currentSubject === 'moji'){
+        questionQueue = makeQuestionsMoji(1, gachaConfig, selectedGradeMoji, titleScriptMoji);
+      } else {
+        questionQueue = makeQuestions(1, gachaConfig, selectedGrade);
+      }
+    }
+    currentQuestion = questionQueue.shift();
+    renderQuestion();
+  }
+
+  function speakWord(text, lang){
+    if(!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      var utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang || 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    } catch(e){}
+  }
+  speakBtn.addEventListener('click', function(){
+    var q = currentQuestion;
+    if(q && q.subject === 'english'){
+      var lang = q.direction === 'e2j' ? 'en-US' : 'ja-JP';
+      speakWord(q.promptText, lang);
+    }
+  });
+
+  function renderQuestion(){
+    var q = currentQuestion;
+    countEl.textContent = (results.length + 1) + '問目';
+
+    if(q.subject === 'math'){
+      illustrationEl.classList.add('hidden');
+      speakBtn.classList.add('hidden');
+      choicesEl.classList.add('hidden');
+      checkBtn.classList.remove('hidden');
+      spLampLeft.style.display = '';
+      spLampRight.style.display = '';
+      specialCaption.style.display = '';
+      specialBanner.style.display = 'none';
+
+      if(q.category === 'division'){
+        problemEl.innerHTML = q.dividend + ' <span class="op">÷</span> ' + q.divisor;
+        divisionAnswerRow.style.display = '';
+        singleAnswerRow.style.display = 'none';
+        quotientInput.value = '';
+        remainderInput.value = '';
+        quotientInput.disabled = false;
+        remainderInput.disabled = false;
+      } else {
+        problemEl.innerHTML = q.a + ' <span class="op">' + q.op + '</span> ' + q.b;
+        divisionAnswerRow.style.display = 'none';
+        singleAnswerRow.style.display = '';
+        singleAnswerInput.value = '';
+        singleAnswerInput.disabled = false;
+      }
+    } else {
+      checkBtn.classList.add('hidden');
+      choicesEl.classList.remove('hidden');
+      divisionAnswerRow.style.display = 'none';
+      singleAnswerRow.style.display = 'none';
+      spLampLeft.style.display = '';
+      spLampRight.style.display = '';
+      specialCaption.style.display = '';
+      specialBanner.style.display = 'none';
+
+      if(q.subject === 'english'){
+        illustrationEl.classList.add('hidden');
+        setTextWithFurigana(problemEl, q.promptText, q.promptReading);
+        speakBtn.classList.remove('hidden');
+        var speakLang = q.direction === 'e2j' ? 'en-US' : 'ja-JP';
+        speakWord(q.promptText, speakLang);
+      } else if(q.subject === 'moji'){
+        illustrationEl.classList.remove('hidden');
+        illustrationEl.textContent = q.emoji;
+        problemEl.textContent = q.displayWord;
+        speakBtn.classList.remove('hidden');
+        speakWord(q.displayFullWord, 'ja-JP');
+      } else {
+        illustrationEl.classList.add('hidden');
+        problemEl.textContent = q.word;
+        speakBtn.classList.add('hidden');
+      }
+
+      choicesEl.innerHTML = '';
+      q.choices.forEach(function(choice){
+        var btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        if(q.subject === 'english'){
+          btn.dataset.value = choice.value;
+          setTextWithFurigana(btn, choice.value, choice.reading);
+          btn.addEventListener('click', function(){ selectAnswer(choice.value, btn); });
+        } else {
+          btn.dataset.value = choice;
+          btn.textContent = choice;
+          btn.addEventListener('click', function(){ selectAnswer(choice, btn); });
+        }
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    if(q.special){
+      quizCardEl.classList.add('is-special');
+    } else {
+      quizCardEl.classList.remove('is-special');
+    }
+
+    feedbackEl.textContent = '';
+    feedbackEl.className = 'feedback';
+    answerMark.className = 'answer-mark';
+    answerMark.textContent = '';
+    nextBtn.classList.add('hidden');
+    renderStreakTrack(true);
+  }
+
+  function selectAnswer(choice, btnEl){
+    var q = currentQuestion;
+    var correctAnswer = q.subject === 'english' ? q.answerValue : q.answer;
+    var ok = choice === correctAnswer;
+    results.push({ ok: ok, q: q });
+    var categoryKeySA = q.subject === 'english' ? ('english:' + selectedGradeEn)
+      : q.subject === 'moji' ? ('moji:' + selectedGradeMoji)
+      : ('kanji:' + selectedGrade);
+    recordWordAttempt(categoryKeySA, q.word, ok);
+
+    answerMark.textContent = ok ? '○' : '✕';
+    answerMark.className = 'answer-mark show ' + (ok ? 'mark-ok' : 'mark-ng');
+
+    var buttons = choicesEl.querySelectorAll('.choice-btn');
+    buttons.forEach(function(b){
+      b.disabled = true;
+      if(b.dataset.value === correctAnswer){
+        b.classList.add('correct');
+      } else if(b === btnEl && !ok){
+        b.classList.add('wrong');
+      }
+    });
+
+    var thisSelectedGrade = q.subject === 'english' ? selectedGradeEn : q.subject === 'moji' ? selectedGradeMoji : selectedGrade;
+    var thisAddMissed = q.subject === 'english' ? addMissedEn : q.subject === 'moji' ? addMissedMoji : addMissed;
+    var thisRemoveMissed = q.subject === 'english' ? removeMissedEn : q.subject === 'moji' ? removeMissedMoji : removeMissed;
+
+    var extraMsg = '';
+    if(ok){
+      if(isReviewSession){
+        thisRemoveMissed(thisSelectedGrade, q.word);
+        extraMsg = '（フラグ解除！）';
+      }
+      if(q.special){
+        if(canDistribute()){
+          specialTickets++;
+          saveSpecialTickets(specialTickets);
+          recordDistribution();
+          renderWalletTop();
+          feedbackEl.textContent = 'せいかい！🌟 スペシャルチケットを1枚 ゲット！' + extraMsg;
+        } else {
+          feedbackEl.textContent = 'せいかい！🌟（本日のチケット配布上限のため、スペシャルチケットはもらえませんでした）' + extraMsg;
+        }
+      } else {
+        feedbackEl.textContent = 'せいかい！' + extraMsg;
+      }
+      feedbackEl.className = 'feedback ok';
+
+      if(!isReviewSession){
+        correctCount++;
+        saveCorrectCount(correctCount);
+
+        var ticketsToAward = 0;
+        var milestoneMsg = '';
+        if(correctCount % 10 === 0){
+          ticketsToAward = 2;
+          milestoneMsg = '🎉 10問連続正解でふくびきチケットを2枚 ゲット！';
+        } else if(correctCount % 5 === 0){
+          ticketsToAward = 1;
+          milestoneMsg = '🎫 5問連続正解でふくびきチケットを1枚 ゲット！';
+        }
+
+        if(ticketsToAward > 0){
+          var awarded = 0;
+          for(var i=0;i<ticketsToAward;i++){
+            if(canDistribute()){
+              walletTickets++;
+              recordDistribution();
+              awarded++;
+            } else {
+              break;
+            }
+          }
+          if(awarded > 0){
+            saveWallet(walletTickets);
+            renderWalletTop();
+            sessionTicketsEarned += awarded;
+          }
+          if(awarded === ticketsToAward){
+            feedbackEl.textContent += ' ' + milestoneMsg;
+          } else if(awarded > 0){
+            feedbackEl.textContent += ' 🎫 ふくびきチケットを' + awarded + '枚 ゲット！（本日の配布上限のため一部のみ）';
+          } else {
+            feedbackEl.textContent += '（本日のチケット配布上限のためふくびきチケットはもらえませんでした）';
+          }
+        }
+      }
+    } else {
+      if(!isReviewSession){
+        correctCount = 0;
+        saveCorrectCount(correctCount);
+      }
+      thisAddMissed(thisSelectedGrade, q.word);
+      if(q.subject === 'english'){
+        var answerReading = (q.direction === 'e2j') ? q.meaningReading : null;
+        var answerHtml = (answerReading && hasKanji(q.answerValue))
+          ? '<ruby>' + escapeHtml(q.answerValue) + '<rt>' + escapeHtml(answerReading) + '</rt></ruby>'
+          : escapeHtml(q.answerValue);
+        feedbackEl.innerHTML = 'ざんねん… 正解は「' + answerHtml + '」だよ';
+      } else if(q.subject === 'moji'){
+        feedbackEl.textContent = 'ざんねん… 正かいは「' + q.displayFullWord + '」だよ';
+      } else {
+        feedbackEl.textContent = 'ざんねん… 正しい読みは「' + q.answer + '」だよ';
+      }
+      feedbackEl.className = 'feedback ng';
+    }
+    nextBtn.classList.remove('hidden');
+    renderStreakTrack(!ok);
+  }
+
+  function nextQuestion(){
+    loadNextQuestion();
+  }
+
+  function checkAnswerMath(){
+    var q = currentQuestion;
+    var ok;
+    if(q.category === 'division'){
+      var qv = parseInt(quotientInput.value, 10);
+      var rv = parseInt(remainderInput.value, 10);
+      ok = (qv === q.quotient) && (rv === q.remainder);
+    } else {
+      var av = parseInt(singleAnswerInput.value, 10);
+      ok = av === q.answer;
+    }
+    results.push({ ok: ok, q: q });
+    recordWordAttempt('math:' + q.category, q.word, ok);
+
+    answerMark.textContent = ok ? '○' : '✕';
+    answerMark.className = 'answer-mark show ' + (ok ? 'mark-ok' : 'mark-ng');
+
+    var msgParts = [];
+    if(ok){
+      msgParts.push('せいかい！');
+      if(q.special){
+        if(canDistribute()){
+          specialTickets++;
+          saveSpecialTickets(specialTickets);
+          recordDistribution();
+          renderWalletTop();
+          msgParts.push('🌟 スペシャルチケットを1枚 ゲット！');
+        } else {
+          msgParts.push('🌟（本日のチケット配布上限のため、スペシャルチケットはもらえませんでした）');
+        }
+      }
+
+      correctCount++;
+      saveCorrectCount(correctCount);
+      var ticketsToAward = 0;
+      var milestoneMsg = '';
+      if(correctCount % 10 === 0){
+        ticketsToAward = 2;
+        milestoneMsg = '🎉 10問連続正解でふくびきチケットを2枚 ゲット！';
+      } else if(correctCount % 5 === 0){
+        ticketsToAward = 1;
+        milestoneMsg = '🎫 5問連続正解でふくびきチケットを1枚 ゲット！';
+      }
+      if(ticketsToAward > 0){
+        var awarded = 0;
+        for(var i=0;i<ticketsToAward;i++){
+          if(canDistribute()){
+            walletTickets++;
+            recordDistribution();
+            awarded++;
+          } else {
+            break;
+          }
+        }
+        if(awarded > 0){
+          saveWallet(walletTickets);
+          renderWalletTop();
+          sessionTicketsEarned += awarded;
+        }
+        if(awarded === ticketsToAward){
+          msgParts.push(milestoneMsg);
+        } else if(awarded > 0){
+          msgParts.push('🎫 ふくびきチケットを' + awarded + '枚 ゲット！（本日の配布上限のため一部のみ）');
+        } else {
+          msgParts.push('（本日のチケット配布上限のためふくびきチケットはもらえませんでした）');
+        }
+      }
+    } else {
+      correctCount = 0;
+      saveCorrectCount(correctCount);
+      if(q.category === 'division'){
+        msgParts.push('ざんねん… こたえは ' + q.quotient + ' あまり ' + q.remainder);
+      } else {
+        msgParts.push('ざんねん… こたえは ' + q.answer + ' だよ');
+      }
+    }
+    feedbackEl.textContent = msgParts.join(' ');
+    feedbackEl.className = 'feedback ' + (ok ? 'ok' : 'ng');
+
+    if(q.category === 'division'){
+      quotientInput.disabled = true;
+      remainderInput.disabled = true;
+    } else {
+      singleAnswerInput.disabled = true;
+    }
+    checkBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+    renderStreakTrack(!ok);
+  }
+
+  checkBtn.addEventListener('click', function(){
+    var q = currentQuestion;
+    var mainFilled = (q.category === 'division')
+      ? (quotientInput.value !== '' && remainderInput.value !== '')
+      : (singleAnswerInput.value !== '');
+    if(!mainFilled){
+      feedbackEl.textContent = 'すべての らんに にゅうりょくしてね';
+      feedbackEl.className = 'feedback ng';
+      return;
+    }
+    checkAnswerMath();
+  });
+  remainderInput.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !checkBtn.classList.contains('hidden')) checkAnswerMath(); });
+  quotientInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') remainderInput.focus(); });
+  singleAnswerInput.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !checkBtn.classList.contains('hidden')) checkAnswerMath(); });
+
+  function showResult(){
+    quizCardEl.classList.add('hidden');
+    resultCard.classList.remove('hidden');
+    var attempted = results.length;
+    var okCount = results.filter(function(r){ return r.ok; }).length;
+    var earned = sessionTicketsEarned;
+
+    scoreText.textContent = okCount + ' / ' + attempted;
+    earnedText.textContent = '+' + earned + '枚 獲得';
+
+    var masterLabel = currentSubject === 'english' ? '英単語マスターだね'
+      : currentSubject === 'math' ? (CATEGORY_MASTER_MATH[selectedCategoryMath] || '算数マスターだね')
+      : currentSubject === 'moji' ? 'もじマスターだね'
+      : '漢字マスターだね';
+    var msg;
+    if(attempted === 0){
+      msg = 'また ちょうせんしてね';
+    } else if(okCount === attempted) {
+      msg = 'かんぺき！' + masterLabel;
+    } else if(okCount >= attempted*0.7) {
+      msg = 'よくできました！';
+    } else if(okCount >= attempted*0.4) {
+      msg = 'もう少し！';
+    } else {
+      msg = 'れんしゅうすればきっとできるよ';
+    }
+    if(isReviewSession){
+      msg += '（復習モード：せいかいした問題はフラグが解除されます）';
+    }
+    scoreMsg.textContent = msg;
+
+    reviewEl.innerHTML = '';
+    results.forEach(function(r, i){
+      var row = document.createElement('div');
+      row.className = 'review-item';
+      var left = document.createElement('span');
+      left.className = 'rtext';
+      if(r.q.subject === 'english'){
+        var meaningHtml = hasKanji(r.q.meaning)
+          ? '<ruby>' + escapeHtml(r.q.meaning) + '<rt>' + escapeHtml(r.q.meaningReading) + '</rt></ruby>'
+          : escapeHtml(r.q.meaning);
+        left.innerHTML = (i+1) + '. ' + escapeHtml(r.q.word) + ' = ' + meaningHtml + (r.q.special ? ' 🌟' : '');
+      } else if(r.q.subject === 'math'){
+        var ansText = r.q.category === 'division' ? (r.q.quotient + 'あまり' + r.q.remainder) : r.q.answer;
+        left.textContent = (i+1) + '. ' + r.q.word + ' = ' + ansText + (r.q.special ? ' 🌟' : '');
+      } else if(r.q.subject === 'moji'){
+        left.textContent = (i+1) + '. ' + r.q.emoji + ' ' + r.q.displayFullWord + (r.q.special ? ' 🌟' : '');
+      } else {
+        left.textContent = (i+1) + '. ' + r.q.word + ' = ' + r.q.answer + (r.q.special ? ' 🌟' : '');
+      }
+      var right = document.createElement('span');
+      right.className = r.ok ? 'mark-ok' : 'mark-ng';
+      right.textContent = r.ok ? '○' : '×';
+      row.appendChild(left);
+      row.appendChild(right);
+      reviewEl.appendChild(row);
+    });
+  }
+
+  function restart(){
+    if(isReviewSession){
+      if(currentSubject === 'english'){
+        questionQueue = makeReviewQuestionsEn(gachaConfig, selectedGradeEn);
+      } else {
+        questionQueue = makeReviewQuestions(gachaConfig, selectedGrade);
+      }
+      if(questionQueue.length === 0){
+        backToTitleBtn.click();
+        return;
+      }
+    } else {
+      questionQueue = [];
+    }
+    results = [];
+    sessionTicketsEarned = 0;
+    resultCard.classList.add('hidden');
+    quizCardEl.classList.remove('hidden');
+    loadNextQuestion();
+  }
+
+  nextBtn.addEventListener('click', nextQuestion);
+  endBtn.addEventListener('click', function(){
+    showResult();
+  });
+  retryBtn.addEventListener('click', restart);
+
+  gachaBtn.addEventListener('click', function(){
+    renderGachaScreen();
+    gachaScreenOverlay.classList.remove('hidden');
+  });
+  gachaScreenCloseBtn.addEventListener('click', function(){
+    gachaScreenOverlay.classList.add('hidden');
+  });
+  spinNormalBtn.addEventListener('click', drawMainGacha);
+  spinSpecialBtn.addEventListener('click', drawSpecialGacha);
+  gachaCloseBtn.addEventListener('click', function(){
+    gachaOverlay.classList.add('hidden');
+  });
+
+  exchangeMenuBtn.addEventListener('click', function(){
+    renderExchangeScreen();
+    exchangeOverlay.classList.remove('hidden');
+  });
+  exchangeCloseBtn.addEventListener('click', function(){
+    exchangeOverlay.classList.add('hidden');
+  });
+  exchangeBtn.addEventListener('click', function(){
+    var amount = parseInt(exchangeAmountInput.value, 10);
+    if(!amount || amount <= 0){
+      exchangeStatus.textContent = 'こうかんするポイントを入力してね';
+      exchangeStatus.className = 'settings-status ng';
+      return;
+    }
+    if(amount > prizes.points){
+      exchangeStatus.textContent = 'ポイントが足りません（いま ' + prizes.points + 'pt）';
+      exchangeStatus.className = 'settings-status ng';
+      return;
+    }
+    openPasswordPrompt('exchange:' + amount, 'パスワードを入力（ポイント交換）');
+  });
+
+  function renderHistoryList(){
+    var categoryKeys = Object.keys(wordStats).filter(function(key){
+      var wordMap = wordStats[key];
+      return Object.keys(wordMap).length > 0;
+    });
+    historyList.innerHTML = '';
+    if(categoryKeys.length === 0){
+      var empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.textContent = 'まだ記録がありません';
+      historyList.appendChild(empty);
+      return;
+    }
+
+    SUBJECT_ORDER.forEach(function(subject){
+      var keysForSubject = categoryKeys.filter(function(key){ return key.indexOf(subject + ':') === 0; });
+      if(keysForSubject.length === 0) return;
+
+      keysForSubject.sort(function(a, b){
+        var ia = CATEGORY_ORDER_WITHIN_SUBJECT.indexOf(a);
+        var ib = CATEGORY_ORDER_WITHIN_SUBJECT.indexOf(b);
+        if(ia === -1) ia = 999;
+        if(ib === -1) ib = 999;
+        return ia - ib;
+      });
+
+      var subjectHeading = document.createElement('div');
+      subjectHeading.className = 'history-subject-heading';
+      subjectHeading.textContent = SUBJECT_LABELS[subject] || subject;
+      historyList.appendChild(subjectHeading);
+
+      keysForSubject.forEach(function(categoryKey){
+        var wordMap = wordStats[categoryKey];
+        var words = Object.keys(wordMap);
+
+        var totalAttempts = 0;
+        var totalCorrect = 0;
+        words.forEach(function(word){
+          totalAttempts += wordMap[word].attempts;
+          totalCorrect += wordMap[word].correct;
+        });
+        var pct = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+
+        var row = document.createElement('div');
+        row.className = 'history-row history-row-indent';
+
+        var wordEl = document.createElement('div');
+        wordEl.className = 'history-word';
+        wordEl.textContent = getCategoryDisplayLabel(categoryKey);
+
+        var barTrack = document.createElement('div');
+        barTrack.className = 'history-bar-track';
+        var barFill = document.createElement('div');
+        barFill.className = 'history-bar-fill';
+        barFill.style.width = pct + '%';
+        barTrack.appendChild(barFill);
+
+        var statEl = document.createElement('div');
+        statEl.className = 'history-stat';
+        statEl.textContent = '解いた: ' + totalAttempts + '回 / 正解: ' + totalCorrect + '回（' + pct + '%）';
+
+        row.appendChild(wordEl);
+        row.appendChild(barTrack);
+        row.appendChild(statEl);
+        historyList.appendChild(row);
+      });
+    });
+  }
+
+  historyLinkBtn.addEventListener('click', function(){
+    renderHistoryList();
+    historyStatus.textContent = '';
+    historyStatus.className = 'settings-status';
+    historyOverlay.classList.remove('hidden');
+  });
+  historyCloseBtn.addEventListener('click', function(){
+    historyOverlay.classList.add('hidden');
+  });
+  historyResetBtn.addEventListener('click', function(){
+    openPasswordPrompt('historyReset', 'パスワードを入力（履歴リセット）');
+  });
+
+  function openPasswordPrompt(action, title){
+    pendingAction = action;
+    passwordOverlayTitle.textContent = title || 'パスワードを入力';
+    passwordInput.value = '';
+    passwordStatus.textContent = '';
+    passwordStatus.className = 'settings-status';
+    passwordOverlay.classList.remove('hidden');
+    setTimeout(function(){ passwordInput.focus(); }, 50);
+  }
+
+  settingsLinkBtn.addEventListener('click', function(){
+    openPasswordPrompt('settings', 'パスワードを入力');
+  });
+  passwordCancelBtn.addEventListener('click', function(){
+    pendingAction = null;
+    passwordOverlay.classList.add('hidden');
+  });
+
+  function computeRemainder(inputs){
+    var sum4 = 0;
+    for(var i=0;i<4;i++){
+      sum4 += parseFloat(inputs[i].value) || 0;
+    }
+    var remain = 100 - sum4;
+    if(remain < 0) remain = 0;
+    return remain;
+  }
+  function updateRank5Display(){
+    rank5ProbDisplay.value = computeRemainder(rankProbInputs);
+    updateEVDisplay();
+  }
+  function updateSRank5Display(){
+    sRank5ProbDisplay.value = computeRemainder(sRankProbInputs);
+    updateEVDisplay();
+  }
+
+  function evPerSpin(inputs){
+    var probs4 = inputs.map(function(inp){ return parseFloat(inp.value) || 0; });
+    var remain = computeRemainder(inputs);
+    var probs5 = probs4.concat([remain]);
+    var ev = 0;
+    for(var i=0;i<5;i++){
+      ev += (probs5[i] / 100) * RANK_POINTS[i];
+    }
+    return ev;
+  }
+
+  function updateEVDisplay(){
+    var limit = parseInt(gachaLimitInput.value, 10) || 0;
+    var evNormal = evPerSpin(rankProbInputs);
+    var evSpecial = evPerSpin(sRankProbInputs);
+
+    if(limit <= 0){
+      evNormalText.textContent = '無制限';
+      evSpecialText.textContent = '無制限';
+      evMixedText.textContent = '無制限';
+      return;
+    }
+
+    var normalCost = parseInt(costInput.value, 10) || 1;
+    var specialCost = parseInt(specialCostInput.value, 10) || 1;
+    var normalSpins = Math.floor(limit / normalCost);
+    var specialSpins = Math.floor(limit / specialCost);
+
+    evNormalText.textContent = Math.round(evNormal * normalSpins);
+    evSpecialText.textContent = Math.round(evSpecial * specialSpins);
+
+    // Realistic mix: 1 ふくびきチケット per completed 5-question round,
+    // plus an expected number of スペシャルチケット per round based on
+    // the special-question appearance rate (assuming correct answers).
+    var specialProb = parseFloat(specialProbInput.value) || 0;
+    var specialPerRound = 5 * (specialProb / 100);
+    var normalPerRound = 1;
+    var totalPerRound = specialPerRound + normalPerRound;
+    var specialShare = totalPerRound > 0 ? (specialPerRound / totalPerRound) : 0;
+    var normalShare = 1 - specialShare;
+
+    var mixedSpecialTickets = limit * specialShare;
+    var mixedNormalTickets = limit * normalShare;
+    var mixedSpecialSpins = Math.floor(mixedSpecialTickets / specialCost);
+    var mixedNormalSpins = Math.floor(mixedNormalTickets / normalCost);
+    var mixedPoints = mixedSpecialSpins * evSpecial + mixedNormalSpins * evNormal;
+
+    evMixedText.textContent = Math.round(mixedPoints);
+  }
+
+  function populateSettingsForm(){
+    editWalletInput.value = walletTickets;
+    editSpecialInput.value = specialTickets;
+    editPrizePointsInput.value = prizes.points;
+
+    costInput.value = gachaConfig.cost;
+    for(var i=0;i<4;i++){
+      rankProbInputs[i].value = gachaConfig.probs[i];
+    }
+    updateRank5Display();
+
+    specialProbInput.value = gachaConfig.specialQuizProb;
+
+    specialCostInput.value = gachaConfig.specialCost;
+    for(var j=0;j<4;j++){
+      sRankProbInputs[j].value = gachaConfig.specialProbs[j];
+    }
+    updateSRank5Display();
+
+    gachaLimitInput.value = gachaConfig.gachaLimit || 0;
+    ensureCurrentDay();
+    currentPlayCountText.textContent = playCountState.count;
+    updateEVDisplay();
+
+    Object.keys(LOCK_DEFAULTS).forEach(function(key){
+      lockCheckboxes[key].checked = gachaConfig.unlocked[key];
+    });
+
+    [holdingsStatus, normalGachaStatus, specialProbStatus, specialGachaStatus, limitStatus, lockVisibleStatus, passwordChangeStatus].forEach(function(el){
+      el.textContent = '';
+      el.className = 'settings-status';
+    });
+  }
+
+  function submitPassword(){
+    if(passwordInput.value !== gachaPassword){
+      passwordStatus.textContent = 'パスワードが違います';
+      passwordStatus.className = 'settings-status ng';
+      return;
+    }
+    passwordOverlay.classList.add('hidden');
+
+    if(pendingAction === 'settings'){
+      newPasswordInput.value = '';
+      newPasswordConfirmInput.value = '';
+      populateSettingsForm();
+      settingsOverlay.classList.remove('hidden');
+    } else if(pendingAction && pendingAction.indexOf('exchange:') === 0){
+      var amount = parseInt(pendingAction.slice(9), 10);
+      if(amount > 0 && amount <= prizes.points){
+        performExchange(amount);
+      } else {
+        exchangeStatus.textContent = 'ポイントが足りません';
+        exchangeStatus.className = 'settings-status ng';
+      }
+    } else if(pendingAction === 'historyReset'){
+      wordStats = {};
+      saveWordStats(wordStats);
+      renderHistoryList();
+      historyStatus.textContent = '履歴をリセットしました';
+      historyStatus.className = 'settings-status ok';
+      historyOverlay.classList.remove('hidden');
+    }
+    pendingAction = null;
+  }
+  passwordSubmitBtn.addEventListener('click', submitPassword);
+  passwordInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') submitPassword(); });
+
+  [holdingsCloseBtn, normalGachaCloseBtn, specialProbCloseBtn, specialGachaCloseBtn, limitCloseBtn, lockVisibleCloseBtn, passwordSectionCloseBtn].forEach(function(btn){
+    btn.addEventListener('click', function(){
+      settingsOverlay.classList.add('hidden');
+    });
+  });
+
+  rankProbInputs.forEach(function(inp){
+    inp.addEventListener('input', updateRank5Display);
+  });
+  sRankProbInputs.forEach(function(inp){
+    inp.addEventListener('input', updateSRank5Display);
+  });
+  gachaLimitInput.addEventListener('input', updateEVDisplay);
+  costInput.addEventListener('input', updateEVDisplay);
+  specialCostInput.addEventListener('input', updateEVDisplay);
+  specialProbInput.addEventListener('input', updateEVDisplay);
+
+  updateHoldingsBtn.addEventListener('click', function(){
+    var w = parseInt(editWalletInput.value, 10);
+    var sp = parseInt(editSpecialInput.value, 10);
+    var pts = parseInt(editPrizePointsInput.value, 10);
+
+    if(isNaN(w) || w < 0 || isNaN(sp) || sp < 0 || isNaN(pts) || pts < 0){
+      holdingsStatus.textContent = '保有数はすべて0以上の数字にしてね';
+      holdingsStatus.className = 'settings-status ng';
+      return;
+    }
+
+    walletTickets = w;
+    specialTickets = sp;
+    prizes.points = pts;
+    saveWallet(walletTickets);
+    saveSpecialTickets(specialTickets);
+    savePrizes(prizes);
+    renderWalletTop();
+    renderHubPoints();
+    renderGachaScreen();
+
+    holdingsStatus.textContent = '保存しました';
+    holdingsStatus.className = 'settings-status ok';
+  });
+
+  resetPlayCountBtn.addEventListener('click', function(){
+    playCountState = { date: todayString(), count: 0 };
+    savePlayCount(playCountState);
+    currentPlayCountText.textContent = playCountState.count;
+    renderGachaScreen();
+    renderTitleRemaining();
+    limitStatus.textContent = '配布数をリセットしました';
+    limitStatus.className = 'settings-status ok';
+  });
+
+  normalGachaSaveBtn.addEventListener('click', function(){
+    var cost = parseInt(costInput.value, 10);
+    var probs = rankProbInputs.map(function(inp){ return parseFloat(inp.value); });
+
+    if(!cost || cost <= 0){
+      normalGachaStatus.textContent = 'チケット数は1以上にしてね';
+      normalGachaStatus.className = 'settings-status ng';
+      return;
+    }
+    var sum4 = 0;
+    for(var i=0;i<4;i++){
+      if(isNaN(probs[i]) || probs[i] < 0){
+        normalGachaStatus.textContent = 'かくりつは0以上の数字にしてね';
+        normalGachaStatus.className = 'settings-status ng';
+        return;
+      }
+      sum4 += probs[i];
+    }
+    if(sum4 > 100){
+      normalGachaStatus.textContent = '1〜4等のかくりつ合計が100%以下になるようにしてね';
+      normalGachaStatus.className = 'settings-status ng';
+      return;
+    }
+
+    gachaConfig.cost = cost;
+    gachaConfig.probs = probs;
+    saveConfig(gachaConfig);
+    renderGachaScreen();
+    normalGachaStatus.textContent = '保存しました';
+    normalGachaStatus.className = 'settings-status ok';
+  });
+
+  specialProbSaveBtn.addEventListener('click', function(){
+    var prob = parseFloat(specialProbInput.value);
+    if(isNaN(prob) || prob < 0 || prob > 100){
+      specialProbStatus.textContent = '確率は0〜100の数字にしてね';
+      specialProbStatus.className = 'settings-status ng';
+      return;
+    }
+    gachaConfig.specialQuizProb = prob;
+    saveConfig(gachaConfig);
+    specialProbStatus.textContent = '保存しました';
+    specialProbStatus.className = 'settings-status ok';
+  });
+
+  specialGachaSaveBtn.addEventListener('click', function(){
+    var cost = parseInt(specialCostInput.value, 10);
+    var probs = sRankProbInputs.map(function(inp){ return parseFloat(inp.value); });
+
+    if(!cost || cost <= 0){
+      specialGachaStatus.textContent = 'チケット数は1以上にしてね';
+      specialGachaStatus.className = 'settings-status ng';
+      return;
+    }
+    var sum4 = 0;
+    for(var i=0;i<4;i++){
+      if(isNaN(probs[i]) || probs[i] < 0){
+        specialGachaStatus.textContent = 'かくりつは0以上の数字にしてね';
+        specialGachaStatus.className = 'settings-status ng';
+        return;
+      }
+      sum4 += probs[i];
+    }
+    if(sum4 > 100){
+      specialGachaStatus.textContent = '1〜4等のかくりつ合計が100%以下になるようにしてね';
+      specialGachaStatus.className = 'settings-status ng';
+      return;
+    }
+
+    gachaConfig.specialCost = cost;
+    gachaConfig.specialProbs = probs;
+    saveConfig(gachaConfig);
+    renderGachaScreen();
+    specialGachaStatus.textContent = '保存しました';
+    specialGachaStatus.className = 'settings-status ok';
+  });
+
+  limitSaveBtn.addEventListener('click', function(){
+    var limit = parseInt(gachaLimitInput.value, 10);
+    if(isNaN(limit) || limit < 0){
+      limitStatus.textContent = '配布上限は0以上の数字にしてね';
+      limitStatus.className = 'settings-status ng';
+      return;
+    }
+    gachaConfig.gachaLimit = limit;
+    saveConfig(gachaConfig);
+    renderGachaScreen();
+    renderTitleRemaining();
+    limitStatus.textContent = '保存しました';
+    limitStatus.className = 'settings-status ok';
+  });
+
+  function applyLockState(){
+    var map = gachaConfig.unlocked;
+    function applyTo(btn){
+      var lockId = btn.getAttribute('data-lockid');
+      if(!lockId) return;
+      if(map[lockId]){
+        btn.classList.remove('locked');
+      } else {
+        btn.classList.add('locked');
+      }
+    }
+    gradeBtns.forEach(applyTo);
+    gradeBtnsEn.forEach(applyTo);
+    categoryBtnsMath.forEach(applyTo);
+    gradeBtnsMoji.forEach(applyTo);
+  }
+
+  lockVisibleSaveBtn.addEventListener('click', function(){
+    var unlocked = {};
+    Object.keys(LOCK_DEFAULTS).forEach(function(key){
+      unlocked[key] = lockCheckboxes[key].checked;
+    });
+    gachaConfig.unlocked = unlocked;
+    saveConfig(gachaConfig);
+    applyLockState();
+    lockVisibleStatus.textContent = '保存しました';
+    lockVisibleStatus.className = 'settings-status ok';
+  });
+
+  changePasswordBtn.addEventListener('click', function(){
+    var p1 = newPasswordInput.value;
+    var p2 = newPasswordConfirmInput.value;
+    if(!p1 || p1.length < 1){
+      passwordChangeStatus.textContent = '新しいパスワードを入力してね';
+      passwordChangeStatus.className = 'settings-status ng';
+      return;
+    }
+    if(p1 !== p2){
+      passwordChangeStatus.textContent = 'パスワードが一致しません';
+      passwordChangeStatus.className = 'settings-status ng';
+      return;
+    }
+    gachaPassword = p1;
+    savePassword(gachaPassword);
+    newPasswordInput.value = '';
+    newPasswordConfirmInput.value = '';
+    passwordChangeStatus.textContent = 'パスワードを変更しました';
+    passwordChangeStatus.className = 'settings-status ok';
+  });
+
+  var GRADE_LABELS = {
+    1: '小学1年生の漢字・読み方選択式',
+    2: '小学2年生の漢字・読み方選択式',
+    3: '小学3年生の漢字・読み方選択式',
+    4: '小学4年生の漢字・読み方選択式',
+    5: '小学5年生の漢字・読み方選択式',
+    6: '小学6年生の漢字・読み方選択式',
+    'yoji': '四字熟語・読み方選択式',
+    'extra': 'エクストラ（最難関）・読み方選択式'
+  };
+  var REVIEW_LABELS = {
+    1: '小学1年生の復習モード',
+    2: '小学2年生の復習モード',
+    3: '小学3年生の復習モード',
+    4: '小学4年生の復習モード',
+    5: '小学5年生の復習モード',
+    6: '小学6年生の復習モード',
+    'yoji': '四字熟語の復習モード',
+    'extra': 'エクストラの復習モード'
+  };
+
+  var GRADE_LABELS_EN = {
+    5: '英検5級の単語・意味選択式',
+    4: '英検4級の単語・意味選択式',
+    3: '英検3級の単語・意味選択式',
+    'pre2': '英検準2級の単語・意味選択式',
+    2: '英検2級の単語・意味選択式'
+  };
+  var REVIEW_LABELS_EN = {
+    5: '英検5級の復習モード',
+    4: '英検4級の復習モード',
+    3: '英検3級の復習モード',
+    'pre2': '英検準2級の復習モード',
+    2: '英検2級の復習モード'
+  };
+
+  var titleMode = 'normal';
+  var modeNormalBtn = document.getElementById('modeNormalBtn');
+  var modeReviewBtn = document.getElementById('modeReviewBtn');
+
+  function refreshGradeButtonLabels(){
+    gradeBtns.forEach(function(btn){
+      var base = btn.getAttribute('data-base');
+      if(!base) return;
+      var gradeAttr = btn.getAttribute('data-grade');
+      var parsedInt = parseInt(gradeAttr, 10);
+      var g = isNaN(parsedInt) ? gradeAttr : parsedInt;
+      if(titleMode === 'review'){
+        btn.textContent = base + '（' + missedCount(g) + '問）';
+      } else {
+        btn.textContent = base;
+      }
+    });
+  }
+
+  function refreshGradeButtonLabelsEn(){
+    gradeBtnsEn.forEach(function(btn){
+      var base = btn.getAttribute('data-base');
+      if(!base) return;
+      var gradeAttr = btn.getAttribute('data-grade');
+      var parsedInt = parseInt(gradeAttr, 10);
+      var g = isNaN(parsedInt) ? gradeAttr : parsedInt;
+      if(titleModeEn === 'review'){
+        btn.textContent = base + '（' + missedCountEn(g) + '問）';
+      } else {
+        btn.textContent = base;
+      }
+    });
+  }
+
+  function refreshGradeButtonLabelsMoji(){
+    gradeBtnsMoji.forEach(function(btn){
+      var base = btn.getAttribute('data-base');
+      if(!base) return;
+      var grade = btn.getAttribute('data-grade');
+      if(titleModeMoji === 'review'){
+        btn.textContent = base + '（' + missedCountMoji(grade) + '問）';
+      } else {
+        btn.textContent = base;
+      }
+    });
+  }
+
+  scriptHiraganaBtn.addEventListener('click', function(){
+    titleScriptMoji = 'hiragana';
+    scriptHiraganaBtn.classList.add('active');
+    scriptKatakanaBtn.classList.remove('active');
+  });
+  scriptKatakanaBtn.addEventListener('click', function(){
+    titleScriptMoji = 'katakana';
+    scriptKatakanaBtn.classList.add('active');
+    scriptHiraganaBtn.classList.remove('active');
+  });
+  modeNormalBtnMoji.addEventListener('click', function(){
+    titleModeMoji = 'normal';
+    modeNormalBtnMoji.classList.add('active');
+    modeReviewBtnMoji.classList.remove('active');
+    refreshGradeButtonLabelsMoji();
+  });
+  modeReviewBtnMoji.addEventListener('click', function(){
+    titleModeMoji = 'review';
+    modeReviewBtnMoji.classList.add('active');
+    modeNormalBtnMoji.classList.remove('active');
+    refreshGradeButtonLabelsMoji();
+  });
+
+  modeNormalBtnEn.addEventListener('click', function(){
+    titleModeEn = 'normal';
+    modeNormalBtnEn.classList.add('active');
+    modeReviewBtnEn.classList.remove('active');
+    refreshGradeButtonLabelsEn();
+  });
+  modeReviewBtnEn.addEventListener('click', function(){
+    titleModeEn = 'review';
+    modeReviewBtnEn.classList.add('active');
+    modeNormalBtnEn.classList.remove('active');
+    refreshGradeButtonLabelsEn();
+  });
+
+  modeNormalBtn.addEventListener('click', function(){
+    titleMode = 'normal';
+    modeNormalBtn.classList.add('active');
+    modeReviewBtn.classList.remove('active');
+    titleStatus.textContent = '';
+    refreshGradeButtonLabels();
+  });
+  modeReviewBtn.addEventListener('click', function(){
+    titleMode = 'review';
+    modeReviewBtn.classList.add('active');
+    modeNormalBtn.classList.remove('active');
+    titleStatus.textContent = '';
+    refreshGradeButtonLabels();
+  });
+
+  gradeBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var lockId = btn.getAttribute('data-lockid');
+      if(lockId && !gachaConfig.unlocked[lockId]){
+        titleStatus.textContent = '🔒 このモードはまだ未開放です';
+        return;
+      }
+
+      var gradeAttr = btn.getAttribute('data-grade');
+      var parsedInt = parseInt(gradeAttr, 10);
+      var grade = isNaN(parsedInt) ? gradeAttr : parsedInt;
+
+      if(lockId){
+        var pool = getPoolForGrade(grade);
+        if(!pool || pool.length === 0){
+          titleStatus.textContent = '📘 この問題はまだ準備中です。もうしばらくお待ちください。';
+          return;
+        }
+      }
+
+      if(titleMode === 'review'){
+        if(missedCount(grade) === 0){
+          titleStatus.textContent = '復習する問題はまだありません';
+          return;
+        }
+        isReviewSession = true;
+        selectedGrade = grade;
+        gradeSubtitle.textContent = REVIEW_LABELS[selectedGrade] || '';
+        questionQueue = makeReviewQuestions(gachaConfig, selectedGrade);
+      } else {
+        isReviewSession = false;
+        selectedGrade = grade;
+        gradeSubtitle.textContent = GRADE_LABELS[selectedGrade] || '';
+        questionQueue = [];
+      }
+
+      titleStatus.textContent = '';
+      results = [];
+      sessionTicketsEarned = 0;
+      resultCard.classList.add('hidden');
+      quizCardEl.classList.remove('hidden');
+
+      titleScreen.classList.add('hidden');
+      mainScreen.classList.remove('hidden');
+      currentSubject = 'kanji';
+      loadNextQuestion();
+    });
+  });
+
+  gradeBtnsEn.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var lockId = btn.getAttribute('data-lockid');
+      if(lockId && !gachaConfig.unlocked[lockId]){
+        titleStatusEn.textContent = '🔒 このモードはまだ未開放です';
+        return;
+      }
+
+      var gradeAttr = btn.getAttribute('data-grade');
+      var parsedInt = parseInt(gradeAttr, 10);
+      var grade = isNaN(parsedInt) ? gradeAttr : parsedInt;
+
+      if(lockId){
+        var pool = getPoolForGradeEn(grade);
+        if(!pool || pool.length === 0){
+          titleStatusEn.textContent = '📘 この問題はまだ準備中です。もうしばらくお待ちください。';
+          return;
+        }
+      }
+
+      if(titleModeEn === 'review'){
+        if(missedCountEn(grade) === 0){
+          titleStatusEn.textContent = '復習する問題はまだありません';
+          return;
+        }
+        isReviewSession = true;
+        selectedGradeEn = grade;
+        gradeSubtitle.textContent = REVIEW_LABELS_EN[selectedGradeEn] || '';
+        questionQueue = makeReviewQuestionsEn(gachaConfig, selectedGradeEn);
+      } else {
+        isReviewSession = false;
+        selectedGradeEn = grade;
+        gradeSubtitle.textContent = GRADE_LABELS_EN[selectedGradeEn] || '';
+        questionQueue = [];
+      }
+
+      titleStatusEn.textContent = '';
+      results = [];
+      sessionTicketsEarned = 0;
+      resultCard.classList.add('hidden');
+      quizCardEl.classList.remove('hidden');
+
+      englishTitleScreen.classList.add('hidden');
+      mainScreen.classList.remove('hidden');
+      currentSubject = 'english';
+      loadNextQuestion();
+    });
+  });
+
+  hubBackBtnEn.addEventListener('click', function(){
+    englishTitleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+    titleStatusEn.textContent = '';
+  });
+
+  backToTitleBtn.addEventListener('click', function(){
+    mainScreen.classList.add('hidden');
+    if(currentSubject === 'english'){
+      englishTitleScreen.classList.remove('hidden');
+      titleStatusEn.textContent = '';
+      refreshGradeButtonLabelsEn();
+    } else if(currentSubject === 'math'){
+      mathTitleScreen.classList.remove('hidden');
+      titleStatusMath.textContent = '';
+    } else if(currentSubject === 'moji'){
+      mojiTitleScreen.classList.remove('hidden');
+      titleStatusMoji.textContent = '';
+      refreshGradeButtonLabelsMoji();
+    } else {
+      titleScreen.classList.remove('hidden');
+      titleStatus.textContent = '';
+      refreshGradeButtonLabels();
+    }
+    renderTitleRemaining();
+  });
+
+  hubKanjiBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    titleScreen.classList.remove('hidden');
+    refreshGradeButtonLabels();
+    renderTitleRemaining();
+  });
+  hubMathBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    mathTitleScreen.classList.remove('hidden');
+    renderTitleRemaining();
+  });
+  hubEnglishBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    englishTitleScreen.classList.remove('hidden');
+    refreshGradeButtonLabelsEn();
+    renderTitleRemaining();
+  });
+  hubMojiBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    mojiTitleScreen.classList.remove('hidden');
+    refreshGradeButtonLabelsMoji();
+    renderTitleRemaining();
+  });
+  hubBackBtnMoji.addEventListener('click', function(){
+    mojiTitleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+    titleStatusMoji.textContent = '';
+  });
+  hubBackBtnMath.addEventListener('click', function(){
+    mathTitleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+    titleStatusMath.textContent = '';
+  });
+  categoryBtnsMath.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var lockId = btn.getAttribute('data-lockid');
+      if(lockId && !gachaConfig.unlocked[lockId]){
+        titleStatusMath.textContent = '🔒 このモードはまだ未開放です';
+        return;
+      }
+      var category = btn.getAttribute('data-category');
+      if(IMPLEMENTED_CATEGORIES_MATH.indexOf(category) === -1){
+        titleStatusMath.textContent = '📘 この問題はまだ準備中です。もうしばらくお待ちください。';
+        return;
+      }
+      titleStatusMath.textContent = '';
+      selectedCategoryMath = category;
+      gradeSubtitle.textContent = CATEGORY_LABELS_MATH[selectedCategoryMath] || '';
+
+      isReviewSession = false;
+      questionQueue = [];
+      results = [];
+      sessionTicketsEarned = 0;
+      resultCard.classList.add('hidden');
+      quizCardEl.classList.remove('hidden');
+
+      mathTitleScreen.classList.add('hidden');
+      mainScreen.classList.remove('hidden');
+      currentSubject = 'math';
+      loadNextQuestion();
+    });
+  });
+
+  gradeBtnsMoji.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var lockId = btn.getAttribute('data-lockid');
+      if(lockId && !gachaConfig.unlocked[lockId]){
+        titleStatusMoji.textContent = '🔒 このモードはまだ未開放です';
+        return;
+      }
+      var grade = btn.getAttribute('data-grade');
+      var pool = getPoolForCategoryMoji(grade);
+      if(!pool || pool.length === 0){
+        titleStatusMoji.textContent = '📘 この問題はまだ準備中です。もうしばらくお待ちください。';
+        return;
+      }
+
+      if(titleModeMoji === 'review'){
+        if(missedCountMoji(grade) === 0){
+          titleStatusMoji.textContent = '復習する問題はまだありません';
+          return;
+        }
+        isReviewSession = true;
+        selectedGradeMoji = grade;
+        gradeSubtitle.textContent = getCategoryDisplayLabel('moji:' + grade) + 'の復習モード';
+        questionQueue = makeReviewQuestionsMoji(gachaConfig, selectedGradeMoji, titleScriptMoji);
+      } else {
+        isReviewSession = false;
+        selectedGradeMoji = grade;
+        gradeSubtitle.textContent = getCategoryDisplayLabel('moji:' + grade);
+        questionQueue = [];
+      }
+
+      titleStatusMoji.textContent = '';
+      results = [];
+      sessionTicketsEarned = 0;
+      resultCard.classList.add('hidden');
+      quizCardEl.classList.remove('hidden');
+
+      mojiTitleScreen.classList.add('hidden');
+      mainScreen.classList.remove('hidden');
+      currentSubject = 'moji';
+      loadNextQuestion();
+    });
+  });
+
+  hubBackBtn.addEventListener('click', function(){
+    titleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+    hubStatus.textContent = '';
+  });
+
+  renderWalletTop();
+  renderHubPoints();
+  renderTitleRemaining();
+  applyLockState();
+})();
+</script>
+</body>
+</html>
