@@ -1267,11 +1267,11 @@
     <div class="subtitle">しゅるいを えらんでね</div>
 
     <div class="category-select">
-      <button class="category-btn" data-lockid="mathDivision" data-category="division">わり算<small>÷</small></button>
-      <button class="category-btn" data-lockid="mathMultiply" data-category="multiply">かけ算<small>×</small></button>
       <button class="category-btn" data-lockid="mathAddBasic" data-category="add_basic">足し算<small>初級</small></button>
       <button class="category-btn" data-lockid="mathAddAdvanced" data-category="add_advanced">足し算<small>上級</small></button>
       <button class="category-btn locked" data-lockid="subtract" data-category="subtract" data-base="ひきざん">ひきざん</button>
+      <button class="category-btn" data-lockid="mathMultiply" data-category="multiply">かけ算<small>×</small></button>
+      <button class="category-btn" data-lockid="mathDivision" data-category="division">わり算<small>÷</small></button>
       <button class="category-btn locked" data-lockid="fraction" data-category="fraction" data-base="分数">分数</button>
     </div>
     <div class="title-status" id="titleStatusMath"></div>
@@ -1654,12 +1654,6 @@
       </div>
 
       <h4>算数</h4>
-      <div class="settings-cost-row"><label>わり算を開放</label>
-        <input type="checkbox" id="lockCk_mathDivision" style="width:22px;height:22px;">
-      </div>
-      <div class="settings-cost-row"><label>かけ算を開放</label>
-        <input type="checkbox" id="lockCk_mathMultiply" style="width:22px;height:22px;">
-      </div>
       <div class="settings-cost-row"><label>足し算（初級）を開放</label>
         <input type="checkbox" id="lockCk_mathAddBasic" style="width:22px;height:22px;">
       </div>
@@ -1668,6 +1662,12 @@
       </div>
       <div class="settings-cost-row"><label>ひきざんを開放</label>
         <input type="checkbox" id="lockCk_subtract" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>かけ算を開放</label>
+        <input type="checkbox" id="lockCk_mathMultiply" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>わり算を開放</label>
+        <input type="checkbox" id="lockCk_mathDivision" style="width:22px;height:22px;">
       </div>
       <div class="settings-cost-row"><label>分数を開放</label>
         <input type="checkbox" id="lockCk_fraction" style="width:22px;height:22px;">
@@ -1993,7 +1993,7 @@
   var CATEGORY_ORDER_WITHIN_SUBJECT = [
     'kanji:1', 'kanji:2', 'kanji:3', 'kanji:4', 'kanji:5', 'kanji:6', 'kanji:yoji', 'kanji:extra',
     'english:5', 'english:4', 'english:3', 'english:pre2', 'english:2',
-    'math:division', 'math:multiply', 'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:fraction',
+    'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:multiply', 'math:division', 'math:fraction',
     'moji:animals', 'moji:food', 'moji:vehicles', 'moji:nature', 'moji:advanced', 'moji:descriptive'
   ];
 
