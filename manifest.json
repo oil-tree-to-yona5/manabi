@@ -1,6 +1,6 @@
 {
   "name": "まなびランド",
-  "short_name": "まなび",
+  "short_name": "まなびランド",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
