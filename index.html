@@ -1186,6 +1186,7 @@
       <button class="hub-btn" id="hubMojiBtn"><span class="hub-icon">🐛</span>もじ虫食い</button>
     </div>
     <div class="title-status" id="hubStatus"></div>
+    <button class="settings-link" id="parentInfoLinkBtn">👪 保護者の方へ</button>
   </div>
 
   <div id="titleScreen" class="hidden">
@@ -1463,6 +1464,69 @@
     <div class="btn-row">
       <button class="btn btn-secondary" id="passwordCancelBtn">キャンセル</button>
       <button class="btn btn-check" id="passwordSubmitBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="parentInfoOverlay">
+  <div class="overlay-card">
+    <h2>👪 保護者の方へ</h2>
+
+    <div class="settings-section">
+      <h3>アプリの流れ</h3>
+      <div style="font-size:13.5px;color:var(--chalk);text-align:left;line-height:1.9;">
+        ①学習する（算数・漢字・英語・もじ虫食い）<br>
+        　↓<br>
+        ②正解すると「チケット」がもらえる<br>
+        　↓<br>
+        ③チケットで「ふくびき」を引く<br>
+        　↓<br>
+        ④結果に応じて「ポイント」がもらえる<br>
+        　↓<br>
+        ⑤ためたポイントを「交換」する
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>いちばん大事なこと</h3>
+      <div style="font-size:13px;color:var(--chalk);text-align:left;line-height:1.7;">
+        アプリの中の「ポイント交換」は、ポイントを消費するだけの機能で、実際のごほうびとは自動でつながっていません。<br><br>
+        「100ptで〇〇」のように、<b>ポイントに応じたごほうびの内容を保護者の方があらかじめ決めて、お子さまに伝えておいてください。</b><br><br>
+        ポイント交換にはパスワードが必要なので、保護者の方が内容を確認したうえで交換してあげてください。
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>⚙️ 設定画面について</h3>
+      <div style="font-size:13px;color:var(--chalk);text-align:left;line-height:1.7;margin-bottom:8px;">
+        ホーム画面右上の⚙️アイコンから開けます。保護者の方だけが行う操作をまとめた画面で、パスワードを入力しないと開けません。
+      </div>
+      <div style="font-size:13px;color:var(--chalk);text-align:left;line-height:1.9;">
+        ・チケット／ポイントの保有数の編集<br>
+        ・ふくびきの当選確率や必要チケット数の変更<br>
+        ・スペシャル問題の出現確率の変更<br>
+        ・1日に配布するチケット数の上限設定<br>
+        ・学年やカテゴリごとの解放（ロック）設定<br>
+        ・パスワードの変更
+      </div>
+    </div>
+
+    <hr class="settings-divider">
+
+    <div class="settings-section">
+      <h3>パスワードについて</h3>
+      <div style="font-size:13px;color:var(--chalk);text-align:left;line-height:1.7;">
+        初期パスワードは <b>「0000」</b> です。<br><br>
+        このままだとお子さまでも設定を変更できてしまうため、設定画面内の「パスワードの変更」から、保護者の方だけが知っているパスワードに変更しておくことをおすすめします。
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-close" id="parentInfoCloseBtn">とじる</button>
     </div>
   </div>
 </div>
@@ -2781,6 +2845,10 @@
   var titleModeEn = 'normal';
   var currentSubject = 'kanji';
 
+  var parentInfoLinkBtn = document.getElementById('parentInfoLinkBtn');
+  var parentInfoOverlay = document.getElementById('parentInfoOverlay');
+  var parentInfoCloseBtn = document.getElementById('parentInfoCloseBtn');
+
   var settingsLinkBtn = document.getElementById('settingsLinkBtn');
   var passwordOverlay = document.getElementById('passwordOverlay');
   var passwordOverlayTitle = document.getElementById('passwordOverlayTitle');
@@ -3545,6 +3613,13 @@
       });
     });
   }
+
+  parentInfoLinkBtn.addEventListener('click', function(){
+    parentInfoOverlay.classList.remove('hidden');
+  });
+  parentInfoCloseBtn.addEventListener('click', function(){
+    parentInfoOverlay.classList.add('hidden');
+  });
 
   historyLinkBtn.addEventListener('click', function(){
     renderHistoryList();
