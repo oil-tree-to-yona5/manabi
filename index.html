@@ -1269,7 +1269,7 @@
     <div class="category-select">
       <button class="category-btn" data-lockid="mathAddBasic" data-category="add_basic">足し算<small>初級</small></button>
       <button class="category-btn" data-lockid="mathAddAdvanced" data-category="add_advanced">足し算<small>上級</small></button>
-      <button class="category-btn locked" data-lockid="subtract" data-category="subtract" data-base="ひきざん">ひきざん</button>
+      <button class="category-btn" data-lockid="subtract" data-category="subtract" data-base="ひきざん">ひきざん<small>−</small></button>
       <button class="category-btn" data-lockid="mathMultiply" data-category="multiply">かけ算<small>×</small></button>
       <button class="category-btn" data-lockid="mathDivision" data-category="division">わり算<small>÷</small></button>
       <button class="category-btn locked" data-lockid="fraction" data-category="fraction" data-base="分数">分数</button>
@@ -1751,7 +1751,7 @@
     english5: true, english4: true,
     g3: false, pre2: false, g2: false,
     mathDivision: true, mathMultiply: true, mathAddBasic: true, mathAddAdvanced: true,
-    subtract: false, fraction: false,
+    subtract: true, fraction: false,
     mojiAnimals: true, mojiFood: true, mojiVehicles: true, mojiNature: true,
     mojiAdvanced: false, mojiDescriptive: false
   };
@@ -2521,6 +2521,12 @@
         var a2 = 10 + Math.floor(Math.random()*90); // 10-99
         var b2 = 10 + Math.floor(Math.random()*90); // 10-99
         q = { subject: 'math', category: 'add_advanced', a: a2, b: b2, op: '+', answer: a2+b2, special: isSpecial };
+      } else if(category === 'subtract'){
+        var s1 = 1 + Math.floor(Math.random()*20); // 1-20
+        var s2 = 1 + Math.floor(Math.random()*20); // 1-20
+        var big = Math.max(s1, s2);
+        var small = Math.min(s1, s2);
+        q = { subject: 'math', category: 'subtract', a: big, b: small, op: '−', answer: big-small, special: isSpecial };
       } else {
         var divisor = 2 + Math.floor(Math.random()*8); // 2-9
         var wantRemainder = Math.random() < 0.75;
@@ -2562,9 +2568,10 @@
     division: 'わり算マスター',
     multiply: 'かけ算マスター',
     add_basic: 'たし算マスター',
-    add_advanced: 'たし算マスター'
+    add_advanced: 'たし算マスター',
+    subtract: 'ひきざんマスター'
   };
-  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced'];
+  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced', 'subtract'];
 
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
