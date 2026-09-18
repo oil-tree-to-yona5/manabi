@@ -1122,6 +1122,9 @@
   #gameScreen .dg-card h2{margin:0 0 8px;font-size:26px;}
   #gameScreen .dg-card p{font-weight:800;font-size:14px;color:#6a5a44;}
   #gameScreen .dg-nextBtn{border:0;border-radius:18px;padding:12px 28px;background:#ffd447;color:#68451e;font-weight:1000;box-shadow:0 5px 0 #d8a915;cursor:pointer;font-size:15px;}
+  #gameScreen .dg-chests{display:flex;gap:12px;justify-content:center;margin-top:6px;}
+  #gameScreen .dg-chest{font-size:44px;background:#fff;border:4px solid #efd38e;border-radius:18px;padding:10px 14px;cursor:pointer;transition:transform .12s;}
+  #gameScreen .dg-chest:active{transform:scale(.94);}
 
   @media(max-width:520px){
     #gameScreen .dg-hud{left:58px;right:12px;}
@@ -1397,6 +1400,26 @@
     <div class="title-status" id="titleStatusMoji"></div>
   </div>
 
+  <div id="gameTitleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnGame">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">ゲームで学ぶ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">ゲームで<span>学ぶ</span></div>
+    <div class="subtitle">あそびたいゲームを えらんでね</div>
+
+    <div class="hub-select">
+      <button class="hub-btn" id="dogRunBtn"><span class="hub-icon">🐕</span>ドッグラン</button>
+    </div>
+  </div>
+
   <div id="mainScreen" class="hidden">
     <div class="app-header">
       <div class="header-back-wrap">
@@ -1496,7 +1519,7 @@
   <div class="dg-cloud dg-c1"></div><div class="dg-cloud dg-c2"></div>
 
   <div class="dg-hud">
-    <div class="dg-ticket">🎫 <span id="dgTicketText">0</span></div>
+    <div class="dg-ticket">🪙 <span id="dgCoinText">0</span>G</div>
     <div class="dg-steps">
       <div class="dg-step">1</div>
       <div class="dg-step">2</div>
@@ -1550,6 +1573,18 @@
       <h2 id="dgResultTitle">せいかい！🎉</h2>
       <p id="dgResultText">わんこがドアに入ったよ！</p>
       <button class="dg-nextBtn" id="dgNextBtn">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <div class="dg-message" id="dgTreasureMessage">
+    <div class="dg-card">
+      <h2>🎁 たからばこタイム！</h2>
+      <p>5問せいかい！ ひとつ選んでね</p>
+      <div class="dg-chests">
+        <button class="dg-chest" id="dgChest0">🧰</button>
+        <button class="dg-chest" id="dgChest1">🧰</button>
+        <button class="dg-chest" id="dgChest2">🧰</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1950,6 +1985,7 @@
   var CONFIG_KEY = 'kanjiQuizGachaConfig';
   var PASSWORD_KEY = 'kanjiQuizGachaPassword';
   var PLAYCOUNT_KEY = 'kanjiQuizGachaPlayCount';
+  var GCOIN_KEY = 'kanjiQuizGCoin';
   var DEFAULT_PASSWORD = '0000';
   var TOTAL = 5;
   var RANK_POINTS = [100, 50, 20, 10, 5];
@@ -2036,6 +2072,21 @@
   function saveWallet(n){
     try {
       window.localStorage.setItem(WALLET_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadGCoin(){
+    try {
+      var v = window.localStorage.getItem(GCOIN_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveGCoin(n){
+    try {
+      window.localStorage.setItem(GCOIN_KEY, String(n));
     } catch(e){}
   }
 
@@ -2824,11 +2875,11 @@
   }
 
   function dgUpdateHud(){
-    var lap = correctCount % 5;
+    var lap = dgStreak % 5;
     dgSteps.forEach(function(el, i){
       el.classList.toggle('active', i === lap);
     });
-    dgTicketText.textContent = walletTickets;
+    dgCoinText.textContent = dgCoins;
   }
 
   function dgStartTimer(){
@@ -2848,38 +2899,33 @@
     }, 100);
   }
 
-  function dgAwardStreakTickets(){
-    var ticketsToAward = 0;
-    var milestoneMsg = '';
-    if(correctCount % 10 === 0){
-      ticketsToAward = 2;
-      milestoneMsg = '🎉 10問連続正解でふくびきチケットを2枚 ゲット！';
-    } else if(correctCount % 5 === 0){
-      ticketsToAward = 1;
-      milestoneMsg = '🎫 5問連続正解でふくびきチケットを1枚 ゲット！';
+  function dgShuffle(arr){
+    var a = arr.slice();
+    for(var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
     }
-    if(ticketsToAward === 0) return '';
-    var awarded = 0;
-    for(var i = 0; i < ticketsToAward; i++){
-      if(canDistribute()){
-        walletTickets++;
-        recordDistribution();
-        awarded++;
-      } else {
-        break;
-      }
-    }
-    if(awarded > 0){
-      saveWallet(walletTickets);
-      renderWalletTop();
-    }
-    if(awarded === ticketsToAward){
-      return milestoneMsg;
-    } else if(awarded > 0){
-      return '🎫 ふくびきチケットを' + awarded + '枚 ゲット！（本日の配布上限のため一部のみ）';
-    } else {
-      return '（本日のチケット配布上限のためふくびきチケットはもらえませんでした）';
-    }
+    return a;
+  }
+
+  function dgShowTreasure(){
+    var values = dgShuffle(DG_CHEST_VALUES);
+    dgChestBtns.forEach(function(btn, i){
+      btn.dataset.value = values[i];
+      btn.disabled = false;
+    });
+    dgTreasureMessage.classList.add('show');
+  }
+
+  function dgOpenChest(idx){
+    var value = parseInt(dgChestBtns[idx].dataset.value, 10);
+    dgChestBtns.forEach(function(btn){ btn.disabled = true; });
+    dgCoins += value;
+    saveGCoin(dgCoins);
+    dgUpdateHud();
+    dgTreasureMessage.classList.remove('show');
+    dgResetStage();
+    dgMakeProblem();
   }
 
   function dgChoose(i){
@@ -2901,16 +2947,13 @@
       if(isCorrect){
         dgDog.classList.remove('run');
         dgDog.classList.add('enter');
-        correctCount++;
-        saveCorrectCount(correctCount);
+        dgStreak++;
         recordWordAttempt('math:' + q.category, q.word, true);
         dgResultTitle.textContent = 'せいかい！🎉';
         msgParts.push('わんこがドアの中へ入ったよ！');
-        var ticketMsg = dgAwardStreakTickets();
-        if(ticketMsg) msgParts.push(ticketMsg);
+        if(dgStreak % 5 === 0) msgParts.push('🎁 たからばこが出てきたよ！');
       } else {
-        correctCount = 0;
-        saveCorrectCount(correctCount);
+        dgStreak = 0;
         recordWordAttempt('math:' + q.category, q.word, false);
         dgResultTitle.textContent = 'おしい！💦';
         var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
@@ -2925,8 +2968,7 @@
   function dgTimeout(){
     dgLocked = true;
     var q = dgCurrentQuestion;
-    correctCount = 0;
-    saveCorrectCount(correctCount);
+    dgStreak = 0;
     recordWordAttempt('math:' + q.category, q.word, false);
     dgResultTitle.textContent = '時間切れ ⏰';
     var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
@@ -2945,7 +2987,11 @@
 
   function dgNextQuestion(){
     dgResetStage();
-    dgMakeProblem();
+    if(dgStreak > 0 && dgStreak % 5 === 0){
+      dgShowTreasure();
+    } else {
+      dgMakeProblem();
+    }
   }
 
   function addMissedEn(grade, word){
@@ -3023,6 +3069,7 @@
   }
 
   var walletTickets = loadWallet();
+  var dgCoins = loadGCoin();
   var specialTickets = loadSpecialTickets();
   var prizes = loadPrizes();
   var gachaConfig = loadConfig();
@@ -3046,6 +3093,9 @@
   var sessionTicketsEarned = 0;
 
   var hubGameBtn = document.getElementById('hubGameBtn');
+  var gameTitleScreen = document.getElementById('gameTitleScreen');
+  var hubBackBtnGame = document.getElementById('hubBackBtnGame');
+  var dogRunBtn = document.getElementById('dogRunBtn');
   var gameScreen = document.getElementById('gameScreen');
   var dgExitBtn = document.getElementById('dgExitBtn');
   var dgProblemEl = document.getElementById('dgProblem');
@@ -3060,13 +3110,21 @@
   var dgResultTitle = document.getElementById('dgResultTitle');
   var dgResultText = document.getElementById('dgResultText');
   var dgNextBtn = document.getElementById('dgNextBtn');
-  var dgTicketText = document.getElementById('dgTicketText');
+  var dgCoinText = document.getElementById('dgCoinText');
   var dgSteps = document.querySelectorAll('#gameScreen .dg-step');
+  var dgTreasureMessage = document.getElementById('dgTreasureMessage');
+  var dgChestBtns = [
+    document.getElementById('dgChest0'),
+    document.getElementById('dgChest1'),
+    document.getElementById('dgChest2')
+  ];
   var dgCorrectDoor = 0;
   var dgLocked = false;
   var dgTimer = null;
   var dgRemain = 5;
   var dgCurrentQuestion = null;
+  var dgStreak = 0;
+  var DG_CHEST_VALUES = [10, 20, 30];
 
   var streakDog = document.getElementById('streakDog');
   var streakLabel = document.getElementById('streakLabel');
@@ -4607,18 +4665,30 @@
   hubGameBtn.addEventListener('click', function(){
     hubStatus.textContent = '';
     hubScreen.classList.add('hidden');
+    gameTitleScreen.classList.remove('hidden');
+  });
+  hubBackBtnGame.addEventListener('click', function(){
+    gameTitleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+  });
+  dogRunBtn.addEventListener('click', function(){
+    gameTitleScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
+    dgStreak = 0;
     dgResetStage();
     dgMakeProblem();
   });
   dgExitBtn.addEventListener('click', function(){
     clearInterval(dgTimer);
     gameScreen.classList.add('hidden');
-    hubScreen.classList.remove('hidden');
+    gameTitleScreen.classList.remove('hidden');
   });
   dgDoor0.addEventListener('click', function(){ dgChoose(0); });
   dgDoor1.addEventListener('click', function(){ dgChoose(1); });
   dgNextBtn.addEventListener('click', dgNextQuestion);
+  dgChestBtns.forEach(function(btn, idx){
+    btn.addEventListener('click', function(){ dgOpenChest(idx); });
+  });
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
     hubScreen.classList.remove('hidden');
