@@ -243,6 +243,7 @@
   .hub-btn:nth-child(2){border-color:var(--coral);}
   .hub-btn:nth-child(3){border-color:var(--special);}
   .hub-btn:nth-child(4){border-color:var(--yellow);}
+  .hub-btn:nth-child(5){border-color:#5FBF7A;}
 
   .mascot{
     display:block;
@@ -1051,6 +1052,87 @@
   .btn-secondary{background:transparent;border:1px solid var(--panel-edge);color:var(--chalk-dim);}
 
   .hidden{display:none;}
+
+  #gameScreen{
+    display:none;
+    position:fixed;inset:0;z-index:90;
+    overflow:hidden;
+    font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(#72d7ff 0%,#bdefff 47%,#78cf65 48%,#48a64d 100%);
+    color:#56351f;
+  }
+  #gameScreen:not(.hidden){display:block;}
+  #gameScreen .dg-cloud{position:absolute;background:#fff;border-radius:999px;opacity:.8;}
+  #gameScreen .dg-cloud:before,#gameScreen .dg-cloud:after{content:"";position:absolute;background:#fff;border-radius:50%;}
+  #gameScreen .dg-c1{width:150px;height:42px;left:-30px;top:17%;animation:dgDrift 8s linear infinite;}
+  #gameScreen .dg-c1:before{width:65px;height:65px;left:28px;top:-32px;}
+  #gameScreen .dg-c1:after{width:50px;height:50px;left:82px;top:-23px;}
+  #gameScreen .dg-c2{width:130px;height:35px;right:-30px;top:34%;animation:dgDrift 11s linear infinite reverse;}
+  #gameScreen .dg-c2:before{width:55px;height:55px;left:25px;top:-28px;}
+  #gameScreen .dg-c2:after{width:42px;height:42px;left:75px;top:-20px;}
+  @keyframes dgDrift{to{transform:translateX(60px);}}
+
+  #gameScreen .dg-exit{position:absolute;top:14px;left:14px;z-index:40;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.15);cursor:pointer;}
+
+  #gameScreen .dg-hud{position:absolute;top:14px;left:62px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;}
+  #gameScreen .dg-ticket{background:#fff4cf;border:4px solid #fff;border-radius:20px;padding:7px 13px;font-weight:900;box-shadow:0 5px 12px rgba(90,138,154,.27);white-space:nowrap;}
+  #gameScreen .dg-steps{flex:1;max-width:420px;background:rgba(255,255,255,.67);border:3px solid #fff;border-radius:20px;padding:5px;display:flex;gap:5px;}
+  #gameScreen .dg-step{flex:1;text-align:center;border-radius:14px;padding:4px 0;font-weight:900;background:#dce8f2;color:#607080;}
+  #gameScreen .dg-step.active{background:#ffd447;color:#744b16;box-shadow:inset 0 -3px #e2a900;}
+
+  #gameScreen .dg-timerBox{position:absolute;right:12px;top:112px;width:42px;height:170px;z-index:35;background:#fff8e9;border:4px solid #fff;border-radius:24px;box-shadow:0 6px 18px rgba(73,100,123,.33);padding:6px;}
+  #gameScreen .dg-timerFill{position:absolute;left:7px;right:7px;bottom:7px;height:100%;border-radius:16px;background:linear-gradient(#ff7895,#ffd45a);transform-origin:center bottom;transition:height .1s linear;}
+  #gameScreen .dg-timerText{position:absolute;top:-43px;right:-1px;background:#68452d;color:#fff;border:3px solid #fff;border-radius:16px;padding:4px 7px;font-size:13px;font-weight:900;white-space:nowrap;}
+
+  #gameScreen .dg-sign{position:absolute;top:78px;left:50%;transform:translateX(-50%);z-index:12;background:#9b5c32;color:#fff9df;border:5px solid #70401f;border-radius:12px;padding:7px 18px;font-weight:900;font-size:13px;box-shadow:0 6px 0 #633718;white-space:nowrap;}
+  #gameScreen .dg-question{position:absolute;z-index:15;top:135px;left:50%;transform:translateX(-50%);width:min(78vw,570px);padding:16px 18px;text-align:center;background:#fffaf0;border:5px solid #f1d69b;border-radius:28px;box-shadow:0 9px 20px rgba(123,100,64,.2);}
+  #gameScreen .dg-question small{font-weight:800;color:#9b7a58;}
+  #gameScreen .dg-problem{font-size:clamp(30px,7.5vw,50px);font-weight:1000;line-height:1.05;margin-top:5px;}
+
+  #gameScreen .dg-path{position:absolute;left:50%;bottom:-8%;width:70%;height:70%;transform:translateX(-50%);background:#ead39b;clip-path:polygon(35% 0,65% 0,100% 100%,0 100%);z-index:2;}
+  #gameScreen .dg-stone{position:absolute;background:#f8e7b6;border-radius:45%;opacity:.75;}
+  #gameScreen .dg-s1{width:80px;height:35px;left:43%;bottom:23%;}
+  #gameScreen .dg-s2{width:110px;height:42px;left:28%;bottom:35%;}
+  #gameScreen .dg-s3{width:90px;height:38px;left:55%;bottom:48%;}
+  #gameScreen .dg-s4{width:70px;height:30px;left:39%;bottom:59%;}
+
+  #gameScreen .dg-doors{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,760px);display:flex;justify-content:center;gap:clamp(18px,7vw,70px);}
+  #gameScreen .dg-doorWrap{width:42%;max-width:270px;text-align:center;}
+  #gameScreen .dg-door{position:relative;width:100%;aspect-ratio:.68;background:linear-gradient(90deg,#74401f,#b86d38 48%,#74401f);border:9px solid #512c19;border-radius:28px 28px 12px 12px;box-shadow:0 14px 0 rgba(75,43,28,.33),0 16px 25px rgba(67,90,103,.27);overflow:hidden;cursor:pointer;transition:transform .18s;}
+  #gameScreen .dg-door:active{transform:translateY(-4px);}
+  #gameScreen .dg-door .dg-arch{position:absolute;left:7%;right:7%;top:5%;height:37%;border-radius:50% 50% 10px 10px;background:#2f9ed5;border:7px solid #2074ad;}
+  #gameScreen .dg-door.pink .dg-arch{background:#ff7896;border-color:#d64f72;}
+  #gameScreen .dg-door .dg-star{position:absolute;top:7%;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 0 #a36d00);}
+  #gameScreen .dg-answer{position:absolute;left:14%;right:14%;top:47%;background:#fff8df;border:3px solid #dfc486;border-radius:14px;padding:7px;font-size:clamp(22px,4.5vw,36px);font-weight:1000;color:#78451f;}
+  #gameScreen .dg-knob{position:absolute;right:9%;top:62%;width:18px;height:18px;background:#ffd34e;border:2px solid #b27b17;border-radius:50%;}
+  #gameScreen .dg-door.open{animation:dgDoorShake .12s 2;}
+  #gameScreen .dg-door.open .dg-panel{animation:dgOpenDoor .65s forwards;transform-origin:left;}
+  @keyframes dgDoorShake{50%{transform:translateX(5px);}}
+  @keyframes dgOpenDoor{to{transform:perspective(700px) rotateY(-78deg);}}
+
+  #gameScreen .dg-dog{position:absolute;z-index:25;left:50%;bottom:5%;width:130px;height:150px;transform:translateX(-50%);transition:left .75s cubic-bezier(.2,.8,.2,1),bottom .75s cubic-bezier(.2,.8,.2,1),transform .35s;}
+  #gameScreen .dg-dog.run{animation:dgBounce .18s infinite alternate;}
+  #gameScreen .dg-dog.enter{transition:left .65s ease-in,bottom .65s ease-in,transform .65s ease-in;transform:translateX(-50%) scale(.55);}
+  @keyframes dgBounce{to{transform:translateX(-50%) translateY(-7px) rotate(-1deg);}}
+  #gameScreen .dg-dog-svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 5px rgba(77,89,66,.2));}
+
+  #gameScreen .dg-message{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(60,49,80,.3);}
+  #gameScreen .dg-message.show{display:flex;}
+  #gameScreen .dg-card{background:#fffaf0;border:5px solid #fff;border-radius:28px;padding:25px;text-align:center;width:min(86vw,380px);box-shadow:0 15px 35px rgba(61,61,85,.3);}
+  #gameScreen .dg-card h2{margin:0 0 8px;font-size:26px;}
+  #gameScreen .dg-card p{font-weight:800;font-size:14px;color:#6a5a44;}
+  #gameScreen .dg-nextBtn{border:0;border-radius:18px;padding:12px 28px;background:#ffd447;color:#68451e;font-weight:1000;box-shadow:0 5px 0 #d8a915;cursor:pointer;font-size:15px;}
+
+  @media(max-width:520px){
+    #gameScreen .dg-hud{left:58px;right:12px;}
+    #gameScreen .dg-ticket{font-size:12px;padding:6px 9px;}
+    #gameScreen .dg-question{top:128px;width:76vw;padding:12px;}
+    #gameScreen .dg-problem{font-size:30px;}
+    #gameScreen .dg-doors{gap:12px;}
+    #gameScreen .dg-doorWrap{width:43%;}
+    #gameScreen .dg-dog{width:110px;height:126px;}
+    #gameScreen .dg-timerBox{right:8px;top:112px;height:150px;}
+  }
 </style>
 </head>
 <body>
@@ -1184,6 +1266,7 @@
       <button class="hub-btn" id="hubKanjiBtn"><span class="hub-icon">🈵</span>漢字</button>
       <button class="hub-btn" id="hubEnglishBtn"><span class="hub-icon">🔤</span>英語</button>
       <button class="hub-btn" id="hubMojiBtn"><span class="hub-icon">🐛</span>もじ虫食い</button>
+      <button class="hub-btn" id="hubGameBtn"><span class="hub-icon">🎮</span>ゲームで学ぶ</button>
     </div>
     <div class="title-status" id="hubStatus"></div>
     <button class="settings-link" id="parentInfoLinkBtn">👪 保護者の方へ</button>
@@ -1404,6 +1487,69 @@
       <div class="msg" id="scoreMsg"></div>
       <div class="review" id="review"></div>
       <button class="btn btn-retry" id="retryBtn">もういちど</button>
+    </div>
+  </div>
+</div>
+
+<div id="gameScreen" class="hidden">
+  <button class="dg-exit" id="dgExitBtn">🏠</button>
+  <div class="dg-cloud dg-c1"></div><div class="dg-cloud dg-c2"></div>
+
+  <div class="dg-hud">
+    <div class="dg-ticket">🎫 <span id="dgTicketText">0</span></div>
+    <div class="dg-steps">
+      <div class="dg-step">1</div>
+      <div class="dg-step">2</div>
+      <div class="dg-step">3</div>
+      <div class="dg-step">4</div>
+      <div class="dg-step">5</div>
+    </div>
+  </div>
+
+  <div class="dg-timerBox"><div class="dg-timerFill" id="dgTimerFill"></div><div class="dg-timerText" id="dgTimerText">5秒</div></div>
+  <div class="dg-sign">🐾 正しい答えのドアを選ぼう！</div>
+
+  <div class="dg-question"><small>もんだい</small><div class="dg-problem" id="dgProblem">-</div></div>
+
+  <div class="dg-path"></div>
+  <div class="dg-stone dg-s1"></div><div class="dg-stone dg-s2"></div><div class="dg-stone dg-s3"></div><div class="dg-stone dg-s4"></div>
+
+  <div class="dg-doors">
+    <div class="dg-doorWrap"><div class="dg-door" id="dgDoor0">
+      <div class="dg-panel"><div class="dg-arch"></div><div class="dg-star">⭐</div><div class="dg-answer" id="dgAns0">-</div><div class="dg-knob"></div></div>
+    </div></div>
+    <div class="dg-doorWrap"><div class="dg-door pink" id="dgDoor1">
+      <div class="dg-panel"><div class="dg-arch"></div><div class="dg-star">⭐</div><div class="dg-answer" id="dgAns1">-</div><div class="dg-knob"></div></div>
+    </div></div>
+  </div>
+
+  <div class="dg-dog" id="dgDog">
+    <svg class="dg-dog-svg" viewBox="0 0 160 180">
+      <ellipse cx="80" cy="166" rx="45" ry="9" fill="#55745b" opacity=".25"/>
+      <path d="M48 118 Q80 105 112 118 L119 153 Q115 174 80 175 Q45 174 41 153Z" fill="#f7d9a4"/>
+      <ellipse cx="53" cy="143" rx="12" ry="22" fill="#eabf82"/>
+      <ellipse cx="107" cy="143" rx="12" ry="22" fill="#eabf82"/>
+      <ellipse cx="80" cy="76" rx="50" ry="49" fill="#ffe5b5"/>
+      <ellipse cx="37" cy="72" rx="19" ry="31" fill="#c98d58" transform="rotate(15 37 72)"/>
+      <ellipse cx="123" cy="72" rx="19" ry="31" fill="#c98d58" transform="rotate(-15 123 72)"/>
+      <ellipse cx="62" cy="73" rx="8" ry="12" fill="#2d2421"/>
+      <ellipse cx="98" cy="73" rx="8" ry="12" fill="#2d2421"/>
+      <circle cx="60" cy="69" r="3.5" fill="white"/><circle cx="96" cy="69" r="3.5" fill="white"/>
+      <ellipse cx="80" cy="90" rx="9" ry="7" fill="#55352a"/>
+      <path d="M80 96 Q76 106 68 105 M80 96 Q84 106 92 105" fill="none" stroke="#55352a" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="50" cy="93" rx="11" ry="6" fill="#f6a4aa" opacity=".55"/>
+      <ellipse cx="110" cy="93" rx="11" ry="6" fill="#f6a4aa" opacity=".55"/>
+      <path d="M48 116 Q80 128 112 116 L108 133 Q80 143 52 133Z" fill="#ef5c61"/>
+      <circle cx="80" cy="130" r="8" fill="#fff1df"/><text x="80" y="134" text-anchor="middle" font-size="9">♥</text>
+      <ellipse cx="63" cy="160" rx="13" ry="8" fill="#f7d9a4"/><ellipse cx="97" cy="160" rx="13" ry="8" fill="#f7d9a4"/>
+    </svg>
+  </div>
+
+  <div class="dg-message" id="dgMessage">
+    <div class="dg-card">
+      <h2 id="dgResultTitle">せいかい！🎉</h2>
+      <p id="dgResultText">わんこがドアに入ったよ！</p>
+      <button class="dg-nextBtn" id="dgNextBtn">つぎへ ▶</button>
     </div>
   </div>
 </div>
@@ -2637,6 +2783,171 @@
   };
   var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced', 'subtract'];
 
+  function dgRandDelta(){
+    var options = [-3, -2, -1, 1, 2, 3];
+    return options[Math.floor(Math.random() * options.length)];
+  }
+
+  function dgFormatDivisionAnswer(quotient, remainder){
+    return remainder === 0 ? String(quotient) : (quotient + 'あまり' + remainder);
+  }
+
+  function dgMakeProblem(){
+    var category = IMPLEMENTED_CATEGORIES_MATH[Math.floor(Math.random() * IMPLEMENTED_CATEGORIES_MATH.length)];
+    var q = makeQuestionsMath(1, gachaConfig, category)[0];
+    dgCurrentQuestion = q;
+    dgProblemEl.textContent = q.word;
+
+    var ansText, wrongText;
+    if(q.category === 'division'){
+      ansText = dgFormatDivisionAnswer(q.quotient, q.remainder);
+      var wrongQuotient = q.quotient + (Math.random() < 0.5 ? -1 : 1);
+      if(wrongQuotient < 1) wrongQuotient = q.quotient + 2;
+      wrongText = dgFormatDivisionAnswer(wrongQuotient, q.remainder);
+    } else {
+      ansText = String(q.answer);
+      var wrongNum = q.answer + dgRandDelta();
+      if(wrongNum < 0) wrongNum = q.answer + Math.abs(wrongNum) + 1;
+      if(wrongNum === q.answer) wrongNum += 1;
+      wrongText = String(wrongNum);
+    }
+
+    dgCorrectDoor = Math.random() < 0.5 ? 0 : 1;
+    var texts = ['', ''];
+    texts[dgCorrectDoor] = ansText;
+    texts[1 - dgCorrectDoor] = wrongText;
+    dgAns0.textContent = texts[0];
+    dgAns1.textContent = texts[1];
+
+    dgUpdateHud();
+    dgStartTimer();
+  }
+
+  function dgUpdateHud(){
+    var lap = correctCount % 5;
+    dgSteps.forEach(function(el, i){
+      el.classList.toggle('active', i === lap);
+    });
+    dgTicketText.textContent = walletTickets;
+  }
+
+  function dgStartTimer(){
+    clearInterval(dgTimer);
+    dgLocked = false;
+    dgRemain = 5;
+    dgTimerFill.style.height = '100%';
+    dgTimerText.textContent = '5秒';
+    dgTimer = setInterval(function(){
+      dgRemain = Math.max(0, dgRemain - 0.1);
+      dgTimerFill.style.height = (dgRemain / 5 * 100) + '%';
+      dgTimerText.textContent = Math.ceil(dgRemain) + '秒';
+      if(dgRemain <= 0){
+        clearInterval(dgTimer);
+        dgTimeout();
+      }
+    }, 100);
+  }
+
+  function dgAwardStreakTickets(){
+    var ticketsToAward = 0;
+    var milestoneMsg = '';
+    if(correctCount % 10 === 0){
+      ticketsToAward = 2;
+      milestoneMsg = '🎉 10問連続正解でふくびきチケットを2枚 ゲット！';
+    } else if(correctCount % 5 === 0){
+      ticketsToAward = 1;
+      milestoneMsg = '🎫 5問連続正解でふくびきチケットを1枚 ゲット！';
+    }
+    if(ticketsToAward === 0) return '';
+    var awarded = 0;
+    for(var i = 0; i < ticketsToAward; i++){
+      if(canDistribute()){
+        walletTickets++;
+        recordDistribution();
+        awarded++;
+      } else {
+        break;
+      }
+    }
+    if(awarded > 0){
+      saveWallet(walletTickets);
+      renderWalletTop();
+    }
+    if(awarded === ticketsToAward){
+      return milestoneMsg;
+    } else if(awarded > 0){
+      return '🎫 ふくびきチケットを' + awarded + '枚 ゲット！（本日の配布上限のため一部のみ）';
+    } else {
+      return '（本日のチケット配布上限のためふくびきチケットはもらえませんでした）';
+    }
+  }
+
+  function dgChoose(i){
+    if(dgLocked) return;
+    dgLocked = true;
+    clearInterval(dgTimer);
+    var isCorrect = (i === dgCorrectDoor);
+    var door = (i === 0) ? dgDoor0 : dgDoor1;
+    door.classList.add('open');
+    dgDog.classList.add('run');
+    var d = door.getBoundingClientRect();
+    var g = gameScreen.getBoundingClientRect();
+    dgDog.style.left = ((d.left + d.width / 2 - g.left) / g.width * 100) + '%';
+    dgDog.style.bottom = Math.max(6, ((g.bottom - (d.bottom - d.height * 0.35)) / g.height * 100)) + '%';
+
+    setTimeout(function(){
+      var q = dgCurrentQuestion;
+      var msgParts = [];
+      if(isCorrect){
+        dgDog.classList.remove('run');
+        dgDog.classList.add('enter');
+        correctCount++;
+        saveCorrectCount(correctCount);
+        recordWordAttempt('math:' + q.category, q.word, true);
+        dgResultTitle.textContent = 'せいかい！🎉';
+        msgParts.push('わんこがドアの中へ入ったよ！');
+        var ticketMsg = dgAwardStreakTickets();
+        if(ticketMsg) msgParts.push(ticketMsg);
+      } else {
+        correctCount = 0;
+        saveCorrectCount(correctCount);
+        recordWordAttempt('math:' + q.category, q.word, false);
+        dgResultTitle.textContent = 'おしい！💦';
+        var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
+        msgParts.push('こたえは ' + correctText + ' だよ');
+      }
+      dgResultText.textContent = msgParts.join(' ');
+      dgUpdateHud();
+      dgMessage.classList.add('show');
+    }, 850);
+  }
+
+  function dgTimeout(){
+    dgLocked = true;
+    var q = dgCurrentQuestion;
+    correctCount = 0;
+    saveCorrectCount(correctCount);
+    recordWordAttempt('math:' + q.category, q.word, false);
+    dgResultTitle.textContent = '時間切れ ⏰';
+    var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
+    dgResultText.textContent = '5秒いないにドアをえらぼう！（こたえは ' + correctText + '）';
+    dgUpdateHud();
+    dgMessage.classList.add('show');
+  }
+
+  function dgResetStage(){
+    dgMessage.classList.remove('show');
+    document.querySelectorAll('#gameScreen .dg-door').forEach(function(d){ d.classList.remove('open'); });
+    dgDog.classList.remove('run', 'enter');
+    dgDog.style.left = '50%';
+    dgDog.style.bottom = '5%';
+  }
+
+  function dgNextQuestion(){
+    dgResetStage();
+    dgMakeProblem();
+  }
+
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
     if(!list) return;
@@ -2733,6 +3044,29 @@
   var isReviewSession = false;
   var correctCount = loadCorrectCount();
   var sessionTicketsEarned = 0;
+
+  var hubGameBtn = document.getElementById('hubGameBtn');
+  var gameScreen = document.getElementById('gameScreen');
+  var dgExitBtn = document.getElementById('dgExitBtn');
+  var dgProblemEl = document.getElementById('dgProblem');
+  var dgAns0 = document.getElementById('dgAns0');
+  var dgAns1 = document.getElementById('dgAns1');
+  var dgDoor0 = document.getElementById('dgDoor0');
+  var dgDoor1 = document.getElementById('dgDoor1');
+  var dgDog = document.getElementById('dgDog');
+  var dgTimerFill = document.getElementById('dgTimerFill');
+  var dgTimerText = document.getElementById('dgTimerText');
+  var dgMessage = document.getElementById('dgMessage');
+  var dgResultTitle = document.getElementById('dgResultTitle');
+  var dgResultText = document.getElementById('dgResultText');
+  var dgNextBtn = document.getElementById('dgNextBtn');
+  var dgTicketText = document.getElementById('dgTicketText');
+  var dgSteps = document.querySelectorAll('#gameScreen .dg-step');
+  var dgCorrectDoor = 0;
+  var dgLocked = false;
+  var dgTimer = null;
+  var dgRemain = 5;
+  var dgCurrentQuestion = null;
 
   var streakDog = document.getElementById('streakDog');
   var streakLabel = document.getElementById('streakLabel');
@@ -4270,6 +4604,21 @@
     refreshGradeButtonLabelsMoji();
     renderTitleRemaining();
   });
+  hubGameBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    dgResetStage();
+    dgMakeProblem();
+  });
+  dgExitBtn.addEventListener('click', function(){
+    clearInterval(dgTimer);
+    gameScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+  });
+  dgDoor0.addEventListener('click', function(){ dgChoose(0); });
+  dgDoor1.addEventListener('click', function(){ dgChoose(1); });
+  dgNextBtn.addEventListener('click', dgNextQuestion);
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
     hubScreen.classList.remove('hidden');
