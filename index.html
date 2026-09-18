@@ -1136,6 +1136,61 @@
     #gameScreen .dg-dog{width:110px;height:126px;}
     #gameScreen .dg-timerBox{right:8px;top:112px;height:150px;}
   }
+
+  #mogGameScreen{
+    display:none;
+    position:fixed;inset:0;z-index:90;
+    overflow:hidden;
+    font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(#8FD7F5 0%,#CDEFC2 42%,#B98A55 43%,#8C6B3F 100%);
+    color:#4A3220;
+  }
+  #mogGameScreen:not(.hidden){display:block;}
+  #mogGameScreen .mg-exit{position:absolute;top:14px;left:14px;z-index:40;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.15);cursor:pointer;}
+
+  #mogGameScreen .mg-hud{position:absolute;top:14px;left:62px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;}
+  #mogGameScreen .mg-ticket{background:#fff4cf;border:4px solid #fff;border-radius:20px;padding:7px 13px;font-weight:900;box-shadow:0 5px 12px rgba(90,138,154,.27);white-space:nowrap;}
+  #mogGameScreen .mg-steps{flex:1;max-width:420px;background:rgba(255,255,255,.67);border:3px solid #fff;border-radius:20px;padding:5px;display:flex;gap:5px;}
+  #mogGameScreen .mg-step{flex:1;text-align:center;border-radius:14px;padding:4px 0;font-weight:900;background:#dce8f2;color:#607080;}
+  #mogGameScreen .mg-step.active{background:#ffd447;color:#744b16;box-shadow:inset 0 -3px #e2a900;}
+
+  #mogGameScreen .mg-timerBox{position:absolute;right:12px;top:112px;width:42px;height:150px;z-index:35;background:#fff8e9;border:4px solid #fff;border-radius:24px;box-shadow:0 6px 18px rgba(73,100,123,.33);padding:6px;}
+  #mogGameScreen .mg-timerFill{position:absolute;left:7px;right:7px;bottom:7px;height:100%;border-radius:16px;background:linear-gradient(#ff7895,#ffd45a);transform-origin:center bottom;transition:height .1s linear;}
+  #mogGameScreen .mg-timerText{position:absolute;top:-43px;right:-1px;background:#68452d;color:#fff;border:3px solid #fff;border-radius:16px;padding:4px 7px;font-size:13px;font-weight:900;white-space:nowrap;}
+
+  #mogGameScreen .mg-sign{position:absolute;top:78px;left:50%;transform:translateX(-50%);z-index:12;background:#5a3a20;color:#fff9df;border:5px solid #3d2712;border-radius:12px;padding:7px 18px;font-weight:900;font-size:13px;box-shadow:0 6px 0 #2c1c0d;white-space:nowrap;}
+  #mogGameScreen .mg-question{position:absolute;z-index:15;top:135px;left:50%;transform:translateX(-50%);width:min(78vw,570px);padding:14px 18px;text-align:center;background:#fffaf0;border:5px solid #e0c98f;border-radius:28px;box-shadow:0 9px 20px rgba(80,60,20,.25);}
+  #mogGameScreen .mg-question small{font-weight:800;color:#9b7a58;}
+  #mogGameScreen .mg-problem{font-size:clamp(22px,6vw,34px);font-weight:1000;line-height:1.2;margin-top:5px;}
+
+  #mogGameScreen .mg-field{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);width:min(92vw,600px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,4vw,28px);z-index:10;}
+  #mogGameScreen .mg-hole{position:relative;cursor:pointer;padding-top:62%;border-radius:50%/40%;background:radial-gradient(ellipse at center, #2c1c0d 0%, #4a3220 55%, transparent 72%);}
+  #mogGameScreen .mg-mole{position:absolute;left:50%;bottom:18%;transform:translateX(-50%);width:78%;transition:transform .15s;}
+  #mogGameScreen .mg-hole:active .mg-mole{transform:translateX(-50%) translateY(4px);}
+  #mogGameScreen .mg-mole-svg{width:100%;display:block;overflow:visible;filter:drop-shadow(0 6px 5px rgba(0,0,0,.25));}
+  #mogGameScreen .mg-label{position:absolute;left:8%;right:8%;bottom:6%;background:#fffaf0;border:3px solid #dfc486;border-radius:12px;padding:5px 4px;font-size:clamp(12px,3.2vw,16px);font-weight:900;color:#4a3220;text-align:center;line-height:1.15;}
+  #mogGameScreen .mg-hole.correct .mg-mole{animation:mgBonk .5s ease;}
+  #mogGameScreen .mg-hole.wrong{opacity:.4;}
+  @keyframes mgBonk{0%{transform:translateX(-50%) scale(1);}40%{transform:translateX(-50%) scale(1.2) rotate(-6deg);}100%{transform:translateX(-50%) scale(1);}}
+
+  #mogGameScreen .mg-message{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(40,28,14,.35);}
+  #mogGameScreen .mg-message.show{display:flex;}
+  #mogGameScreen .mg-card{background:#fffaf0;border:5px solid #fff;border-radius:28px;padding:25px;text-align:center;width:min(86vw,380px);box-shadow:0 15px 35px rgba(61,61,85,.3);}
+  #mogGameScreen .mg-card h2{margin:0 0 8px;font-size:26px;}
+  #mogGameScreen .mg-card p{font-weight:800;font-size:14px;color:#6a5a44;}
+  #mogGameScreen .mg-nextBtn{border:0;border-radius:18px;padding:12px 28px;background:#ffd447;color:#68451e;font-weight:1000;box-shadow:0 5px 0 #d8a915;cursor:pointer;font-size:15px;}
+  #mogGameScreen .mg-chests{display:flex;gap:12px;justify-content:center;margin-top:6px;}
+  #mogGameScreen .mg-chest{font-size:44px;background:#fff;border:4px solid #efd38e;border-radius:18px;padding:10px 14px;cursor:pointer;transition:transform .12s;}
+  #mogGameScreen .mg-chest:active{transform:scale(.94);}
+
+  @media(max-width:520px){
+    #mogGameScreen .mg-hud{left:58px;right:12px;}
+    #mogGameScreen .mg-ticket{font-size:12px;padding:6px 9px;}
+    #mogGameScreen .mg-question{top:128px;width:80vw;padding:11px;}
+    #mogGameScreen .mg-problem{font-size:20px;}
+    #mogGameScreen .mg-field{top:58%;gap:10px;}
+    #mogGameScreen .mg-timerBox{right:8px;top:112px;height:135px;}
+  }
 </style>
 </head>
 <body>
@@ -1420,6 +1475,10 @@
         <button class="hub-btn" id="dogRunBtn" style="flex:1;width:auto;"><span class="hub-icon">🐕</span>ドッグラン</button>
         <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="dgHighScoreText">0</span></div>
       </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hub-btn" id="mogRunBtn" style="flex:1;width:auto;border-color:var(--coral);"><span class="hub-icon">🐹</span>モグラたたき</button>
+        <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="mgHighScoreText">0</span></div>
+      </div>
     </div>
   </div>
 
@@ -1587,6 +1646,125 @@
         <button class="dg-chest" id="dgChest0">🧰</button>
         <button class="dg-chest" id="dgChest1">🧰</button>
         <button class="dg-chest" id="dgChest2">🧰</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mogGameScreen" class="hidden">
+  <button class="mg-exit" id="mgExitBtn">🏠</button>
+
+  <div class="mg-hud">
+    <div class="mg-ticket">🪙 <span id="mgCoinText">0</span>G</div>
+    <div class="mg-steps">
+      <div class="mg-step">1</div>
+      <div class="mg-step">2</div>
+      <div class="mg-step">3</div>
+      <div class="mg-step">4</div>
+      <div class="mg-step">5</div>
+    </div>
+  </div>
+
+  <div class="mg-timerBox"><div class="mg-timerFill" id="mgTimerFill"></div><div class="mg-timerText" id="mgTimerText">15秒</div></div>
+  <div class="mg-sign" id="mgSign">🐹 ステージ1：ただしい えいたんごを たたこう！</div>
+
+  <div class="mg-question"><small>もんだい</small><div class="mg-problem" id="mgProblem">-</div></div>
+
+  <div class="mg-field">
+    <div class="mg-hole" id="mgHole0">
+      <div class="mg-mole">
+        <svg class="mg-mole-svg" viewBox="0 0 160 150" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="80" cy="120" rx="55" ry="14" fill="#000" opacity=".12"/>
+          <ellipse cx="45" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <ellipse cx="115" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <circle cx="80" cy="78" r="55" fill="#A0876B"/>
+          <ellipse cx="55" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <ellipse cx="105" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <path d="M58 60 Q62 56 66 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M94 60 Q98 56 102 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="80" cy="88" rx="14" ry="10" fill="#F2A6A0"/>
+          <ellipse cx="75" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <ellipse cx="85" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <path d="M80 94 Q80 100 74 102 M80 94 Q80 100 86 102" stroke="#5c4636" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="mg-label" id="mgLabel0">-</div>
+    </div>
+    <div class="mg-hole" id="mgHole1">
+      <div class="mg-mole">
+        <svg class="mg-mole-svg" viewBox="0 0 160 150" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="80" cy="120" rx="55" ry="14" fill="#000" opacity=".12"/>
+          <ellipse cx="45" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <ellipse cx="115" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <circle cx="80" cy="78" r="55" fill="#A0876B"/>
+          <ellipse cx="55" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <ellipse cx="105" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <path d="M58 60 Q62 56 66 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M94 60 Q98 56 102 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="80" cy="88" rx="14" ry="10" fill="#F2A6A0"/>
+          <ellipse cx="75" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <ellipse cx="85" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <path d="M80 94 Q80 100 74 102 M80 94 Q80 100 86 102" stroke="#5c4636" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="mg-label" id="mgLabel1">-</div>
+    </div>
+    <div class="mg-hole" id="mgHole2">
+      <div class="mg-mole">
+        <svg class="mg-mole-svg" viewBox="0 0 160 150" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="80" cy="120" rx="55" ry="14" fill="#000" opacity=".12"/>
+          <ellipse cx="45" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <ellipse cx="115" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <circle cx="80" cy="78" r="55" fill="#A0876B"/>
+          <ellipse cx="55" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <ellipse cx="105" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <path d="M58 60 Q62 56 66 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M94 60 Q98 56 102 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="80" cy="88" rx="14" ry="10" fill="#F2A6A0"/>
+          <ellipse cx="75" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <ellipse cx="85" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <path d="M80 94 Q80 100 74 102 M80 94 Q80 100 86 102" stroke="#5c4636" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="mg-label" id="mgLabel2">-</div>
+    </div>
+    <div class="mg-hole" id="mgHole3">
+      <div class="mg-mole">
+        <svg class="mg-mole-svg" viewBox="0 0 160 150" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="80" cy="120" rx="55" ry="14" fill="#000" opacity=".12"/>
+          <ellipse cx="45" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <ellipse cx="115" cy="95" rx="16" ry="20" fill="#8B7355"/>
+          <circle cx="80" cy="78" r="55" fill="#A0876B"/>
+          <ellipse cx="55" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <ellipse cx="105" cy="60" rx="9" ry="11" fill="#7A6450"/>
+          <path d="M58 60 Q62 56 66 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M94 60 Q98 56 102 60" stroke="#2d2421" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="80" cy="88" rx="14" ry="10" fill="#F2A6A0"/>
+          <ellipse cx="75" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <ellipse cx="85" cy="86" rx="2" ry="3" fill="#7A3B36"/>
+          <path d="M80 94 Q80 100 74 102 M80 94 Q80 100 86 102" stroke="#5c4636" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="mg-label" id="mgLabel3">-</div>
+    </div>
+  </div>
+
+  <div class="mg-message" id="mgMessage">
+    <div class="mg-card">
+      <h2 id="mgResultTitle">せいかい！🎉</h2>
+      <p id="mgResultText">モグラをたたいたよ！</p>
+      <button class="mg-nextBtn" id="mgNextBtn">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <div class="mg-message" id="mgTreasureMessage">
+    <div class="mg-card">
+      <h2>🎁 たからばこタイム！</h2>
+      <p>5問せいかい！ ひとつ選んでね</p>
+      <div class="mg-chests">
+        <button class="mg-chest" id="mgChest0">🧰</button>
+        <button class="mg-chest" id="mgChest1">🧰</button>
+        <button class="mg-chest" id="mgChest2">🧰</button>
       </div>
     </div>
   </div>
@@ -1990,6 +2168,7 @@
   var PLAYCOUNT_KEY = 'kanjiQuizGachaPlayCount';
   var GCOIN_KEY = 'kanjiQuizGCoin';
   var DOGRUN_HIGHSCORE_KEY = 'kanjiQuizDogRunHighScore';
+  var MOGURA_HIGHSCORE_KEY = 'kanjiQuizMoguraHighScore';
   var DEFAULT_PASSWORD = '0000';
   var TOTAL = 5;
   var RANK_POINTS = [100, 50, 20, 10, 5];
@@ -2106,6 +2285,21 @@
   function saveDogRunHighScore(n){
     try {
       window.localStorage.setItem(DOGRUN_HIGHSCORE_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadMoguraHighScore(){
+    try {
+      var v = window.localStorage.getItem(MOGURA_HIGHSCORE_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveMoguraHighScore(n){
+    try {
+      window.localStorage.setItem(MOGURA_HIGHSCORE_KEY, String(n));
     } catch(e){}
   }
 
@@ -3043,6 +3237,152 @@
     }
   }
 
+  var MG_STAGE_POOLS = [
+    [5],
+    [5],
+    [5, 4],
+    [5, 4],
+    [4],
+    [4]
+  ];
+
+  function mgGradeForStage(stage){
+    var idx = Math.min(stage - 1, MG_STAGE_POOLS.length - 1);
+    var pool = MG_STAGE_POOLS[idx];
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function mgMakeProblem(){
+    mgSign.textContent = '🐹 ステージ' + mgStage + '：せいかいを たたこう！';
+    var grade = mgGradeForStage(mgStage);
+    mgCurrentGrade = grade;
+    var q = makeQuestionsEn(1, gachaConfig, grade)[0];
+    mgCurrentQuestion = q;
+    setTextWithFurigana(mgProblemEl, q.promptText, q.promptReading);
+
+    mgCorrectIndex = -1;
+    q.choices.forEach(function(choice, i){
+      setTextWithFurigana(mgLabels[i], choice.value, choice.reading);
+      if(choice.value === q.answerValue) mgCorrectIndex = i;
+    });
+
+    mgUpdateHud();
+    mgStartTimer();
+  }
+
+  function mgUpdateHud(){
+    var lap = mgStreak % 5;
+    mgSteps.forEach(function(el, i){
+      el.classList.toggle('active', i === lap);
+    });
+    mgCoinText.textContent = dgCoins;
+  }
+
+  function mgStartTimer(){
+    clearInterval(mgTimer);
+    mgLocked = false;
+    mgRemain = DG_TIME_LIMIT;
+    mgTimerFill.style.height = '100%';
+    mgTimerText.textContent = DG_TIME_LIMIT + '秒';
+    mgTimer = setInterval(function(){
+      mgRemain = Math.max(0, mgRemain - 0.1);
+      mgTimerFill.style.height = (mgRemain / DG_TIME_LIMIT * 100) + '%';
+      mgTimerText.textContent = Math.ceil(mgRemain) + '秒';
+      if(mgRemain <= 0){
+        clearInterval(mgTimer);
+        mgTimeout();
+      }
+    }, 100);
+  }
+
+  function mgShowTreasure(){
+    var values = dgShuffle(DG_CHEST_VALUES);
+    mgChestBtns.forEach(function(btn, i){
+      btn.dataset.value = values[i];
+      btn.disabled = false;
+    });
+    mgTreasureMessage.classList.add('show');
+  }
+
+  function mgOpenChest(idx){
+    var value = parseInt(mgChestBtns[idx].dataset.value, 10);
+    mgChestBtns.forEach(function(btn){ btn.disabled = true; });
+    dgCoins += value;
+    saveGCoin(dgCoins);
+    mgStage++;
+    mgPendingTreasure = false;
+    mgUpdateHud();
+    mgTreasureMessage.classList.remove('show');
+    mgResultTitle.textContent = '🎉 ゲット！';
+    mgResultText.textContent = value + 'Gコインを ゲットしました！（ごうけい ' + dgCoins + 'G）';
+    mgMessage.classList.add('show');
+  }
+
+  function mgChoose(i){
+    if(mgLocked) return;
+    mgLocked = true;
+    clearInterval(mgTimer);
+    var isCorrect = (i === mgCorrectIndex);
+    mgHoles[i].classList.add(isCorrect ? 'correct' : 'wrong');
+    if(!isCorrect) mgHoles[mgCorrectIndex].classList.add('correct');
+
+    setTimeout(function(){
+      var q = mgCurrentQuestion;
+      var msgParts = [];
+      var categoryKey = 'english:' + mgCurrentGrade;
+      if(isCorrect){
+        mgStreak++;
+        mgSessionScore++;
+        if(mgSessionScore > mgHighScore){
+          mgHighScore = mgSessionScore;
+          saveMoguraHighScore(mgHighScore);
+        }
+        recordWordAttempt(categoryKey, q.word, true);
+        mgResultTitle.textContent = 'せいかい！🎉';
+        msgParts.push('モグラを たたいたよ！');
+        if(mgStreak % 5 === 0){
+          mgPendingTreasure = true;
+          msgParts.push('🎁 たからばこが出てきたよ！');
+        }
+      } else {
+        mgStreak = 0;
+        recordWordAttempt(categoryKey, q.word, false);
+        mgResultTitle.textContent = 'おしい！💦';
+        msgParts.push('こたえは ' + q.answerValue + ' だよ');
+      }
+      mgResultText.textContent = msgParts.join(' ');
+      mgUpdateHud();
+      mgMessage.classList.add('show');
+    }, 700);
+  }
+
+  function mgTimeout(){
+    mgLocked = true;
+    var q = mgCurrentQuestion;
+    mgStreak = 0;
+    recordWordAttempt('english:' + mgCurrentGrade, q.word, false);
+    mgHoles[mgCorrectIndex].classList.add('correct');
+    mgResultTitle.textContent = '時間切れ ⏰';
+    mgResultText.textContent = DG_TIME_LIMIT + '秒いないに たたこう！（こたえは ' + q.answerValue + '）';
+    mgUpdateHud();
+    mgMessage.classList.add('show');
+  }
+
+  function mgResetStage(){
+    mgMessage.classList.remove('show');
+    mgHoles.forEach(function(h){ h.classList.remove('correct', 'wrong'); });
+  }
+
+  function mgNextQuestion(){
+    mgResetStage();
+    if(mgPendingTreasure){
+      mgPendingTreasure = false;
+      mgShowTreasure();
+    } else {
+      mgMakeProblem();
+    }
+  }
+
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
     if(!list) return;
@@ -3183,6 +3523,54 @@
 
   function dgRefreshHighScoreDisplay(){
     dgHighScoreText.textContent = dgHighScore;
+  }
+
+  var mogRunBtn = document.getElementById('mogRunBtn');
+  var mogGameScreen = document.getElementById('mogGameScreen');
+  var mgExitBtn = document.getElementById('mgExitBtn');
+  var mgProblemEl = document.getElementById('mgProblem');
+  var mgSign = document.getElementById('mgSign');
+  var mgCoinText = document.getElementById('mgCoinText');
+  var mgSteps = document.querySelectorAll('#mogGameScreen .mg-step');
+  var mgTimerFill = document.getElementById('mgTimerFill');
+  var mgTimerText = document.getElementById('mgTimerText');
+  var mgMessage = document.getElementById('mgMessage');
+  var mgResultTitle = document.getElementById('mgResultTitle');
+  var mgResultText = document.getElementById('mgResultText');
+  var mgNextBtn = document.getElementById('mgNextBtn');
+  var mgTreasureMessage = document.getElementById('mgTreasureMessage');
+  var mgHighScoreText = document.getElementById('mgHighScoreText');
+  var mgHoles = [
+    document.getElementById('mgHole0'),
+    document.getElementById('mgHole1'),
+    document.getElementById('mgHole2'),
+    document.getElementById('mgHole3')
+  ];
+  var mgLabels = [
+    document.getElementById('mgLabel0'),
+    document.getElementById('mgLabel1'),
+    document.getElementById('mgLabel2'),
+    document.getElementById('mgLabel3')
+  ];
+  var mgChestBtns = [
+    document.getElementById('mgChest0'),
+    document.getElementById('mgChest1'),
+    document.getElementById('mgChest2')
+  ];
+  var mgCorrectIndex = 0;
+  var mgLocked = false;
+  var mgTimer = null;
+  var mgRemain = 15;
+  var mgCurrentQuestion = null;
+  var mgCurrentGrade = 5;
+  var mgStreak = 0;
+  var mgStage = 1;
+  var mgSessionScore = 0;
+  var mgHighScore = loadMoguraHighScore();
+  var mgPendingTreasure = false;
+
+  function mgRefreshHighScoreDisplay(){
+    mgHighScoreText.textContent = mgHighScore;
   }
 
   var streakDog = document.getElementById('streakDog');
@@ -4726,6 +5114,7 @@
     hubScreen.classList.add('hidden');
     gameTitleScreen.classList.remove('hidden');
     dgRefreshHighScoreDisplay();
+    mgRefreshHighScoreDisplay();
   });
   hubBackBtnGame.addEventListener('click', function(){
     gameTitleScreen.classList.add('hidden');
@@ -4752,6 +5141,29 @@
   dgNextBtn.addEventListener('click', dgNextQuestion);
   dgChestBtns.forEach(function(btn, idx){
     btn.addEventListener('click', function(){ dgOpenChest(idx); });
+  });
+  mogRunBtn.addEventListener('click', function(){
+    gameTitleScreen.classList.add('hidden');
+    mogGameScreen.classList.remove('hidden');
+    mgStreak = 0;
+    mgStage = 1;
+    mgSessionScore = 0;
+    mgPendingTreasure = false;
+    mgResetStage();
+    mgMakeProblem();
+  });
+  mgExitBtn.addEventListener('click', function(){
+    clearInterval(mgTimer);
+    mogGameScreen.classList.add('hidden');
+    gameTitleScreen.classList.remove('hidden');
+    mgRefreshHighScoreDisplay();
+  });
+  mgHoles.forEach(function(hole, idx){
+    hole.addEventListener('click', function(){ mgChoose(idx); });
+  });
+  mgNextBtn.addEventListener('click', mgNextQuestion);
+  mgChestBtns.forEach(function(btn, idx){
+    btn.addEventListener('click', function(){ mgOpenChest(idx); });
   });
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
