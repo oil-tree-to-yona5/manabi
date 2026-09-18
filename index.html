@@ -1416,7 +1416,10 @@
     <div class="subtitle">あそびたいゲームを えらんでね</div>
 
     <div class="hub-select">
-      <button class="hub-btn" id="dogRunBtn"><span class="hub-icon">🐕</span>ドッグラン</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hub-btn" id="dogRunBtn" style="flex:1;width:auto;"><span class="hub-icon">🐕</span>ドッグラン</button>
+        <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="dgHighScoreText">0</span></div>
+      </div>
     </div>
   </div>
 
@@ -1529,8 +1532,8 @@
     </div>
   </div>
 
-  <div class="dg-timerBox"><div class="dg-timerFill" id="dgTimerFill"></div><div class="dg-timerText" id="dgTimerText">5秒</div></div>
-  <div class="dg-sign">🐾 正しい答えのドアを選ぼう！</div>
+  <div class="dg-timerBox"><div class="dg-timerFill" id="dgTimerFill"></div><div class="dg-timerText" id="dgTimerText">15秒</div></div>
+  <div class="dg-sign" id="dgSign">🐾 ステージ1：正しい答えのドアを選ぼう！</div>
 
   <div class="dg-question"><small>もんだい</small><div class="dg-problem" id="dgProblem">-</div></div>
 
@@ -1986,6 +1989,7 @@
   var PASSWORD_KEY = 'kanjiQuizGachaPassword';
   var PLAYCOUNT_KEY = 'kanjiQuizGachaPlayCount';
   var GCOIN_KEY = 'kanjiQuizGCoin';
+  var DOGRUN_HIGHSCORE_KEY = 'kanjiQuizDogRunHighScore';
   var DEFAULT_PASSWORD = '0000';
   var TOTAL = 5;
   var RANK_POINTS = [100, 50, 20, 10, 5];
@@ -2087,6 +2091,21 @@
   function saveGCoin(n){
     try {
       window.localStorage.setItem(GCOIN_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadDogRunHighScore(){
+    try {
+      var v = window.localStorage.getItem(DOGRUN_HIGHSCORE_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveDogRunHighScore(n){
+    try {
+      window.localStorage.setItem(DOGRUN_HIGHSCORE_KEY, String(n));
     } catch(e){}
   }
 
@@ -2843,8 +2862,24 @@
     return remainder === 0 ? String(quotient) : (quotient + 'あまり' + remainder);
   }
 
+  var DG_STAGE_POOLS = [
+    ['add_basic'],
+    ['add_basic', 'subtract'],
+    ['subtract', 'add_advanced'],
+    ['add_advanced', 'multiply'],
+    ['multiply', 'division'],
+    ['multiply', 'division', 'add_advanced']
+  ];
+
+  function dgCategoryForStage(stage){
+    var idx = Math.min(stage - 1, DG_STAGE_POOLS.length - 1);
+    var pool = DG_STAGE_POOLS[idx];
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
   function dgMakeProblem(){
-    var category = IMPLEMENTED_CATEGORIES_MATH[Math.floor(Math.random() * IMPLEMENTED_CATEGORIES_MATH.length)];
+    dgSign.textContent = '🐾 ステージ' + dgStage + '：正しい答えのドアを選ぼう！';
+    var category = dgCategoryForStage(dgStage);
     var q = makeQuestionsMath(1, gachaConfig, category)[0];
     dgCurrentQuestion = q;
     dgProblemEl.textContent = q.word;
@@ -2882,15 +2917,17 @@
     dgCoinText.textContent = dgCoins;
   }
 
+  var DG_TIME_LIMIT = 15;
+
   function dgStartTimer(){
     clearInterval(dgTimer);
     dgLocked = false;
-    dgRemain = 5;
+    dgRemain = DG_TIME_LIMIT;
     dgTimerFill.style.height = '100%';
-    dgTimerText.textContent = '5秒';
+    dgTimerText.textContent = DG_TIME_LIMIT + '秒';
     dgTimer = setInterval(function(){
       dgRemain = Math.max(0, dgRemain - 0.1);
-      dgTimerFill.style.height = (dgRemain / 5 * 100) + '%';
+      dgTimerFill.style.height = (dgRemain / DG_TIME_LIMIT * 100) + '%';
       dgTimerText.textContent = Math.ceil(dgRemain) + '秒';
       if(dgRemain <= 0){
         clearInterval(dgTimer);
@@ -2922,10 +2959,13 @@
     dgChestBtns.forEach(function(btn){ btn.disabled = true; });
     dgCoins += value;
     saveGCoin(dgCoins);
+    dgStage++;
+    dgPendingTreasure = false;
     dgUpdateHud();
     dgTreasureMessage.classList.remove('show');
-    dgResetStage();
-    dgMakeProblem();
+    dgResultTitle.textContent = '🎉 ゲット！';
+    dgResultText.textContent = value + 'Gコインを ゲットしました！（ごうけい ' + dgCoins + 'G）';
+    dgMessage.classList.add('show');
   }
 
   function dgChoose(i){
@@ -2948,10 +2988,18 @@
         dgDog.classList.remove('run');
         dgDog.classList.add('enter');
         dgStreak++;
+        dgSessionScore++;
+        if(dgSessionScore > dgHighScore){
+          dgHighScore = dgSessionScore;
+          saveDogRunHighScore(dgHighScore);
+        }
         recordWordAttempt('math:' + q.category, q.word, true);
         dgResultTitle.textContent = 'せいかい！🎉';
         msgParts.push('わんこがドアの中へ入ったよ！');
-        if(dgStreak % 5 === 0) msgParts.push('🎁 たからばこが出てきたよ！');
+        if(dgStreak % 5 === 0){
+          dgPendingTreasure = true;
+          msgParts.push('🎁 たからばこが出てきたよ！');
+        }
       } else {
         dgStreak = 0;
         recordWordAttempt('math:' + q.category, q.word, false);
@@ -2972,7 +3020,7 @@
     recordWordAttempt('math:' + q.category, q.word, false);
     dgResultTitle.textContent = '時間切れ ⏰';
     var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
-    dgResultText.textContent = '5秒いないにドアをえらぼう！（こたえは ' + correctText + '）';
+    dgResultText.textContent = DG_TIME_LIMIT + '秒いないにドアをえらぼう！（こたえは ' + correctText + '）';
     dgUpdateHud();
     dgMessage.classList.add('show');
   }
@@ -2987,7 +3035,8 @@
 
   function dgNextQuestion(){
     dgResetStage();
-    if(dgStreak > 0 && dgStreak % 5 === 0){
+    if(dgPendingTreasure){
+      dgPendingTreasure = false;
       dgShowTreasure();
     } else {
       dgMakeProblem();
@@ -3111,8 +3160,10 @@
   var dgResultText = document.getElementById('dgResultText');
   var dgNextBtn = document.getElementById('dgNextBtn');
   var dgCoinText = document.getElementById('dgCoinText');
+  var dgSign = document.getElementById('dgSign');
   var dgSteps = document.querySelectorAll('#gameScreen .dg-step');
   var dgTreasureMessage = document.getElementById('dgTreasureMessage');
+  var dgHighScoreText = document.getElementById('dgHighScoreText');
   var dgChestBtns = [
     document.getElementById('dgChest0'),
     document.getElementById('dgChest1'),
@@ -3124,7 +3175,15 @@
   var dgRemain = 5;
   var dgCurrentQuestion = null;
   var dgStreak = 0;
+  var dgStage = 1;
+  var dgSessionScore = 0;
+  var dgHighScore = loadDogRunHighScore();
+  var dgPendingTreasure = false;
   var DG_CHEST_VALUES = [10, 20, 30];
+
+  function dgRefreshHighScoreDisplay(){
+    dgHighScoreText.textContent = dgHighScore;
+  }
 
   var streakDog = document.getElementById('streakDog');
   var streakLabel = document.getElementById('streakLabel');
@@ -4666,6 +4725,7 @@
     hubStatus.textContent = '';
     hubScreen.classList.add('hidden');
     gameTitleScreen.classList.remove('hidden');
+    dgRefreshHighScoreDisplay();
   });
   hubBackBtnGame.addEventListener('click', function(){
     gameTitleScreen.classList.add('hidden');
@@ -4675,6 +4735,9 @@
     gameTitleScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     dgStreak = 0;
+    dgStage = 1;
+    dgSessionScore = 0;
+    dgPendingTreasure = false;
     dgResetStage();
     dgMakeProblem();
   });
@@ -4682,6 +4745,7 @@
     clearInterval(dgTimer);
     gameScreen.classList.add('hidden');
     gameTitleScreen.classList.remove('hidden');
+    dgRefreshHighScoreDisplay();
   });
   dgDoor0.addEventListener('click', function(){ dgChoose(0); });
   dgDoor1.addEventListener('click', function(){ dgChoose(1); });
