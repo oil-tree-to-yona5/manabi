@@ -354,6 +354,7 @@
     border-color:var(--yellow);
   }
   .grade-btn{
+    position:relative;
     padding:16px 8px;
     border-radius:14px;
     border:none;
@@ -364,6 +365,19 @@
     font-weight:900;
     cursor:pointer;
     transition:transform .12s, border-color .12s, background .12s;
+  }
+  .streak-badge{
+    position:absolute;
+    top:5px;
+    right:6px;
+    font-size:10.5px;
+    font-weight:900;
+    color:var(--yellow-text);
+    background:rgba(255,255,255,0.9);
+    border-radius:999px;
+    padding:2px 6px;
+    white-space:nowrap;
+    box-shadow:0 2px 4px rgba(0,0,0,0.1);
   }
   .grade-btn:active{transform:scale(0.97);}
   .grade-btn:nth-child(1){border-color:var(--yellow);}
@@ -387,6 +401,7 @@
     margin:28px 0 22px;
   }
   .category-btn{
+    position:relative;
     padding:22px 8px;
     border-radius:14px;
     border:1px solid var(--panel-edge);
@@ -2493,6 +2508,40 @@
     saveWordStats(wordStats);
   }
 
+  var BEST_STREAK_KEY = 'kanjiQuizBestStreak';
+  function loadBestStreaks(){
+    try {
+      var v = window.localStorage.getItem(BEST_STREAK_KEY);
+      var parsed = v ? JSON.parse(v) : null;
+      if(parsed && typeof parsed === 'object') return parsed;
+    } catch(e){}
+    return {};
+  }
+  function saveBestStreaks(obj){
+    try {
+      window.localStorage.setItem(BEST_STREAK_KEY, JSON.stringify(obj));
+    } catch(e){}
+  }
+  var bestStreaks = loadBestStreaks();
+  var currentStreaksByCategory = {};
+
+  function recordStreakAttempt(categoryKey, ok){
+    if(ok){
+      var next = (currentStreaksByCategory[categoryKey] || 0) + 1;
+      currentStreaksByCategory[categoryKey] = next;
+      if(next > (bestStreaks[categoryKey] || 0)){
+        bestStreaks[categoryKey] = next;
+        saveBestStreaks(bestStreaks);
+      }
+    } else {
+      currentStreaksByCategory[categoryKey] = 0;
+    }
+  }
+
+  function getBestStreak(categoryKey){
+    return bestStreaks[categoryKey] || 0;
+  }
+
   var CATEGORY_DISPLAY_LABELS = {
     'kanji:1': '1年生の漢字', 'kanji:2': '2年生の漢字', 'kanji:3': '3年生の漢字',
     'kanji:4': '4年生の漢字', 'kanji:5': '5年生の漢字', 'kanji:6': '6年生の漢字',
@@ -4392,6 +4441,7 @@
       : q.subject === 'moji' ? ('moji:' + selectedGradeMoji)
       : ('kanji:' + selectedGrade);
     recordWordAttempt(categoryKeySA, q.word, ok);
+    recordStreakAttempt(categoryKeySA, ok);
 
     answerMark.textContent = ok ? '○' : '✕';
     answerMark.className = 'answer-mark show ' + (ok ? 'mark-ok' : 'mark-ng');
@@ -4510,6 +4560,7 @@
     }
     results.push({ ok: ok, q: q });
     recordWordAttempt('math:' + q.category, q.word, ok);
+    recordStreakAttempt('math:' + q.category, ok);
 
     answerMark.textContent = ok ? '○' : '✕';
     answerMark.className = 'answer-mark show ' + (ok ? 'mark-ok' : 'mark-ng');
@@ -5201,6 +5252,11 @@
   var modeNormalBtn = document.getElementById('modeNormalBtn');
   var modeReviewBtn = document.getElementById('modeReviewBtn');
 
+  function streakBadgeHtml(btn, categoryKey){
+    if(btn.classList.contains('locked')) return '';
+    return '<span class="streak-badge">🏆' + getBestStreak(categoryKey) + '</span>';
+  }
+
   function refreshGradeButtonLabels(){
     gradeBtns.forEach(function(btn){
       var base = btn.getAttribute('data-base');
@@ -5208,11 +5264,8 @@
       var gradeAttr = btn.getAttribute('data-grade');
       var parsedInt = parseInt(gradeAttr, 10);
       var g = isNaN(parsedInt) ? gradeAttr : parsedInt;
-      if(titleMode === 'review'){
-        btn.textContent = base + '（' + missedCount(g) + '問）';
-      } else {
-        btn.textContent = base;
-      }
+      var label = (titleMode === 'review') ? (base + '（' + missedCount(g) + '問）') : base;
+      btn.innerHTML = escapeHtml(label) + streakBadgeHtml(btn, 'kanji:' + gradeAttr);
     });
   }
 
@@ -5223,11 +5276,8 @@
       var gradeAttr = btn.getAttribute('data-grade');
       var parsedInt = parseInt(gradeAttr, 10);
       var g = isNaN(parsedInt) ? gradeAttr : parsedInt;
-      if(titleModeEn === 'review'){
-        btn.textContent = base + '（' + missedCountEn(g) + '問）';
-      } else {
-        btn.textContent = base;
-      }
+      var label = (titleModeEn === 'review') ? (base + '（' + missedCountEn(g) + '問）') : base;
+      btn.innerHTML = escapeHtml(label) + streakBadgeHtml(btn, 'english:' + gradeAttr);
     });
   }
 
@@ -5236,11 +5286,18 @@
       var base = btn.getAttribute('data-base');
       if(!base) return;
       var grade = btn.getAttribute('data-grade');
-      if(titleModeMoji === 'review'){
-        btn.textContent = base + '（' + missedCountMoji(grade) + '問）';
-      } else {
-        btn.textContent = base;
-      }
+      var label = (titleModeMoji === 'review') ? (base + '（' + missedCountMoji(grade) + '問）') : base;
+      btn.innerHTML = escapeHtml(label) + streakBadgeHtml(btn, 'moji:' + grade);
+    });
+  }
+
+  function refreshCategoryButtonLabelsMath(){
+    categoryBtnsMath.forEach(function(btn){
+      var category = btn.getAttribute('data-category');
+      if(!category) return;
+      var existingBadge = btn.querySelector('.streak-badge');
+      if(existingBadge) existingBadge.remove();
+      btn.insertAdjacentHTML('beforeend', streakBadgeHtml(btn, 'math:' + category));
     });
   }
 
@@ -5410,6 +5467,7 @@
     } else if(currentSubject === 'math'){
       mathTitleScreen.classList.remove('hidden');
       titleStatusMath.textContent = '';
+      refreshCategoryButtonLabelsMath();
     } else if(currentSubject === 'moji'){
       mojiTitleScreen.classList.remove('hidden');
       titleStatusMoji.textContent = '';
@@ -5433,6 +5491,7 @@
     hubStatus.textContent = '';
     hubScreen.classList.add('hidden');
     mathTitleScreen.classList.remove('hidden');
+    refreshCategoryButtonLabelsMath();
     renderTitleRemaining();
   });
   hubEnglishBtn.addEventListener('click', function(){
