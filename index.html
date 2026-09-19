@@ -3994,9 +3994,12 @@
   }
   speakBtn.addEventListener('click', function(){
     var q = currentQuestion;
-    if(q && q.subject === 'english'){
+    if(!q) return;
+    if(q.subject === 'english'){
       var lang = q.direction === 'e2j' ? 'en-US' : 'ja-JP';
       speakWord(q.promptText, lang);
+    } else if(q.subject === 'moji'){
+      speakWord(q.displayFullWord, 'ja-JP');
     }
   });
 
