@@ -1161,6 +1161,7 @@
   #mogGameScreen .mg-sign{position:absolute;top:78px;left:50%;transform:translateX(-50%);z-index:12;background:#5a3a20;color:#fff9df;border:5px solid #3d2712;border-radius:12px;padding:7px 18px;font-weight:900;font-size:13px;box-shadow:0 6px 0 #2c1c0d;white-space:nowrap;}
   #mogGameScreen .mg-question{position:absolute;z-index:15;top:135px;left:50%;transform:translateX(-50%);width:min(78vw,570px);padding:14px 18px;text-align:center;background:#fffaf0;border:5px solid #e0c98f;border-radius:28px;box-shadow:0 9px 20px rgba(80,60,20,.25);}
   #mogGameScreen .mg-question small{font-weight:800;color:#9b7a58;}
+  #mogGameScreen .mg-speak{position:absolute;top:8px;right:10px;width:32px;height:32px;border-radius:50%;background:#fff4cf;border:2px solid #dfc486;font-size:15px;cursor:pointer;line-height:1;}
   #mogGameScreen .mg-problem{font-size:clamp(22px,6vw,34px);font-weight:1000;line-height:1.2;margin-top:5px;}
 
   #mogGameScreen .mg-field{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);width:min(92vw,600px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,4vw,28px);z-index:10;}
@@ -1692,7 +1693,11 @@
   <div class="mg-timerBox"><div class="mg-timerFill" id="mgTimerFill"></div><div class="mg-timerText" id="mgTimerText">15秒</div></div>
   <div class="mg-sign" id="mgSign">🐹 ステージ1：せいかいを たたこう！</div>
 
-  <div class="mg-question"><small>もんだい</small><div class="mg-problem" id="mgProblem">-</div></div>
+  <div class="mg-question">
+    <button class="mg-speak" id="mgSpeakBtn">🔊</button>
+    <small>もんだい</small>
+    <div class="mg-problem" id="mgProblem">-</div>
+  </div>
 
   <div class="mg-field">
     <div class="mg-hole" id="mgHole0">
@@ -3574,6 +3579,13 @@
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
+  function mgSpeakPrompt(){
+    var q = mgCurrentQuestion;
+    if(!q) return;
+    var lang = q.direction === 'e2j' ? 'en-US' : 'ja-JP';
+    speakWord(q.promptText, lang);
+  }
+
   function mgMakeProblem(){
     mgSign.textContent = '🐹 ステージ' + mgStage + '：せいかいを たたこう！';
     var grade = mgGradeForStage(mgStage);
@@ -3581,6 +3593,7 @@
     var q = makeQuestionsEn(1, gachaConfig, grade)[0];
     mgCurrentQuestion = q;
     setTextWithFurigana(mgProblemEl, q.promptText, q.promptReading);
+    mgSpeakPrompt();
 
     mgCorrectIndex = -1;
     q.choices.forEach(function(choice, i){
@@ -3852,6 +3865,7 @@
   var mogGameScreen = document.getElementById('mogGameScreen');
   var mgExitBtn = document.getElementById('mgExitBtn');
   var mgProblemEl = document.getElementById('mgProblem');
+  var mgSpeakBtn = document.getElementById('mgSpeakBtn');
   var mgSign = document.getElementById('mgSign');
   var mgCoinText = document.getElementById('mgCoinText');
   var mgSteps = document.querySelectorAll('#mogGameScreen .mg-step');
@@ -5491,6 +5505,7 @@
   mgChestBtns.forEach(function(btn, idx){
     btn.addEventListener('click', function(){ mgOpenChest(idx); });
   });
+  mgSpeakBtn.addEventListener('click', mgSpeakPrompt);
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
     hubScreen.classList.remove('hidden');
