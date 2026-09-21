@@ -1300,6 +1300,12 @@
   #flashGameScreen .fl-card{position:absolute;top:120px;left:50%;transform:translateX(-50%);width:min(90vw,340px);background:#fff;border:5px solid #bfe0f7;border-radius:28px;padding:24px 16px;box-shadow:0 12px 26px rgba(30,60,90,.2);text-align:center;}
   #flashGameScreen .fl-flashArea{display:flex;align-items:center;justify-content:center;height:150px;}
   #flashGameScreen .fl-flashNum{font-size:72px;font-weight:900;color:#1f5f8f;}
+  #flashGameScreen .fl-flashNum.pop{animation:flPop 0.42s cubic-bezier(.2,.9,.3,1.3);}
+  @keyframes flPop{
+    0%{transform:scale(0.35);opacity:0;}
+    55%{transform:scale(1.15);opacity:1;}
+    100%{transform:scale(1);opacity:1;}
+  }
   #flashGameScreen .fl-answerArea.hidden{display:none;}
   #flashGameScreen .fl-question{font-weight:900;font-size:16px;margin-bottom:14px;}
   #flashGameScreen .fl-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -4259,6 +4265,7 @@
   }
 
   var FL_FLASH_DELAY = 500;
+  var FL_BLANK_GAP = 90;
   var flNumbers = [];
   var flSum = 0;
   var flTimeouts = [];
@@ -4318,6 +4325,13 @@
     flAnswerArea.classList.remove('hidden');
   }
 
+  function flShowFlashNumber(num){
+    flFlashNum.classList.remove('pop');
+    flFlashNum.textContent = num;
+    void flFlashNum.offsetWidth; // force reflow so the pop animation restarts even for a repeated digit
+    flFlashNum.classList.add('pop');
+  }
+
   function flMakeProblem(){
     flClearTimeouts();
     flAnswered = false;
@@ -4326,15 +4340,22 @@
     flNumbers = flGenerateNumbers();
     flSum = flNumbers[0] + flNumbers[1] + flNumbers[2];
     flFlashNum.textContent = '';
+    flFlashNum.classList.remove('pop');
     flUpdateHud();
 
     flNumbers.forEach(function(num, idx){
-      var t = setTimeout(function(){
-        flFlashNum.textContent = num;
+      var blankT = setTimeout(function(){
+        flFlashNum.classList.remove('pop');
+        flFlashNum.textContent = '';
       }, idx * FL_FLASH_DELAY);
-      flTimeouts.push(t);
+      flTimeouts.push(blankT);
+      var showT = setTimeout(function(){
+        flShowFlashNumber(num);
+      }, idx * FL_FLASH_DELAY + FL_BLANK_GAP);
+      flTimeouts.push(showT);
     });
     var endT = setTimeout(function(){
+      flFlashNum.classList.remove('pop');
       flFlashNum.textContent = '';
       flShowChoices();
     }, flNumbers.length * FL_FLASH_DELAY);
