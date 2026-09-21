@@ -1287,6 +1287,44 @@
     #traceGameScreen .tr-card{top:112px;width:88vw;padding:14px 10px;}
     #traceGameScreen .tr-canvasWrap{width:220px;height:220px;}
   }
+
+  #flashGameScreen{ display:none; position:fixed; inset:0; z-index:90; overflow:hidden; font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif; background:linear-gradient(180deg, #E8F4FF 0%, #D3E9FA 100%); color:#28425A; }
+  #flashGameScreen:not(.hidden){display:block;}
+  #flashGameScreen .fl-exit{position:absolute;top:14px;left:14px;z-index:40;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.15);cursor:pointer;}
+  #flashGameScreen .fl-hud{position:absolute;top:14px;left:62px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;}
+  #flashGameScreen .fl-ticket{background:#fff4cf;border:4px solid #fff;border-radius:20px;padding:7px 13px;font-weight:900;box-shadow:0 5px 12px rgba(90,138,154,.27);white-space:nowrap;}
+  #flashGameScreen .fl-steps{flex:1;max-width:420px;background:rgba(255,255,255,.67);border:3px solid #fff;border-radius:20px;padding:5px;display:flex;gap:5px;}
+  #flashGameScreen .fl-step{flex:1;text-align:center;border-radius:14px;padding:4px 0;font-weight:900;background:#dce8f2;color:#607080;}
+  #flashGameScreen .fl-step.active{background:#4fa3e3;color:#fff;box-shadow:inset 0 -3px #2f7fc0;}
+  #flashGameScreen .fl-sign{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:12;background:#2c5c82;color:#eaf6ff;border:5px solid #1c3d57;border-radius:12px;padding:7px 18px;font-weight:900;font-size:13px;box-shadow:0 6px 0 #14293b;white-space:nowrap;}
+  #flashGameScreen .fl-card{position:absolute;top:120px;left:50%;transform:translateX(-50%);width:min(90vw,340px);background:#fff;border:5px solid #bfe0f7;border-radius:28px;padding:24px 16px;box-shadow:0 12px 26px rgba(30,60,90,.2);text-align:center;}
+  #flashGameScreen .fl-flashArea{display:flex;align-items:center;justify-content:center;height:150px;}
+  #flashGameScreen .fl-flashNum{font-size:72px;font-weight:900;color:#1f5f8f;}
+  #flashGameScreen .fl-answerArea.hidden{display:none;}
+  #flashGameScreen .fl-question{font-weight:900;font-size:16px;margin-bottom:14px;}
+  #flashGameScreen .fl-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  #flashGameScreen .fl-choiceBtn{border:none;border-radius:16px;padding:16px 6px;font-weight:900;font-size:22px;background:#eaf5ff;color:#1f5f8f;box-shadow:0 4px 0 #bfe0f7;cursor:pointer;}
+  #flashGameScreen .fl-choiceBtn:active{transform:scale(.96);}
+  #flashGameScreen .fl-choiceBtn.correct{background:#c9f2d6;color:#1c7a3e;box-shadow:0 4px 0 #8fd6ab;}
+  #flashGameScreen .fl-choiceBtn.wrong{background:#ffd9d3;color:#b3382a;box-shadow:0 4px 0 #f0a898;}
+  #flashGameScreen .fl-choiceBtn:disabled{cursor:not-allowed;opacity:.85;}
+  #flashGameScreen .fl-message{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(20,40,60,.35);}
+  #flashGameScreen .fl-message.show{display:flex;}
+  #flashGameScreen .fl-card2{background:#fffaf0;border:5px solid #fff;border-radius:28px;padding:25px;text-align:center;width:min(86vw,380px);box-shadow:0 15px 35px rgba(61,61,85,.3);}
+  #flashGameScreen .fl-card2 h2{margin:0 0 10px;font-size:24px;}
+  #flashGameScreen .fl-card2 p{font-weight:700;font-size:13.5px;color:#54677a;margin:0 0 16px;}
+  #flashGameScreen .fl-nextBtn{border:0;border-radius:18px;padding:12px 28px;background:#4fa3e3;color:#fff;font-weight:1000;box-shadow:0 5px 0 #2f7fc0;cursor:pointer;font-size:15px;}
+  #flashGameScreen .fl-chests{display:flex;gap:12px;justify-content:center;margin-top:6px;}
+  #flashGameScreen .fl-chest{font-size:44px;background:#fff;border:4px solid #bfe0f7;border-radius:18px;padding:10px 14px;cursor:pointer;transition:transform .12s;}
+  #flashGameScreen .fl-chest:active{transform:scale(.94);}
+
+  @media(max-width:520px){
+    #flashGameScreen .fl-hud{left:58px;right:12px;}
+    #flashGameScreen .fl-ticket{font-size:12px;padding:6px 9px;}
+    #flashGameScreen .fl-card{top:112px;width:88vw;padding:18px 12px;}
+    #flashGameScreen .fl-flashArea{height:120px;}
+    #flashGameScreen .fl-flashNum{font-size:60px;}
+  }
 </style>
 </head>
 <body>
@@ -1505,9 +1543,10 @@
     <div class="subtitle">しゅるいを えらんでね</div>
 
     <div class="category-select">
-      <button class="category-btn" data-lockid="mathAddBasic" data-category="add_basic">足し算<small>初級</small></button>
-      <button class="category-btn" data-lockid="mathAddAdvanced" data-category="add_advanced">足し算<small>上級</small></button>
-      <button class="category-btn" data-lockid="subtract" data-category="subtract" data-base="ひきざん">ひきざん<small>−</small></button>
+      <button class="category-btn" data-lockid="mathAddBasic" data-category="add_basic">足し算<small>レベル1</small></button>
+      <button class="category-btn" data-lockid="mathAddAdvanced" data-category="add_advanced">足し算<small>レベル2</small></button>
+      <button class="category-btn" data-lockid="subtract" data-category="subtract">ひきざん<small>レベル1</small></button>
+      <button class="category-btn" data-lockid="mathSubAdvanced" data-category="subtract_advanced">ひきざん<small>レベル2</small></button>
       <button class="category-btn" data-lockid="mathMultiply" data-category="multiply">かけ算<small>×</small></button>
       <button class="category-btn" data-lockid="mathDivision" data-category="division">わり算<small>÷</small></button>
       <button class="category-btn locked" data-lockid="fraction" data-category="fraction" data-base="分数">分数</button>
@@ -1578,6 +1617,10 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <button class="hub-btn" id="traceRunBtn" style="flex:1;width:auto;border-color:var(--special);"><span class="hub-icon">🖊️</span>もじ なぞり書き</button>
         <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="trHighScoreText">0</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hub-btn" id="flashRunBtn" style="flex:1;width:auto;border-color:var(--yellow);"><span class="hub-icon">⚡</span>フラッシュ足し算</button>
+        <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="flHighScoreText">0</span></div>
       </div>
     </div>
   </div>
@@ -1946,6 +1989,58 @@
   </div>
 </div>
 
+<div id="flashGameScreen" class="hidden">
+  <button class="fl-exit" id="flExitBtn">🏠</button>
+
+  <div class="fl-hud">
+    <div class="fl-ticket">🪙 <span id="flCoinText">0</span>G</div>
+    <div class="fl-steps">
+      <div class="fl-step">1</div>
+      <div class="fl-step">2</div>
+      <div class="fl-step">3</div>
+      <div class="fl-step">4</div>
+      <div class="fl-step">5</div>
+    </div>
+  </div>
+
+  <div class="fl-sign">⚡ 3つの かずを たしざんしよう！</div>
+
+  <div class="fl-card">
+    <div class="fl-flashArea">
+      <div class="fl-flashNum" id="flFlashNum"></div>
+    </div>
+    <div class="fl-answerArea hidden" id="flAnswerArea">
+      <div class="fl-question">こたえは？</div>
+      <div class="fl-choices">
+        <button class="fl-choiceBtn" id="flChoice0">0</button>
+        <button class="fl-choiceBtn" id="flChoice1">0</button>
+        <button class="fl-choiceBtn" id="flChoice2">0</button>
+        <button class="fl-choiceBtn" id="flChoice3">0</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fl-message" id="flMessage">
+    <div class="fl-card2">
+      <h2 id="flResultTitle">せいかい！🎉</h2>
+      <p id="flResultText"></p>
+      <button class="fl-nextBtn" id="flNextBtn">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <div class="fl-message" id="flTreasureMessage">
+    <div class="fl-card2">
+      <h2>🎁 たからばこタイム！</h2>
+      <p>5もん せいかい！ ひとつ選んでね</p>
+      <div class="fl-chests">
+        <button class="fl-chest" id="flChest0">🧰</button>
+        <button class="fl-chest" id="flChest1">🧰</button>
+        <button class="fl-chest" id="flChest2">🧰</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="overlay hidden" id="gachaScreenOverlay">
   <div class="overlay-card">
     <h2>ふくびき</h2>
@@ -2256,14 +2351,17 @@
       </div>
 
       <h4>算数</h4>
-      <div class="settings-cost-row"><label>足し算（初級）を開放</label>
+      <div class="settings-cost-row"><label>足し算（レベル1）を開放</label>
         <input type="checkbox" id="lockCk_mathAddBasic" style="width:22px;height:22px;">
       </div>
-      <div class="settings-cost-row"><label>足し算（上級）を開放</label>
+      <div class="settings-cost-row"><label>足し算（レベル2）を開放</label>
         <input type="checkbox" id="lockCk_mathAddAdvanced" style="width:22px;height:22px;">
       </div>
-      <div class="settings-cost-row"><label>ひきざんを開放</label>
+      <div class="settings-cost-row"><label>ひきざん（レベル1）を開放</label>
         <input type="checkbox" id="lockCk_subtract" style="width:22px;height:22px;">
+      </div>
+      <div class="settings-cost-row"><label>ひきざん（レベル2）を開放</label>
+        <input type="checkbox" id="lockCk_mathSubAdvanced" style="width:22px;height:22px;">
       </div>
       <div class="settings-cost-row"><label>かけ算を開放</label>
         <input type="checkbox" id="lockCk_mathMultiply" style="width:22px;height:22px;">
@@ -2346,6 +2444,7 @@
   var DOGRUN_HIGHSCORE_KEY = 'kanjiQuizDogRunHighScore';
   var MOGURA_HIGHSCORE_KEY = 'kanjiQuizMoguraHighScore';
   var TRACE_HIGHSCORE_KEY = 'kanjiQuizTraceHighScore';
+  var FLASH_HIGHSCORE_KEY = 'kanjiQuizFlashHighScore';
   var DEFAULT_PASSWORD = '0000';
   var TOTAL = 5;
   var RANK_POINTS = [100, 50, 20, 10, 5];
@@ -2357,7 +2456,7 @@
     english5: true, english4: true,
     g3: true, pre2: true, g2: true,
     mathDivision: true, mathMultiply: true, mathAddBasic: true, mathAddAdvanced: true,
-    subtract: true, fraction: false,
+    subtract: true, mathSubAdvanced: true, fraction: false,
     mojiAnimals: true, mojiFood: true, mojiVehicles: true, mojiNature: true,
     mojiAdvanced: true, mojiDescriptive: true
   };
@@ -2492,6 +2591,21 @@
   function saveTraceHighScore(n){
     try {
       window.localStorage.setItem(TRACE_HIGHSCORE_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadFlashHighScore(){
+    try {
+      var v = window.localStorage.getItem(FLASH_HIGHSCORE_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveFlashHighScore(n){
+    try {
+      window.localStorage.setItem(FLASH_HIGHSCORE_KEY, String(n));
     } catch(e){}
   }
 
@@ -2677,8 +2791,8 @@
     'english:5': '英検5級', 'english:4': '英検4級', 'english:3': '英検3級',
     'english:pre2': '英検準2級', 'english:2': '英検2級',
     'math:division': 'わり算', 'math:multiply': 'かけ算',
-    'math:add_basic': '足し算（初級）', 'math:add_advanced': '足し算（上級）',
-    'math:subtract': 'ひきざん', 'math:fraction': '分数',
+    'math:add_basic': '足し算（レベル1）', 'math:add_advanced': '足し算（レベル2）',
+    'math:subtract': 'ひきざん（レベル1）', 'math:subtract_advanced': 'ひきざん（レベル2）', 'math:fraction': '分数',
     'moji:animals': 'どうぶつ', 'moji:food': 'たべもの',
     'moji:vehicles': 'のりもの・もの', 'moji:nature': 'しぜん',
     'moji:advanced': 'むずかしいことば', 'moji:descriptive': 'ようすのことば'
@@ -2693,7 +2807,7 @@
   var CATEGORY_ORDER_WITHIN_SUBJECT = [
     'kanji:1', 'kanji:2', 'kanji:3', 'kanji:4', 'kanji:5', 'kanji:6', 'kanji:yoji', 'kanji:extra',
     'english:5', 'english:4', 'english:3', 'english:pre2', 'english:2',
-    'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:multiply', 'math:division', 'math:fraction',
+    'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:subtract_advanced', 'math:multiply', 'math:division', 'math:fraction',
     'moji:animals', 'moji:food', 'moji:vehicles', 'moji:nature', 'moji:advanced', 'moji:descriptive'
   ];
 
@@ -3493,19 +3607,25 @@
         var f2 = 2 + Math.floor(Math.random()*8); // 2-9
         q = { subject: 'math', category: 'multiply', a: f1, b: f2, op: '×', answer: f1*f2, special: isSpecial };
       } else if(category === 'add_basic'){
-        var a1 = 1 + Math.floor(Math.random()*20); // 1-20
-        var b1 = 1 + Math.floor(Math.random()*20); // 1-20
+        var a1 = 1 + Math.floor(Math.random()*9); // 1-9
+        var b1 = 1 + Math.floor(Math.random()*9); // 1-9
         q = { subject: 'math', category: 'add_basic', a: a1, b: b1, op: '+', answer: a1+b1, special: isSpecial };
       } else if(category === 'add_advanced'){
         var a2 = 10 + Math.floor(Math.random()*90); // 10-99
         var b2 = 10 + Math.floor(Math.random()*90); // 10-99
         q = { subject: 'math', category: 'add_advanced', a: a2, b: b2, op: '+', answer: a2+b2, special: isSpecial };
       } else if(category === 'subtract'){
-        var s1 = 1 + Math.floor(Math.random()*20); // 1-20
-        var s2 = 1 + Math.floor(Math.random()*20); // 1-20
+        var s1 = 1 + Math.floor(Math.random()*9); // 1-9
+        var s2 = 1 + Math.floor(Math.random()*9); // 1-9
         var big = Math.max(s1, s2);
         var small = Math.min(s1, s2);
         q = { subject: 'math', category: 'subtract', a: big, b: small, op: '−', answer: big-small, special: isSpecial };
+      } else if(category === 'subtract_advanced'){
+        var s3 = 10 + Math.floor(Math.random()*90); // 10-99
+        var s4 = 10 + Math.floor(Math.random()*90); // 10-99
+        var big2 = Math.max(s3, s4);
+        var small2 = Math.min(s3, s4);
+        q = { subject: 'math', category: 'subtract_advanced', a: big2, b: small2, op: '−', answer: big2-small2, special: isSpecial };
       } else {
         var divisor = 2 + Math.floor(Math.random()*8); // 2-9
         var wantRemainder = Math.random() < 0.75;
@@ -3538,9 +3658,10 @@
   var CATEGORY_LABELS_MATH = {
     division: 'わり算編',
     multiply: 'かけ算編',
-    add_basic: '足し算編（初級）',
-    add_advanced: '足し算編（上級）',
-    subtract: 'ひきざん編',
+    add_basic: '足し算編（レベル1）',
+    add_advanced: '足し算編（レベル2）',
+    subtract: 'ひきざん編（レベル1）',
+    subtract_advanced: 'ひきざん編（レベル2）',
     fraction: '分数編'
   };
   var CATEGORY_MASTER_MATH = {
@@ -3548,9 +3669,10 @@
     multiply: 'かけ算マスター',
     add_basic: 'たし算マスター',
     add_advanced: 'たし算マスター',
-    subtract: 'ひきざんマスター'
+    subtract: 'ひきざんマスター',
+    subtract_advanced: 'ひきざんマスター'
   };
-  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced', 'subtract'];
+  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced', 'subtract', 'subtract_advanced'];
 
   function dgRandDelta(){
     var options = [-3, -2, -1, 1, 2, 3];
@@ -3564,10 +3686,10 @@
   var DG_STAGE_POOLS = [
     ['add_basic'],
     ['add_basic', 'subtract'],
-    ['subtract', 'add_advanced'],
-    ['add_advanced', 'multiply'],
+    ['subtract', 'add_advanced', 'subtract_advanced'],
+    ['add_advanced', 'subtract_advanced', 'multiply'],
     ['multiply', 'division'],
-    ['multiply', 'division', 'add_advanced']
+    ['multiply', 'division', 'add_advanced', 'subtract_advanced']
   ];
 
   function dgCategoryForStage(stage){
@@ -4136,6 +4258,161 @@
     }
   }
 
+  var FL_FLASH_DELAY = 500;
+  var flNumbers = [];
+  var flSum = 0;
+  var flTimeouts = [];
+  var flAnswered = false;
+
+  function flClearTimeouts(){
+    flTimeouts.forEach(function(id){ clearTimeout(id); });
+    flTimeouts = [];
+  }
+
+  function flUpdateHud(){
+    var lap = flStreak % 5;
+    flSteps.forEach(function(el, i){
+      el.classList.toggle('active', i === lap);
+    });
+    flCoinText.textContent = dgCoins;
+  }
+
+  function flGenerateNumbers(){
+    var nums = [];
+    for(var i = 0; i < 3; i++){
+      nums.push(1 + Math.floor(Math.random()*9));
+    }
+    return nums;
+  }
+
+  function flBuildChoices(sum){
+    var choices = [sum];
+    var attempts = 0;
+    while(choices.length < 4 && attempts < 30){
+      attempts++;
+      var delta = dgRandDelta();
+      var candidate = sum + delta;
+      if(candidate < 0) continue;
+      if(choices.indexOf(candidate) !== -1) continue;
+      choices.push(candidate);
+    }
+    var fallback = 1;
+    while(choices.length < 4){
+      var candidate2 = sum + fallback;
+      if(candidate2 >= 0 && choices.indexOf(candidate2) === -1) choices.push(candidate2);
+      fallback++;
+    }
+    for(var i = choices.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = choices[i]; choices[i] = choices[j]; choices[j] = tmp;
+    }
+    return choices;
+  }
+
+  function flShowChoices(){
+    var choices = flBuildChoices(flSum);
+    flChoiceBtns.forEach(function(btn, i){
+      btn.textContent = choices[i];
+      btn.dataset.value = choices[i];
+    });
+    flAnswerArea.classList.remove('hidden');
+  }
+
+  function flMakeProblem(){
+    flClearTimeouts();
+    flAnswered = false;
+    flAnswerArea.classList.add('hidden');
+    flChoiceBtns.forEach(function(btn){ btn.disabled = false; btn.classList.remove('correct', 'wrong'); });
+    flNumbers = flGenerateNumbers();
+    flSum = flNumbers[0] + flNumbers[1] + flNumbers[2];
+    flFlashNum.textContent = '';
+    flUpdateHud();
+
+    flNumbers.forEach(function(num, idx){
+      var t = setTimeout(function(){
+        flFlashNum.textContent = num;
+      }, idx * FL_FLASH_DELAY);
+      flTimeouts.push(t);
+    });
+    var endT = setTimeout(function(){
+      flFlashNum.textContent = '';
+      flShowChoices();
+    }, flNumbers.length * FL_FLASH_DELAY);
+    flTimeouts.push(endT);
+  }
+
+  function flChoose(idx){
+    if(flAnswered) return;
+    flAnswered = true;
+    var chosen = parseInt(flChoiceBtns[idx].dataset.value, 10);
+    var isCorrect = chosen === flSum;
+    flChoiceBtns.forEach(function(btn){
+      var v = parseInt(btn.dataset.value, 10);
+      if(v === flSum) btn.classList.add('correct');
+      btn.disabled = true;
+    });
+    if(!isCorrect) flChoiceBtns[idx].classList.add('wrong');
+
+    setTimeout(function(){
+      if(isCorrect){
+        flStreak++;
+        flSessionScore++;
+        if(flSessionScore > flHighScore){
+          flHighScore = flSessionScore;
+          saveFlashHighScore(flHighScore);
+        }
+        flResultTitle.textContent = 'せいかい！🎉';
+        flResultText.textContent = flNumbers.join(' + ') + ' = ' + flSum;
+        if(flStreak % 5 === 0){
+          flPendingTreasure = true;
+          flResultText.textContent += ' 🎁 たからばこが出てきたよ！';
+        }
+      } else {
+        flStreak = 0;
+        flResultTitle.textContent = 'ざんねん！💦';
+        flResultText.textContent = 'こたえは ' + flSum + ' だよ（' + flNumbers.join(' + ') + '）';
+      }
+      flUpdateHud();
+      flMessage.classList.add('show');
+    }, 700);
+  }
+
+  function flShowTreasure(){
+    var values = dgShuffle(DG_CHEST_VALUES);
+    flChestBtns.forEach(function(btn, i){
+      btn.dataset.value = values[i];
+      btn.disabled = false;
+    });
+    flTreasureMessage.classList.add('show');
+  }
+
+  function flOpenChest(idx){
+    var value = parseInt(flChestBtns[idx].dataset.value, 10);
+    flChestBtns.forEach(function(btn){ btn.disabled = true; });
+    dgCoins += value;
+    saveGCoin(dgCoins);
+    flPendingTreasure = false;
+    flUpdateHud();
+    flTreasureMessage.classList.remove('show');
+    flResultTitle.textContent = '🎉 ゲット！';
+    flResultText.textContent = value + 'Gコインを ゲットしました！（ごうけい ' + dgCoins + 'G）';
+    flMessage.classList.add('show');
+  }
+
+  function flResetStage(){
+    flMessage.classList.remove('show');
+  }
+
+  function flNextQuestion(){
+    flResetStage();
+    if(flPendingTreasure){
+      flPendingTreasure = false;
+      flShowTreasure();
+    } else {
+      flMakeProblem();
+    }
+  }
+
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
     if(!list) return;
@@ -4364,6 +4641,39 @@
 
   function trRefreshHighScoreDisplay(){
     trHighScoreText.textContent = trHighScore;
+  }
+
+  var flashRunBtn = document.getElementById('flashRunBtn');
+  var flashGameScreen = document.getElementById('flashGameScreen');
+  var flExitBtn = document.getElementById('flExitBtn');
+  var flCoinText = document.getElementById('flCoinText');
+  var flSteps = document.querySelectorAll('#flashGameScreen .fl-step');
+  var flFlashNum = document.getElementById('flFlashNum');
+  var flAnswerArea = document.getElementById('flAnswerArea');
+  var flChoiceBtns = [
+    document.getElementById('flChoice0'),
+    document.getElementById('flChoice1'),
+    document.getElementById('flChoice2'),
+    document.getElementById('flChoice3')
+  ];
+  var flMessage = document.getElementById('flMessage');
+  var flResultTitle = document.getElementById('flResultTitle');
+  var flResultText = document.getElementById('flResultText');
+  var flNextBtn = document.getElementById('flNextBtn');
+  var flTreasureMessage = document.getElementById('flTreasureMessage');
+  var flChestBtns = [
+    document.getElementById('flChest0'),
+    document.getElementById('flChest1'),
+    document.getElementById('flChest2')
+  ];
+  var flHighScoreText = document.getElementById('flHighScoreText');
+  var flStreak = 0;
+  var flSessionScore = 0;
+  var flHighScore = loadFlashHighScore();
+  var flPendingTreasure = false;
+
+  function flRefreshHighScoreDisplay(){
+    flHighScoreText.textContent = flHighScore;
   }
 
   var streakDog = document.getElementById('streakDog');
@@ -5922,6 +6232,7 @@
     dgRefreshHighScoreDisplay();
     mgRefreshHighScoreDisplay();
     trRefreshHighScoreDisplay();
+    flRefreshHighScoreDisplay();
   });
   hubBackBtnGame.addEventListener('click', function(){
     gameTitleScreen.classList.add('hidden');
@@ -5997,6 +6308,28 @@
   trSpeakBtn.addEventListener('click', trSpeakChar);
   trChestBtns.forEach(function(btn, idx){
     btn.addEventListener('click', function(){ trOpenChest(idx); });
+  });
+  flashRunBtn.addEventListener('click', function(){
+    gameTitleScreen.classList.add('hidden');
+    flashGameScreen.classList.remove('hidden');
+    flStreak = 0;
+    flSessionScore = 0;
+    flPendingTreasure = false;
+    flResetStage();
+    flMakeProblem();
+  });
+  flExitBtn.addEventListener('click', function(){
+    flClearTimeouts();
+    flashGameScreen.classList.add('hidden');
+    gameTitleScreen.classList.remove('hidden');
+    flRefreshHighScoreDisplay();
+  });
+  flChoiceBtns.forEach(function(btn, idx){
+    btn.addEventListener('click', function(){ flChoose(idx); });
+  });
+  flNextBtn.addEventListener('click', flNextQuestion);
+  flChestBtns.forEach(function(btn, idx){
+    btn.addEventListener('click', function(){ flOpenChest(idx); });
   });
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
