@@ -1231,6 +1231,61 @@
     #mogGameScreen .mg-field{top:58%;gap:10px;}
     #mogGameScreen .mg-timerBox{right:8px;top:112px;height:135px;}
   }
+
+  #traceGameScreen{
+    display:none;
+    position:fixed;inset:0;z-index:90;
+    overflow:hidden;
+    font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg, #FFF3D6 0%, #FDEBC8 100%);
+    color:#4A3220;
+  }
+  #traceGameScreen:not(.hidden){display:block;}
+  #traceGameScreen .tr-exit{position:absolute;top:14px;left:14px;z-index:40;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.15);cursor:pointer;}
+
+  #traceGameScreen .tr-hud{position:absolute;top:14px;left:62px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;}
+  #traceGameScreen .tr-ticket{background:#fff4cf;border:4px solid #fff;border-radius:20px;padding:7px 13px;font-weight:900;box-shadow:0 5px 12px rgba(90,138,154,.27);white-space:nowrap;}
+  #traceGameScreen .tr-steps{flex:1;max-width:420px;background:rgba(255,255,255,.67);border:3px solid #fff;border-radius:20px;padding:5px;display:flex;gap:5px;}
+  #traceGameScreen .tr-step{flex:1;text-align:center;border-radius:14px;padding:4px 0;font-weight:900;background:#dce8f2;color:#607080;}
+  #traceGameScreen .tr-step.active{background:#ffd447;color:#744b16;box-shadow:inset 0 -3px #e2a900;}
+
+  #traceGameScreen .tr-sign{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:12;background:#7c5738;color:#fff9df;border:5px solid #543b26;border-radius:12px;padding:7px 18px;font-weight:900;font-size:13px;box-shadow:0 6px 0 #3c2a1b;white-space:nowrap;}
+
+  #traceGameScreen .tr-card{position:absolute;top:120px;left:50%;transform:translateX(-50%);width:min(90vw,340px);background:#fffaf0;border:5px solid #e0c98f;border-radius:28px;padding:18px 16px;box-shadow:0 12px 26px rgba(80,60,20,.2);text-align:center;}
+  #traceGameScreen .tr-speak{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#fff4cf;border:2px solid #dfc486;font-size:16px;cursor:pointer;line-height:1;}
+  #traceGameScreen .tr-canvasWrap{position:relative;width:250px;height:250px;margin:8px auto 14px;border-radius:20px;background:#fff;border:3px dashed #d8c9a3;overflow:hidden;}
+  #traceGameScreen .tr-canvasWrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;}
+  #traceGameScreen #trInkCanvas{cursor:crosshair;}
+  #traceGameScreen .tr-btnRow{display:flex;gap:10px;}
+  #traceGameScreen .tr-clearBtn, #traceGameScreen .tr-doneBtn{flex:1;border:none;border-radius:14px;padding:12px 6px;font-weight:900;font-size:13.5px;cursor:pointer;}
+  #traceGameScreen .tr-clearBtn{background:#f0e4d0;color:#6a5a44;}
+  #traceGameScreen .tr-doneBtn{background:#ffd447;color:#68451e;box-shadow:0 4px 0 #d8a915;}
+  #traceGameScreen .tr-doneBtn:active, #traceGameScreen .tr-clearBtn:active{transform:scale(0.97);}
+
+  #traceGameScreen .tr-petals{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:85;}
+  #traceGameScreen .tr-petal{position:absolute;top:-30px;will-change:transform,opacity;animation:trFall linear forwards;}
+  @keyframes trFall{
+    0%{transform:translateY(0) rotate(0deg); opacity:1;}
+    100%{transform:translateY(720px) rotate(360deg); opacity:.15;}
+  }
+
+  #traceGameScreen .tr-message{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(60,49,80,.3);}
+  #traceGameScreen .tr-message.show{display:flex;}
+  #traceGameScreen .tr-card2{background:#fffaf0;border:5px solid #fff;border-radius:28px;padding:25px;text-align:center;width:min(86vw,380px);box-shadow:0 15px 35px rgba(61,61,85,.3);}
+  #traceGameScreen .tr-card2 h2{margin:0 0 10px;font-size:24px;}
+  #traceGameScreen .tr-scoreDisplay{font-size:20px;font-weight:900;color:var(--yellow-text, #B8790A);margin-bottom:8px;}
+  #traceGameScreen .tr-card2 p{font-weight:700;font-size:13.5px;color:#6a5a44;margin:0 0 16px;}
+  #traceGameScreen .tr-nextBtn{border:0;border-radius:18px;padding:12px 28px;background:#ffd447;color:#68451e;font-weight:1000;box-shadow:0 5px 0 #d8a915;cursor:pointer;font-size:15px;}
+  #traceGameScreen .tr-chests{display:flex;gap:12px;justify-content:center;margin-top:6px;}
+  #traceGameScreen .tr-chest{font-size:44px;background:#fff;border:4px solid #efd38e;border-radius:18px;padding:10px 14px;cursor:pointer;transition:transform .12s;}
+  #traceGameScreen .tr-chest:active{transform:scale(.94);}
+
+  @media(max-width:520px){
+    #traceGameScreen .tr-hud{left:58px;right:12px;}
+    #traceGameScreen .tr-ticket{font-size:12px;padding:6px 9px;}
+    #traceGameScreen .tr-card{top:112px;width:88vw;padding:14px 10px;}
+    #traceGameScreen .tr-canvasWrap{width:220px;height:220px;}
+  }
 </style>
 </head>
 <body>
@@ -1518,6 +1573,10 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <button class="hub-btn" id="mogRunBtn" style="flex:1;width:auto;border-color:var(--coral);"><span class="hub-icon">🐹</span>モグラたたき</button>
         <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="mgHighScoreText">0</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hub-btn" id="traceRunBtn" style="flex:1;width:auto;border-color:var(--special);"><span class="hub-icon">🖊️</span>もじ なぞり書き</button>
+        <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="trHighScoreText">0</span></div>
       </div>
     </div>
   </div>
@@ -1829,6 +1888,58 @@
         <button class="mg-chest" id="mgChest0">🧰</button>
         <button class="mg-chest" id="mgChest1">🧰</button>
         <button class="mg-chest" id="mgChest2">🧰</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="traceGameScreen" class="hidden">
+  <button class="tr-exit" id="trExitBtn">🏠</button>
+
+  <div class="tr-hud">
+    <div class="tr-ticket">🪙 <span id="trCoinText">0</span>G</div>
+    <div class="tr-steps">
+      <div class="tr-step">1</div>
+      <div class="tr-step">2</div>
+      <div class="tr-step">3</div>
+      <div class="tr-step">4</div>
+      <div class="tr-step">5</div>
+    </div>
+  </div>
+
+  <div class="tr-sign">🖊️ もじを なぞってみよう！</div>
+
+  <div class="tr-card">
+    <button class="tr-speak" id="trSpeakBtn">🔊</button>
+    <div class="tr-canvasWrap">
+      <canvas id="trGuideCanvas" width="280" height="280"></canvas>
+      <canvas id="trInkCanvas" width="280" height="280"></canvas>
+    </div>
+    <div class="tr-btnRow">
+      <button class="tr-clearBtn" id="trClearBtn">🔄 やりなおす</button>
+      <button class="tr-doneBtn" id="trDoneBtn">✅ できた！</button>
+    </div>
+  </div>
+
+  <div class="tr-petals" id="trPetals"></div>
+
+  <div class="tr-message" id="trMessage">
+    <div class="tr-card2">
+      <h2 id="trResultTitle">よくできました！🌸</h2>
+      <div class="tr-scoreDisplay" id="trScoreDisplay">てんすう：<span id="trScoreNum">0</span>てん</div>
+      <p id="trResultText"></p>
+      <button class="tr-nextBtn" id="trNextBtn">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <div class="tr-message" id="trTreasureMessage">
+    <div class="tr-card2">
+      <h2>🎁 たからばこタイム！</h2>
+      <p>5もじ せいかい！ ひとつ選んでね</p>
+      <div class="tr-chests">
+        <button class="tr-chest" id="trChest0">🧰</button>
+        <button class="tr-chest" id="trChest1">🧰</button>
+        <button class="tr-chest" id="trChest2">🧰</button>
       </div>
     </div>
   </div>
@@ -2233,6 +2344,7 @@
   var GCOIN_KEY = 'kanjiQuizGCoin';
   var DOGRUN_HIGHSCORE_KEY = 'kanjiQuizDogRunHighScore';
   var MOGURA_HIGHSCORE_KEY = 'kanjiQuizMoguraHighScore';
+  var TRACE_HIGHSCORE_KEY = 'kanjiQuizTraceHighScore';
   var DEFAULT_PASSWORD = '0000';
   var TOTAL = 5;
   var RANK_POINTS = [100, 50, 20, 10, 5];
@@ -2364,6 +2476,21 @@
   function saveMoguraHighScore(n){
     try {
       window.localStorage.setItem(MOGURA_HIGHSCORE_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadTraceHighScore(){
+    try {
+      var v = window.localStorage.getItem(TRACE_HIGHSCORE_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveTraceHighScore(n){
+    try {
+      window.localStorage.setItem(TRACE_HIGHSCORE_KEY, String(n));
     } catch(e){}
   }
 
@@ -3236,6 +3363,7 @@
   ];
 
   var HIRAGANA_CHARS_MOJI = 'あいうえおかがきぎくけげこごさしじすずそぞただちっつてでとどなにぬねはばぱひびぴふぶへぺほぼまみめもゃやゅゆょよらりるわん'.split('');
+  var TRACE_HIRAGANA = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'.split('');
 
   function toKatakana(str){
     return str.split('').map(function(ch){
@@ -3768,6 +3896,245 @@
     }
   }
 
+  var TR_SIZE = 280;
+  var trGlyphMask = null;
+  var trTolerantGlyphMask = null;
+  var trGlyphTotal = 0;
+  var trCurrentChar = null;
+  var trLastChar = null;
+  var trDrawing = false;
+  var trHasInk = false;
+
+  function trBuildAlphaMask(ctx, size){
+    var data = ctx.getImageData(0, 0, size, size).data;
+    var mask = new Uint8Array(size * size);
+    for(var i = 0; i < size * size; i++){
+      mask[i] = data[i * 4 + 3] > 60 ? 1 : 0;
+    }
+    return mask;
+  }
+
+  function trDilateMask(mask, size, radius){
+    var out = new Uint8Array(size * size);
+    var rr = radius * radius;
+    for(var y = 0; y < size; y++){
+      for(var x = 0; x < size; x++){
+        if(!mask[y * size + x]) continue;
+        var minDy = Math.max(-radius, -y), maxDy = Math.min(radius, size - 1 - y);
+        var minDx = Math.max(-radius, -x), maxDx = Math.min(radius, size - 1 - x);
+        for(var dy = minDy; dy <= maxDy; dy++){
+          for(var dx = minDx; dx <= maxDx; dx++){
+            if(dx * dx + dy * dy <= rr) out[(y + dy) * size + (x + dx)] = 1;
+          }
+        }
+      }
+    }
+    return out;
+  }
+
+  function trPickChar(){
+    var pool = TRACE_HIRAGANA;
+    var ch;
+    do {
+      ch = pool[Math.floor(Math.random() * pool.length)];
+    } while(ch === trLastChar && pool.length > 1);
+    trLastChar = ch;
+    return ch;
+  }
+
+  function trDrawGuide(){
+    trGuideCtx.clearRect(0, 0, TR_SIZE, TR_SIZE);
+    trGuideCtx.fillStyle = '#DDD2BC';
+    trGuideCtx.font = '900 ' + Math.floor(TR_SIZE * 0.7) + 'px "Hiragino Maru Gothic ProN","Yu Gothic",sans-serif';
+    trGuideCtx.textAlign = 'center';
+    trGuideCtx.textBaseline = 'middle';
+    trGuideCtx.fillText(trCurrentChar, TR_SIZE / 2, TR_SIZE / 2 + TR_SIZE * 0.04);
+
+    trGlyphMask = trBuildAlphaMask(trGuideCtx, TR_SIZE);
+    trGlyphTotal = 0;
+    for(var i = 0; i < trGlyphMask.length; i++) trGlyphTotal += trGlyphMask[i];
+    trTolerantGlyphMask = trDilateMask(trGlyphMask, TR_SIZE, 10);
+  }
+
+  function trClearInk(){
+    trInkCtx.clearRect(0, 0, TR_SIZE, TR_SIZE);
+    trHasInk = false;
+  }
+
+  function trMakeProblem(){
+    trCurrentChar = trPickChar();
+    trDrawGuide();
+    trClearInk();
+    trUpdateHud();
+    trSpeakChar();
+  }
+
+  function trUpdateHud(){
+    var lap = trStreak % 5;
+    trSteps.forEach(function(el, i){
+      el.classList.toggle('active', i === lap);
+    });
+    trCoinText.textContent = dgCoins;
+  }
+
+  function trSpeakChar(){
+    if(trCurrentChar) speakWord(trCurrentChar, 'ja-JP');
+  }
+
+  function trGetPos(e){
+    var rect = trInkCanvas.getBoundingClientRect();
+    var scaleX = TR_SIZE / rect.width;
+    var scaleY = TR_SIZE / rect.height;
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  }
+
+  function trPointerDown(e){
+    e.preventDefault();
+    trDrawing = true;
+    trHasInk = true;
+    try { trInkCanvas.setPointerCapture(e.pointerId); } catch(err){}
+    var p = trGetPos(e);
+    trInkCtx.beginPath();
+    trInkCtx.moveTo(p.x, p.y);
+    trInkCtx.lineTo(p.x + 0.1, p.y + 0.1);
+    trInkCtx.stroke();
+  }
+  function trPointerMove(e){
+    if(!trDrawing) return;
+    e.preventDefault();
+    var p = trGetPos(e);
+    trInkCtx.lineTo(p.x, p.y);
+    trInkCtx.stroke();
+  }
+  function trPointerUp(e){
+    trDrawing = false;
+  }
+
+  function trComputeScore(){
+    if(!trHasInk) return 0;
+    var inkData = trInkCtx.getImageData(0, 0, TR_SIZE, TR_SIZE).data;
+    var inkMask = new Uint8Array(TR_SIZE * TR_SIZE);
+    var inkTotal = 0;
+    for(var i = 0; i < TR_SIZE * TR_SIZE; i++){
+      if(inkData[i * 4 + 3] > 40){ inkMask[i] = 1; inkTotal++; }
+    }
+    if(inkTotal === 0) return 0;
+
+    var onTarget = 0;
+    for(var j = 0; j < inkMask.length; j++){
+      if(inkMask[j] && trTolerantGlyphMask[j]) onTarget++;
+    }
+    var accuracy = onTarget / inkTotal;
+
+    var dilatedInk = trDilateMask(inkMask, TR_SIZE, 5);
+    var glyphCovered = 0;
+    for(var k = 0; k < trGlyphMask.length; k++){
+      if(trGlyphMask[k] && dilatedInk[k]) glyphCovered++;
+    }
+    var coverage = trGlyphTotal > 0 ? (glyphCovered / trGlyphTotal) : 0;
+
+    var score = Math.round((accuracy * 0.5 + coverage * 0.5) * 100);
+    return Math.max(0, Math.min(100, score));
+  }
+
+  function trSpawnPetals(){
+    for(var i = 0; i < 22; i++){
+      (function(){
+        var petal = document.createElement('div');
+        petal.className = 'tr-petal';
+        petal.textContent = '🌸';
+        petal.style.left = (Math.random() * 100) + '%';
+        var duration = 1.5 + Math.random() * 1.3;
+        petal.style.animationDuration = duration + 's';
+        petal.style.animationDelay = (Math.random() * 0.35) + 's';
+        petal.style.fontSize = (14 + Math.random() * 16) + 'px';
+        trPetalsEl.appendChild(petal);
+        setTimeout(function(){ petal.remove(); }, (duration + 0.5) * 1000);
+      })();
+    }
+  }
+
+  function trShowTreasure(){
+    var values = dgShuffle(DG_CHEST_VALUES);
+    trChestBtns.forEach(function(btn, i){
+      btn.dataset.value = values[i];
+      btn.disabled = false;
+    });
+    trTreasureMessage.classList.add('show');
+  }
+
+  function trOpenChest(idx){
+    var value = parseInt(trChestBtns[idx].dataset.value, 10);
+    trChestBtns.forEach(function(btn){ btn.disabled = true; });
+    dgCoins += value;
+    saveGCoin(dgCoins);
+    trPendingTreasure = false;
+    trUpdateHud();
+    trTreasureMessage.classList.remove('show');
+    trResultTitle.textContent = '🎉 ゲット！';
+    trScoreDisplay.style.display = 'none';
+    trResultText.textContent = value + 'Gコインを ゲットしました！（ごうけい ' + dgCoins + 'G）';
+    trMessage.classList.add('show');
+  }
+
+  function trDoneTrace(){
+    var score = trComputeScore();
+    trScoreNum.textContent = score;
+    trScoreDisplay.style.display = '';
+    var isSuccess = score >= 60;
+    if(isSuccess){
+      trStreak++;
+      trSessionScore++;
+      if(trSessionScore > trHighScore){
+        trHighScore = trSessionScore;
+        saveTraceHighScore(trHighScore);
+      }
+    } else {
+      trStreak = 0;
+    }
+
+    if(score >= 90){
+      trResultTitle.textContent = 'かんぺき！🌟';
+      trResultText.textContent = 'とてもじょうずに かけました！';
+    } else if(score >= 70){
+      trResultTitle.textContent = 'よくできました！🌸';
+      trResultText.textContent = 'じょうずに なぞれたね！';
+    } else if(score >= 60){
+      trResultTitle.textContent = 'せいかい！😊';
+      trResultText.textContent = 'もうすこしで もっとじょうずに なるよ！';
+    } else if(score >= 40){
+      trResultTitle.textContent = 'もうすこし！💪';
+      trResultText.textContent = 'もういちど なぞってみよう！';
+    } else {
+      trResultTitle.textContent = 'れんしゅう あるのみ！📝';
+      trResultText.textContent = 'ゆっくり なぞってみてね！';
+    }
+
+    if(score >= 70) trSpawnPetals();
+
+    if(isSuccess && trStreak % 5 === 0){
+      trPendingTreasure = true;
+      trResultText.textContent += ' 🎁 たからばこが出てきたよ！';
+    }
+
+    trUpdateHud();
+    trMessage.classList.add('show');
+  }
+
+  function trResetStage(){
+    trMessage.classList.remove('show');
+  }
+
+  function trNextQuestion(){
+    trResetStage();
+    if(trPendingTreasure){
+      trPendingTreasure = false;
+      trShowTreasure();
+    } else {
+      trMakeProblem();
+    }
+  }
+
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
     if(!list) return;
@@ -3957,6 +4324,45 @@
 
   function mgRefreshHighScoreDisplay(){
     mgHighScoreText.textContent = mgHighScore;
+  }
+
+  var traceRunBtn = document.getElementById('traceRunBtn');
+  var traceGameScreen = document.getElementById('traceGameScreen');
+  var trExitBtn = document.getElementById('trExitBtn');
+  var trGuideCanvas = document.getElementById('trGuideCanvas');
+  var trInkCanvas = document.getElementById('trInkCanvas');
+  var trGuideCtx = trGuideCanvas.getContext('2d');
+  var trInkCtx = trInkCanvas.getContext('2d');
+  trInkCtx.strokeStyle = '#3d6dcc';
+  trInkCtx.lineWidth = 14;
+  trInkCtx.lineCap = 'round';
+  trInkCtx.lineJoin = 'round';
+  var trCoinText = document.getElementById('trCoinText');
+  var trSteps = document.querySelectorAll('#traceGameScreen .tr-step');
+  var trSpeakBtn = document.getElementById('trSpeakBtn');
+  var trClearBtn = document.getElementById('trClearBtn');
+  var trDoneBtn = document.getElementById('trDoneBtn');
+  var trMessage = document.getElementById('trMessage');
+  var trResultTitle = document.getElementById('trResultTitle');
+  var trScoreDisplay = document.getElementById('trScoreDisplay');
+  var trScoreNum = document.getElementById('trScoreNum');
+  var trResultText = document.getElementById('trResultText');
+  var trNextBtn = document.getElementById('trNextBtn');
+  var trTreasureMessage = document.getElementById('trTreasureMessage');
+  var trChestBtns = [
+    document.getElementById('trChest0'),
+    document.getElementById('trChest1'),
+    document.getElementById('trChest2')
+  ];
+  var trHighScoreText = document.getElementById('trHighScoreText');
+  var trPetalsEl = document.getElementById('trPetals');
+  var trStreak = 0;
+  var trSessionScore = 0;
+  var trHighScore = loadTraceHighScore();
+  var trPendingTreasure = false;
+
+  function trRefreshHighScoreDisplay(){
+    trHighScoreText.textContent = trHighScore;
   }
 
   var streakDog = document.getElementById('streakDog');
@@ -5514,6 +5920,7 @@
     gameTitleScreen.classList.remove('hidden');
     dgRefreshHighScoreDisplay();
     mgRefreshHighScoreDisplay();
+    trRefreshHighScoreDisplay();
   });
   hubBackBtnGame.addEventListener('click', function(){
     gameTitleScreen.classList.add('hidden');
@@ -5565,6 +5972,31 @@
     btn.addEventListener('click', function(){ mgOpenChest(idx); });
   });
   mgSpeakBtn.addEventListener('click', mgSpeakPrompt);
+  traceRunBtn.addEventListener('click', function(){
+    gameTitleScreen.classList.add('hidden');
+    traceGameScreen.classList.remove('hidden');
+    trStreak = 0;
+    trSessionScore = 0;
+    trPendingTreasure = false;
+    trResetStage();
+    trMakeProblem();
+  });
+  trExitBtn.addEventListener('click', function(){
+    traceGameScreen.classList.add('hidden');
+    gameTitleScreen.classList.remove('hidden');
+    trRefreshHighScoreDisplay();
+  });
+  trInkCanvas.addEventListener('pointerdown', trPointerDown);
+  trInkCanvas.addEventListener('pointermove', trPointerMove);
+  trInkCanvas.addEventListener('pointerup', trPointerUp);
+  trInkCanvas.addEventListener('pointercancel', trPointerUp);
+  trClearBtn.addEventListener('click', trClearInk);
+  trDoneBtn.addEventListener('click', trDoneTrace);
+  trNextBtn.addEventListener('click', trNextQuestion);
+  trSpeakBtn.addEventListener('click', trSpeakChar);
+  trChestBtns.forEach(function(btn, idx){
+    btn.addEventListener('click', function(){ trOpenChest(idx); });
+  });
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
     hubScreen.classList.remove('hidden');
