@@ -1331,6 +1331,51 @@
     #flashGameScreen .fl-flashArea{height:120px;}
     #flashGameScreen .fl-flashNum{font-size:60px;}
   }
+
+  #hkGameScreen{ display:none; position:fixed; inset:0; z-index:90; overflow:hidden; font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif; background:linear-gradient(180deg, #E4F7F6 0%, #CDEDEB 100%); color:#1E4A47; }
+  #hkGameScreen:not(.hidden){display:block;}
+  #hkGameScreen .hk-exit{position:absolute;top:14px;left:14px;z-index:40;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.15);cursor:pointer;}
+  #hkGameScreen .hk-hud{position:absolute;top:14px;left:62px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;}
+  #hkGameScreen .hk-ticket{background:#fff4cf;border:4px solid #fff;border-radius:20px;padding:7px 13px;font-weight:900;box-shadow:0 5px 12px rgba(90,138,154,.27);white-space:nowrap;}
+  #hkGameScreen .hk-steps{flex:1;max-width:420px;background:rgba(255,255,255,.67);border:3px solid #fff;border-radius:20px;padding:5px;display:flex;gap:5px;}
+  #hkGameScreen .hk-step{flex:1;text-align:center;border-radius:14px;padding:4px 0;font-weight:900;background:#dce8f2;color:#607080;}
+  #hkGameScreen .hk-step.active{background:#3fc1e0;color:#fff;box-shadow:inset 0 -3px #229bb8;}
+  #hkGameScreen .hk-sign{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:12;background:#1a5c58;color:#e7fbf8;border:5px solid #0f3d3a;border-radius:12px;padding:7px 18px;font-weight:900;font-size:13px;box-shadow:0 6px 0 #082825;white-space:nowrap;}
+  #hkGameScreen .hk-card{position:absolute;top:118px;left:50%;transform:translateX(-50%);width:min(90vw,340px);background:#fffffe;border:5px solid #bdeae6;border-radius:28px;padding:18px 16px;box-shadow:0 12px 26px rgba(20,80,75,.2);text-align:center;}
+  #hkGameScreen .hk-speak{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#e4f7f6;border:2px solid #bdeae6;font-size:16px;cursor:pointer;line-height:1;}
+  #hkGameScreen .hk-parentLabel{font-size:12px;font-weight:700;color:#4a7d79;margin-bottom:2px;}
+  #hkGameScreen .hk-parentKanji{font-size:56px;font-weight:900;line-height:1.1;color:#1e4a47;}
+  #hkGameScreen .hk-hintText{font-size:13.5px;font-weight:900;color:#0e7d74;margin:6px 0 10px;min-height:18px;}
+  #hkGameScreen .hk-canvasWrap{position:relative;width:210px;height:210px;margin:0 auto 10px;border-radius:20px;background:#fff;border:3px dashed #bcdedb;overflow:hidden;}
+  #hkGameScreen .hk-canvasWrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;}
+  #hkGameScreen #hkGuideCanvas{opacity:0;transition:opacity .25s;}
+  #hkGameScreen #hkGuideCanvas.shown{opacity:.18;}
+  #hkGameScreen #hkInkCanvas{cursor:crosshair;}
+  #hkGameScreen .hk-hintRow{margin-bottom:8px;}
+  #hkGameScreen .hk-hintBtn{border:none;border-radius:14px;padding:8px 14px;font-weight:900;font-size:12.5px;cursor:pointer;background:#eaf7f0;color:#3f7d6f;}
+  #hkGameScreen .hk-btnRow{display:flex;gap:10px;}
+  #hkGameScreen .hk-clearBtn,#hkGameScreen .hk-doneBtn{flex:1;border:none;border-radius:14px;padding:12px 6px;font-weight:900;font-size:13.5px;cursor:pointer;}
+  #hkGameScreen .hk-clearBtn{background:#eef4f0;color:#5a6a5a;}
+  #hkGameScreen .hk-doneBtn{background:#3fc1e0;color:#fff;box-shadow:0 4px 0 #229bb8;}
+  #hkGameScreen .hk-doneBtn:active,#hkGameScreen .hk-clearBtn:active,#hkGameScreen .hk-hintBtn:active{transform:scale(0.97);}
+  #hkGameScreen .hk-message{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(15,60,55,.32);}
+  #hkGameScreen .hk-message.show{display:flex;}
+  #hkGameScreen .hk-card2{background:#fffaf0;border:5px solid #fff;border-radius:28px;padding:25px;text-align:center;width:min(86vw,380px);box-shadow:0 15px 35px rgba(61,61,85,.3);}
+  #hkGameScreen .hk-card2 h2{margin:0 0 10px;font-size:24px;}
+  #hkGameScreen .hk-scoreDisplay{font-size:20px;font-weight:900;color:#0e7d74;margin-bottom:8px;}
+  #hkGameScreen .hk-card2 p{font-weight:700;font-size:13.5px;color:#54677a;margin:0 0 16px;}
+  #hkGameScreen .hk-nextBtn{border:0;border-radius:18px;padding:12px 28px;background:#3fc1e0;color:#fff;font-weight:1000;box-shadow:0 5px 0 #229bb8;cursor:pointer;font-size:15px;}
+  #hkGameScreen .hk-chests{display:flex;gap:12px;justify-content:center;margin-top:6px;}
+  #hkGameScreen .hk-chest{font-size:44px;background:#fff;border:4px solid #bdeae6;border-radius:18px;padding:10px 14px;cursor:pointer;transition:transform .12s;}
+  #hkGameScreen .hk-chest:active{transform:scale(.94);}
+
+  @media(max-width:520px){
+    #hkGameScreen .hk-hud{left:58px;right:12px;}
+    #hkGameScreen .hk-ticket{font-size:12px;padding:6px 9px;}
+    #hkGameScreen .hk-card{top:108px;width:88vw;padding:16px 10px;}
+    #hkGameScreen .hk-canvasWrap{width:190px;height:190px;}
+    #hkGameScreen .hk-parentKanji{font-size:48px;}
+  }
 </style>
 </head>
 <body>
@@ -1627,6 +1672,10 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <button class="hub-btn" id="flashRunBtn" style="flex:1;width:auto;border-color:var(--yellow);"><span class="hub-icon">⚡</span>フラッシュ足し算</button>
         <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="flHighScoreText">0</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hub-btn" id="hkRunBtn" style="flex:1;width:auto;border-color:var(--sky);"><span class="hub-icon">🔍</span>かくれかんじ探し</button>
+        <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="hkHighScoreText">0</span></div>
       </div>
     </div>
   </div>
@@ -2047,6 +2096,62 @@
   </div>
 </div>
 
+<div id="hkGameScreen" class="hidden">
+  <button class="hk-exit" id="hkExitBtn">🏠</button>
+
+  <div class="hk-hud">
+    <div class="hk-ticket">🪙 <span id="hkCoinText">0</span>G</div>
+    <div class="hk-steps">
+      <div class="hk-step">1</div>
+      <div class="hk-step">2</div>
+      <div class="hk-step">3</div>
+      <div class="hk-step">4</div>
+      <div class="hk-step">5</div>
+    </div>
+  </div>
+
+  <div class="hk-sign">🔍 かくれている かんじを みつけよう！</div>
+
+  <div class="hk-card">
+    <button class="hk-speak" id="hkSpeakBtn">🔊</button>
+    <div class="hk-parentLabel">この かんじの なかに…</div>
+    <div class="hk-parentKanji" id="hkParentKanji">薬</div>
+    <div class="hk-hintText" id="hkHintText"></div>
+    <div class="hk-canvasWrap">
+      <canvas id="hkGuideCanvas" width="240" height="240"></canvas>
+      <canvas id="hkInkCanvas" width="240" height="240"></canvas>
+    </div>
+    <div class="hk-hintRow">
+      <button class="hk-hintBtn" id="hkHintBtn">❓ ヒントを見る</button>
+    </div>
+    <div class="hk-btnRow">
+      <button class="hk-clearBtn" id="hkClearBtn">🔄 やりなおす</button>
+      <button class="hk-doneBtn" id="hkDoneBtn">✅ できた！</button>
+    </div>
+  </div>
+
+  <div class="hk-message" id="hkMessage">
+    <div class="hk-card2">
+      <h2 id="hkResultTitle">みつけた！🔍</h2>
+      <div class="hk-scoreDisplay" id="hkScoreDisplay">てんすう：<span id="hkScoreNum">0</span>てん</div>
+      <p id="hkResultText"></p>
+      <button class="hk-nextBtn" id="hkNextBtn">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <div class="hk-message" id="hkTreasureMessage">
+    <div class="hk-card2">
+      <h2>🎁 たからばこタイム！</h2>
+      <p>5もん せいかい！ ひとつ選んでね</p>
+      <div class="hk-chests">
+        <button class="hk-chest" id="hkChest0">🧰</button>
+        <button class="hk-chest" id="hkChest1">🧰</button>
+        <button class="hk-chest" id="hkChest2">🧰</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="overlay hidden" id="gachaScreenOverlay">
   <div class="overlay-card">
     <h2>ふくびき</h2>
@@ -2451,6 +2556,7 @@
   var MOGURA_HIGHSCORE_KEY = 'kanjiQuizMoguraHighScore';
   var TRACE_HIGHSCORE_KEY = 'kanjiQuizTraceHighScore';
   var FLASH_HIGHSCORE_KEY = 'kanjiQuizFlashHighScore';
+  var HK_HIGHSCORE_KEY = 'kanjiQuizHkHighScore';
   var DEFAULT_PASSWORD = '0000';
   var TOTAL = 5;
   var RANK_POINTS = [100, 50, 20, 10, 5];
@@ -2612,6 +2718,21 @@
   function saveFlashHighScore(n){
     try {
       window.localStorage.setItem(FLASH_HIGHSCORE_KEY, String(n));
+    } catch(e){}
+  }
+
+  function loadHkHighScore(){
+    try {
+      var v = window.localStorage.getItem(HK_HIGHSCORE_KEY);
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 0 : n;
+    } catch(e){
+      return 0;
+    }
+  }
+  function saveHkHighScore(n){
+    try {
+      window.localStorage.setItem(HK_HIGHSCORE_KEY, String(n));
     } catch(e){}
   }
 
@@ -3485,6 +3606,35 @@
 
   var HIRAGANA_CHARS_MOJI = 'あいうえおかがきぎくけげこごさしじすずそぞただちっつてでとどなにぬねはばぱひびぴふぶへぺほぼまみめもゃやゅゆょよらりるわん'.split('');
   var TRACE_HIRAGANA = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'.split('');
+
+  var HK_POOL = [
+    { parent: '明', hidden: '日', hint: 'ひ（おひさまの ひ）' },
+    { parent: '明', hidden: '月', hint: 'つき（よるの つき）' },
+    { parent: '休', hidden: '人', hint: 'ひと' },
+    { parent: '休', hidden: '木', hint: 'き' },
+    { parent: '林', hidden: '木', hint: 'き' },
+    { parent: '森', hidden: '木', hint: 'き' },
+    { parent: '鳴', hidden: '口', hint: 'くち' },
+    { parent: '鳴', hidden: '鳥', hint: 'とり' },
+    { parent: '岩', hidden: '山', hint: 'やま' },
+    { parent: '岩', hidden: '石', hint: 'いし' },
+    { parent: '男', hidden: '田', hint: 'た（たんぼの た）' },
+    { parent: '男', hidden: '力', hint: 'ちから' },
+    { parent: '思', hidden: '田', hint: 'た（たんぼの た）' },
+    { parent: '思', hidden: '心', hint: 'こころ' },
+    { parent: '東', hidden: '木', hint: 'き' },
+    { parent: '東', hidden: '日', hint: 'ひ（おひさまの ひ）' },
+    { parent: '好', hidden: '女', hint: 'おんな' },
+    { parent: '好', hidden: '子', hint: 'こ（こどもの こ）' },
+    { parent: '音', hidden: '日', hint: 'ひ（おひさまの ひ）' },
+    { parent: '秋', hidden: '火', hint: 'ひ（もえる ひ）' },
+    { parent: '校', hidden: '木', hint: 'き' },
+    { parent: '時', hidden: '日', hint: 'ひ（おひさまの ひ）' },
+    { parent: '妹', hidden: '女', hint: 'おんな' },
+    { parent: '姉', hidden: '女', hint: 'おんな' },
+    { parent: '薬', hidden: '木', hint: 'き' },
+    { parent: '薬', hidden: '白', hint: 'しろ（しろい いろの しろ）' }
+  ];
 
   function toKatakana(str){
     return str.split('').map(function(ch){
@@ -4434,6 +4584,209 @@
     }
   }
 
+  var HK_SIZE = 240;
+  var hkGlyphMask = null;
+  var hkTolerantGlyphMask = null;
+  var hkGlyphTotal = 0;
+  var hkCurrentPair = null;
+  var hkLastPair = null;
+  var hkDrawing = false;
+  var hkHasInk = false;
+  var hkHintShown = false;
+
+  function hkPickPair(){
+    var pool = HK_POOL;
+    var pair;
+    do {
+      pair = pool[Math.floor(Math.random() * pool.length)];
+    } while(pair === hkLastPair && pool.length > 1);
+    hkLastPair = pair;
+    return pair;
+  }
+
+  function hkDrawGuide(){
+    hkGuideCtx.clearRect(0, 0, HK_SIZE, HK_SIZE);
+    hkGuideCtx.fillStyle = '#3fc1e0';
+    hkGuideCtx.font = '900 ' + Math.floor(HK_SIZE * 0.7) + 'px "Hiragino Maru Gothic ProN","Yu Gothic",sans-serif';
+    hkGuideCtx.textAlign = 'center';
+    hkGuideCtx.textBaseline = 'middle';
+    hkGuideCtx.fillText(hkCurrentPair.hidden, HK_SIZE / 2, HK_SIZE / 2 + HK_SIZE * 0.04);
+
+    hkGlyphMask = trBuildAlphaMask(hkGuideCtx, HK_SIZE);
+    hkGlyphTotal = 0;
+    for(var i = 0; i < hkGlyphMask.length; i++) hkGlyphTotal += hkGlyphMask[i];
+    hkTolerantGlyphMask = trDilateMask(hkGlyphMask, HK_SIZE, 10);
+  }
+
+  function hkClearInk(){
+    hkInkCtx.clearRect(0, 0, HK_SIZE, HK_SIZE);
+    hkHasInk = false;
+  }
+
+  function hkMakeProblem(){
+    hkCurrentPair = hkPickPair();
+    hkHintShown = false;
+    hkGuideCanvas.classList.remove('shown');
+    hkParentKanji.textContent = hkCurrentPair.parent;
+    hkHintText.textContent = '読み方が「' + hkCurrentPair.hint + '」の かんじだよ';
+    hkDrawGuide();
+    hkClearInk();
+    hkUpdateHud();
+  }
+
+  function hkUpdateHud(){
+    var lap = hkStreak % 5;
+    hkSteps.forEach(function(el, i){
+      el.classList.toggle('active', i === lap);
+    });
+    hkCoinText.textContent = dgCoins;
+  }
+
+  function hkSpeakParent(){
+    if(hkCurrentPair) speakWord(hkCurrentPair.parent, 'ja-JP');
+  }
+
+  function hkShowHint(){
+    hkHintShown = true;
+    hkGuideCanvas.classList.add('shown');
+  }
+
+  function hkGetPos(e){
+    var rect = hkInkCanvas.getBoundingClientRect();
+    var scaleX = HK_SIZE / rect.width;
+    var scaleY = HK_SIZE / rect.height;
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  }
+
+  function hkPointerDown(e){
+    e.preventDefault();
+    hkDrawing = true;
+    hkHasInk = true;
+    try { hkInkCanvas.setPointerCapture(e.pointerId); } catch(err){}
+    var p = hkGetPos(e);
+    hkInkCtx.beginPath();
+    hkInkCtx.moveTo(p.x, p.y);
+    hkInkCtx.lineTo(p.x + 0.1, p.y + 0.1);
+    hkInkCtx.stroke();
+  }
+  function hkPointerMove(e){
+    if(!hkDrawing) return;
+    e.preventDefault();
+    var p = hkGetPos(e);
+    hkInkCtx.lineTo(p.x, p.y);
+    hkInkCtx.stroke();
+  }
+  function hkPointerUp(e){
+    hkDrawing = false;
+  }
+
+  function hkComputeScore(){
+    if(!hkHasInk) return 0;
+    var inkData = hkInkCtx.getImageData(0, 0, HK_SIZE, HK_SIZE).data;
+    var inkMask = new Uint8Array(HK_SIZE * HK_SIZE);
+    var inkTotal = 0;
+    for(var i = 0; i < HK_SIZE * HK_SIZE; i++){
+      if(inkData[i * 4 + 3] > 40){ inkMask[i] = 1; inkTotal++; }
+    }
+    if(inkTotal === 0) return 0;
+
+    var onTarget = 0;
+    for(var j = 0; j < inkMask.length; j++){
+      if(inkMask[j] && hkTolerantGlyphMask[j]) onTarget++;
+    }
+    var accuracy = onTarget / inkTotal;
+
+    var dilatedInk = trDilateMask(inkMask, HK_SIZE, 5);
+    var glyphCovered = 0;
+    for(var k = 0; k < hkGlyphMask.length; k++){
+      if(hkGlyphMask[k] && dilatedInk[k]) glyphCovered++;
+    }
+    var coverage = hkGlyphTotal > 0 ? (glyphCovered / hkGlyphTotal) : 0;
+
+    var score = Math.round((accuracy * 0.5 + coverage * 0.5) * 100);
+    return Math.max(0, Math.min(100, score));
+  }
+
+  function hkShowTreasure(){
+    var values = dgShuffle(DG_CHEST_VALUES);
+    hkChestBtns.forEach(function(btn, i){
+      btn.dataset.value = values[i];
+      btn.disabled = false;
+    });
+    hkTreasureMessage.classList.add('show');
+  }
+
+  function hkOpenChest(idx){
+    var value = parseInt(hkChestBtns[idx].dataset.value, 10);
+    hkChestBtns.forEach(function(btn){ btn.disabled = true; });
+    dgCoins += value;
+    saveGCoin(dgCoins);
+    hkPendingTreasure = false;
+    hkUpdateHud();
+    hkTreasureMessage.classList.remove('show');
+    hkResultTitle.textContent = '🎉 ゲット！';
+    hkScoreDisplay.style.display = 'none';
+    hkResultText.textContent = value + 'Gコインを ゲットしました！（ごうけい ' + dgCoins + 'G）';
+    hkMessage.classList.add('show');
+  }
+
+  function hkDoneFind(){
+    var score = hkComputeScore();
+    hkScoreNum.textContent = score;
+    hkScoreDisplay.style.display = '';
+    var isSuccess = score >= 60;
+    if(isSuccess){
+      hkStreak++;
+      hkSessionScore++;
+      if(hkSessionScore > hkHighScore){
+        hkHighScore = hkSessionScore;
+        saveHkHighScore(hkHighScore);
+      }
+    } else {
+      hkStreak = 0;
+    }
+
+    var answerLine = '「' + hkCurrentPair.parent + '」には「' + hkCurrentPair.hidden + '」が かくれていたよ';
+    if(score >= 90){
+      hkResultTitle.textContent = 'かんぺき！🌟';
+      hkResultText.textContent = 'ばっちり みつけたね！ ' + answerLine;
+    } else if(score >= 70){
+      hkResultTitle.textContent = 'みつけた！🔍';
+      hkResultText.textContent = 'じょうずに なぞれたね！ ' + answerLine;
+    } else if(score >= 60){
+      hkResultTitle.textContent = 'せいかい！😊';
+      hkResultText.textContent = 'みつけられたね！ ' + answerLine;
+    } else if(score >= 40){
+      hkResultTitle.textContent = 'おしい！💦';
+      hkResultText.textContent = 'もうすこしだったよ。 ' + answerLine;
+    } else {
+      hkResultTitle.textContent = 'もう一かい！📝';
+      hkResultText.textContent = 'ヒントを見て もう一度 なぞってみよう。 ' + answerLine;
+    }
+
+    if(isSuccess && hkStreak % 5 === 0){
+      hkPendingTreasure = true;
+      hkResultText.textContent += ' 🎁 たからばこが出てきたよ！';
+    }
+
+    hkUpdateHud();
+    hkMessage.classList.add('show');
+  }
+
+  function hkResetStage(){
+    hkMessage.classList.remove('show');
+  }
+
+  function hkNextQuestion(){
+    hkResetStage();
+    if(hkPendingTreasure){
+      hkPendingTreasure = false;
+      hkShowTreasure();
+    } else {
+      hkMakeProblem();
+    }
+  }
+
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
     if(!list) return;
@@ -4695,6 +5048,47 @@
 
   function flRefreshHighScoreDisplay(){
     flHighScoreText.textContent = flHighScore;
+  }
+
+  var hkRunBtn = document.getElementById('hkRunBtn');
+  var hkGameScreen = document.getElementById('hkGameScreen');
+  var hkExitBtn = document.getElementById('hkExitBtn');
+  var hkGuideCanvas = document.getElementById('hkGuideCanvas');
+  var hkInkCanvas = document.getElementById('hkInkCanvas');
+  var hkGuideCtx = hkGuideCanvas.getContext('2d');
+  var hkInkCtx = hkInkCanvas.getContext('2d');
+  hkInkCtx.strokeStyle = '#1e4a47';
+  hkInkCtx.lineWidth = 12;
+  hkInkCtx.lineCap = 'round';
+  hkInkCtx.lineJoin = 'round';
+  var hkCoinText = document.getElementById('hkCoinText');
+  var hkSteps = document.querySelectorAll('#hkGameScreen .hk-step');
+  var hkSpeakBtn = document.getElementById('hkSpeakBtn');
+  var hkParentKanji = document.getElementById('hkParentKanji');
+  var hkHintText = document.getElementById('hkHintText');
+  var hkHintBtn = document.getElementById('hkHintBtn');
+  var hkClearBtn = document.getElementById('hkClearBtn');
+  var hkDoneBtn = document.getElementById('hkDoneBtn');
+  var hkMessage = document.getElementById('hkMessage');
+  var hkResultTitle = document.getElementById('hkResultTitle');
+  var hkScoreDisplay = document.getElementById('hkScoreDisplay');
+  var hkScoreNum = document.getElementById('hkScoreNum');
+  var hkResultText = document.getElementById('hkResultText');
+  var hkNextBtn = document.getElementById('hkNextBtn');
+  var hkTreasureMessage = document.getElementById('hkTreasureMessage');
+  var hkChestBtns = [
+    document.getElementById('hkChest0'),
+    document.getElementById('hkChest1'),
+    document.getElementById('hkChest2')
+  ];
+  var hkHighScoreText = document.getElementById('hkHighScoreText');
+  var hkStreak = 0;
+  var hkSessionScore = 0;
+  var hkHighScore = loadHkHighScore();
+  var hkPendingTreasure = false;
+
+  function hkRefreshHighScoreDisplay(){
+    hkHighScoreText.textContent = hkHighScore;
   }
 
   var streakDog = document.getElementById('streakDog');
@@ -6254,6 +6648,7 @@
     mgRefreshHighScoreDisplay();
     trRefreshHighScoreDisplay();
     flRefreshHighScoreDisplay();
+    hkRefreshHighScoreDisplay();
   });
   hubBackBtnGame.addEventListener('click', function(){
     gameTitleScreen.classList.add('hidden');
@@ -6351,6 +6746,32 @@
   flNextBtn.addEventListener('click', flNextQuestion);
   flChestBtns.forEach(function(btn, idx){
     btn.addEventListener('click', function(){ flOpenChest(idx); });
+  });
+  hkRunBtn.addEventListener('click', function(){
+    gameTitleScreen.classList.add('hidden');
+    hkGameScreen.classList.remove('hidden');
+    hkStreak = 0;
+    hkSessionScore = 0;
+    hkPendingTreasure = false;
+    hkResetStage();
+    hkMakeProblem();
+  });
+  hkExitBtn.addEventListener('click', function(){
+    hkGameScreen.classList.add('hidden');
+    gameTitleScreen.classList.remove('hidden');
+    hkRefreshHighScoreDisplay();
+  });
+  hkInkCanvas.addEventListener('pointerdown', hkPointerDown);
+  hkInkCanvas.addEventListener('pointermove', hkPointerMove);
+  hkInkCanvas.addEventListener('pointerup', hkPointerUp);
+  hkInkCanvas.addEventListener('pointercancel', hkPointerUp);
+  hkClearBtn.addEventListener('click', hkClearInk);
+  hkDoneBtn.addEventListener('click', hkDoneFind);
+  hkNextBtn.addEventListener('click', hkNextQuestion);
+  hkSpeakBtn.addEventListener('click', hkSpeakParent);
+  hkHintBtn.addEventListener('click', hkShowHint);
+  hkChestBtns.forEach(function(btn, idx){
+    btn.addEventListener('click', function(){ hkOpenChest(idx); });
   });
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
