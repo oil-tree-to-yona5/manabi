@@ -761,6 +761,13 @@
   .feedback.ok{color:var(--yellow-text);}
   .feedback.ng{color:var(--coral-text);}
 
+  .kw-maskedWord{font-size:42px;font-weight:900;text-align:center;color:var(--chalk);letter-spacing:.08em;margin:6px 0 4px;}
+  .kw-reading{font-size:14px;font-weight:700;text-align:center;color:var(--chalk-dim);margin-bottom:16px;}
+  .kw-canvasWrap{position:relative;margin:0 auto 18px;border-radius:16px;background:#fff;border:3px dashed var(--panel-edge);overflow:hidden;background-image:repeating-linear-gradient(to right, transparent, transparent 129px, rgba(0,0,0,.15) 129px, rgba(0,0,0,.15) 130px);}
+  .kw-canvasWrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;}
+  .kw-canvasWrap #kwGuideCanvas{opacity:0;}
+  .kw-canvasWrap #kwInkCanvas{cursor:crosshair;}
+
   .result{
     text-align:center;
   }
@@ -1507,6 +1514,7 @@
     <div class="hub-select">
       <button class="hub-btn" id="hubMathBtn"><span class="hub-icon">🔢</span>算数</button>
       <button class="hub-btn" id="hubKanjiBtn"><span class="hub-icon">🈵</span>漢字</button>
+      <button class="hub-btn" id="hubKanjiWriteBtn"><span class="hub-icon">📝</span>漢字の書きとり</button>
       <button class="hub-btn" id="hubEnglishBtn"><span class="hub-icon">🔤</span>英語</button>
       <button class="hub-btn" id="hubMojiBtn"><span class="hub-icon">🐛</span>もじ虫食い</button>
       <button class="hub-btn" id="hubGameBtn"><span class="hub-icon">🎮</span>ゲームで学ぶ</button>
@@ -1546,6 +1554,32 @@
       <button class="grade-btn extra-btn" data-lockid="kanjiExtra" data-grade="extra" data-base="🔥 エクストラ">🔥 エクストラ</button>
     </div>
     <div class="title-status" id="titleStatus"></div>
+  </div>
+
+  <div id="kanjiWriteTitleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnKw">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">漢字の書きとりチャレンジ</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">漢字の書き<span>とり</span></div>
+    <div class="subtitle">がくねんを えらんでね</div>
+
+    <div class="grade-select">
+      <button class="grade-btn" data-lockid="kanji1" data-grade="1" data-base="1年生の漢字">1年生の漢字</button>
+      <button class="grade-btn" data-lockid="kanji2" data-grade="2" data-base="2年生の漢字">2年生の漢字</button>
+      <button class="grade-btn" data-lockid="kanji3" data-grade="3" data-base="3年生の漢字">3年生の漢字</button>
+      <button class="grade-btn" data-lockid="g4" data-grade="4" data-base="4年生の漢字">4年生の漢字</button>
+      <button class="grade-btn" data-lockid="g5" data-grade="5" data-base="5年生の漢字">5年生の漢字</button>
+      <button class="grade-btn" data-lockid="g6" data-grade="6" data-base="6年生の漢字">6年生の漢字</button>
+    </div>
+    <div class="title-status" id="titleStatusKw"></div>
   </div>
 
   <div id="englishTitleScreen" class="hidden">
@@ -1770,6 +1804,35 @@
       <div class="msg" id="scoreMsg"></div>
       <div class="review" id="review"></div>
       <button class="btn btn-retry" id="retryBtn">もういちど</button>
+    </div>
+  </div>
+
+  <div id="kwGameScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="kwExitBtn">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">漢字の書きとり</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="subtitle" id="kwGradeSubtitle">3年生の漢字・書きとり</div>
+
+    <div class="card" id="kwCard">
+      <div class="count" id="kwCount">1問目</div>
+      <div class="kw-maskedWord" id="kwMaskedWord">＿＿</div>
+      <div class="kw-reading" id="kwReading">よみ：わるい</div>
+      <div class="kw-canvasWrap" id="kwCanvasWrap">
+        <canvas id="kwGuideCanvas" width="130" height="150"></canvas>
+        <canvas id="kwInkCanvas" width="130" height="150"></canvas>
+      </div>
+      <div class="feedback" id="kwFeedback"></div>
+      <button class="btn btn-secondary" id="kwClearBtn" style="margin-bottom:10px;">🔄 やりなおす</button>
+      <button class="btn btn-check" id="kwDoneBtn">✅ かきおわった</button>
+      <button class="btn btn-next hidden" id="kwNextBtn">つぎへ</button>
     </div>
   </div>
 </div>
@@ -2915,6 +2978,7 @@
     'kanji:1': '1年生の漢字', 'kanji:2': '2年生の漢字', 'kanji:3': '3年生の漢字',
     'kanji:4': '4年生の漢字', 'kanji:5': '5年生の漢字', 'kanji:6': '6年生の漢字',
     'kanji:yoji': '四字熟語', 'kanji:extra': 'エクストラ',
+    'kanji:write3': '3年生の書きとり',
     'english:5': '英検5級', 'english:4': '英検4級', 'english:3': '英検3級',
     'english:pre2': '英検準2級', 'english:2': '英検2級',
     'math:division': 'わり算', 'math:multiply': 'かけ算',
@@ -2932,7 +2996,7 @@
     math: '🔢 算数', kanji: '🈵 漢字', english: '🔤 英語', moji: '🐛 もじ虫食い'
   };
   var CATEGORY_ORDER_WITHIN_SUBJECT = [
-    'kanji:1', 'kanji:2', 'kanji:3', 'kanji:4', 'kanji:5', 'kanji:6', 'kanji:yoji', 'kanji:extra',
+    'kanji:1', 'kanji:2', 'kanji:3', 'kanji:4', 'kanji:5', 'kanji:6', 'kanji:yoji', 'kanji:extra', 'kanji:write3',
     'english:5', 'english:4', 'english:3', 'english:pre2', 'english:2',
     'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:subtract_advanced', 'math:multiply', 'math:division', 'math:fraction',
     'moji:animals', 'moji:food', 'moji:vehicles', 'moji:nature', 'moji:advanced', 'moji:descriptive'
@@ -3188,6 +3252,8 @@
     if(grade === 'yoji') return KANJI_POOL_YOJI;
     return KANJI_POOL_G3;
   }
+
+  var IMPLEMENTED_GRADES_KW = ['3'];
 
   var EIKEN_POOL_5 = [
     ['apple','りんご','りんご'],['banana','バナナ','バナナ'],['orange','オレンジ','オレンジ'],
@@ -4812,6 +4878,252 @@
     }
   }
 
+  var KW_CELL = 130;
+  var KW_HEIGHT = 150;
+  var kwGlyphMask = null;
+  var kwTolerantGlyphMask = null;
+  var kwGlyphTotal = 0;
+  var kwCurrentEntry = null;
+  var kwLastEntry = null;
+  var kwCurrentSplit = null;
+  var kwDrawing = false;
+  var kwHasInk = false;
+  var kwQuestionNum = 1;
+
+  function kwIsHiragana(ch){
+    var code = ch.charCodeAt(0);
+    return code >= 0x3041 && code <= 0x309F;
+  }
+
+  function kwSplitEntry(word){
+    var chars = word.split('');
+    var start = 0, end = chars.length;
+    while(start < end && kwIsHiragana(chars[start])) start++;
+    while(end > start && kwIsHiragana(chars[end - 1])) end--;
+    if(start >= end) return { prefix: '', core: word, suffix: '' };
+    return {
+      prefix: chars.slice(0, start).join(''),
+      core: chars.slice(start, end).join(''),
+      suffix: chars.slice(end).join('')
+    };
+  }
+
+  function kwPickEntry(){
+    var pool = KANJI_POOL_G3;
+    var entry;
+    do {
+      entry = pool[Math.floor(Math.random() * pool.length)];
+    } while(entry === kwLastEntry && pool.length > 1);
+    kwLastEntry = entry;
+    return entry;
+  }
+
+  function kwBuildAlphaMask(ctx, w, h){
+    var data = ctx.getImageData(0, 0, w, h).data;
+    var mask = new Uint8Array(w * h);
+    for(var i = 0; i < w * h; i++){
+      mask[i] = data[i * 4 + 3] > 60 ? 1 : 0;
+    }
+    return mask;
+  }
+
+  function kwDilateMask(mask, w, h, radius){
+    var out = new Uint8Array(w * h);
+    var rr = radius * radius;
+    for(var y = 0; y < h; y++){
+      for(var x = 0; x < w; x++){
+        if(!mask[y * w + x]) continue;
+        var minDy = Math.max(-radius, -y), maxDy = Math.min(radius, h - 1 - y);
+        var minDx = Math.max(-radius, -x), maxDx = Math.min(radius, w - 1 - x);
+        for(var dy = minDy; dy <= maxDy; dy++){
+          for(var dx = minDx; dx <= maxDx; dx++){
+            if(dx * dx + dy * dy <= rr) out[(y + dy) * w + (x + dx)] = 1;
+          }
+        }
+      }
+    }
+    return out;
+  }
+
+  function kwDrawGuide(){
+    var core = kwCurrentSplit.core;
+    var chars = core.split('');
+    var n = chars.length;
+    var w = KW_CELL * n, h = KW_HEIGHT;
+    kwGuideCanvas.width = w;
+    kwGuideCanvas.height = h;
+    kwInkCanvas.width = w;
+    kwInkCanvas.height = h;
+    kwCanvasWrap.style.width = w + 'px';
+    kwCanvasWrap.style.height = h + 'px';
+
+    kwGuideCtx.clearRect(0, 0, w, h);
+    kwGuideCtx.fillStyle = '#000';
+    kwGuideCtx.font = '900 ' + Math.floor(h * 0.68) + 'px "Hiragino Maru Gothic ProN","Yu Gothic",sans-serif';
+    kwGuideCtx.textAlign = 'center';
+    kwGuideCtx.textBaseline = 'middle';
+    chars.forEach(function(ch, i){
+      kwGuideCtx.fillText(ch, KW_CELL * (i + 0.5), h / 2 + h * 0.04);
+    });
+
+    kwGlyphMask = kwBuildAlphaMask(kwGuideCtx, w, h);
+    kwGlyphTotal = 0;
+    for(var i = 0; i < kwGlyphMask.length; i++) kwGlyphTotal += kwGlyphMask[i];
+    kwTolerantGlyphMask = kwDilateMask(kwGlyphMask, w, h, 14);
+  }
+
+  function kwClearInk(){
+    var w = kwInkCanvas.width, h = kwInkCanvas.height;
+    kwInkCtx.clearRect(0, 0, w, h);
+    kwHasInk = false;
+  }
+
+  function kwMakeProblem(){
+    kwCurrentEntry = kwPickEntry();
+    kwCurrentSplit = kwSplitEntry(kwCurrentEntry[0]);
+    var blanks = '';
+    for(var i = 0; i < kwCurrentSplit.core.split('').length; i++) blanks += '＿';
+    kwMaskedWord.textContent = kwCurrentSplit.prefix + blanks + kwCurrentSplit.suffix;
+    kwReading.textContent = 'よみ：' + kwCurrentEntry[1];
+    kwDrawGuide();
+    kwClearInk();
+    kwFeedback.textContent = '';
+    kwFeedback.className = 'feedback';
+    kwCount.textContent = kwQuestionNum + '問目';
+    kwDoneBtn.classList.remove('hidden');
+    kwNextBtn.classList.add('hidden');
+    kwClearBtn.disabled = false;
+  }
+
+  function kwGetPos(e){
+    var rect = kwInkCanvas.getBoundingClientRect();
+    var scaleX = kwInkCanvas.width / rect.width;
+    var scaleY = kwInkCanvas.height / rect.height;
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  }
+
+  function kwPointerDown(e){
+    e.preventDefault();
+    kwDrawing = true;
+    kwHasInk = true;
+    try { kwInkCanvas.setPointerCapture(e.pointerId); } catch(err){}
+    var p = kwGetPos(e);
+    kwInkCtx.beginPath();
+    kwInkCtx.moveTo(p.x, p.y);
+    kwInkCtx.lineTo(p.x + 0.1, p.y + 0.1);
+    kwInkCtx.stroke();
+  }
+  function kwPointerMove(e){
+    if(!kwDrawing) return;
+    e.preventDefault();
+    var p = kwGetPos(e);
+    kwInkCtx.lineTo(p.x, p.y);
+    kwInkCtx.stroke();
+  }
+  function kwPointerUp(e){
+    kwDrawing = false;
+  }
+
+  function kwComputeScore(){
+    if(!kwHasInk) return 0;
+    var w = kwInkCanvas.width, h = kwInkCanvas.height;
+    var inkData = kwInkCtx.getImageData(0, 0, w, h).data;
+    var inkMask = new Uint8Array(w * h);
+    var inkTotal = 0;
+    for(var i = 0; i < w * h; i++){
+      if(inkData[i * 4 + 3] > 40){ inkMask[i] = 1; inkTotal++; }
+    }
+    if(inkTotal === 0) return 0;
+
+    var onTarget = 0;
+    for(var j = 0; j < inkMask.length; j++){
+      if(inkMask[j] && kwTolerantGlyphMask[j]) onTarget++;
+    }
+    var accuracy = onTarget / inkTotal;
+
+    var dilatedInk = kwDilateMask(inkMask, w, h, 8);
+    var glyphCovered = 0;
+    for(var k = 0; k < kwGlyphMask.length; k++){
+      if(kwGlyphMask[k] && dilatedInk[k]) glyphCovered++;
+    }
+    var coverage = kwGlyphTotal > 0 ? (glyphCovered / kwGlyphTotal) : 0;
+
+    var score = Math.round((accuracy * 0.5 + coverage * 0.5) * 100);
+    return Math.max(0, Math.min(100, score));
+  }
+
+  function kwDoneWriting(){
+    var score = kwComputeScore();
+    var isSuccess = score >= 60;
+    var fullWord = kwCurrentSplit.prefix + kwCurrentSplit.core + kwCurrentSplit.suffix;
+    var answerLine = '「' + fullWord + '」（' + kwCurrentEntry[1] + '）';
+
+    recordWordAttempt('kanji:write3', kwCurrentEntry[0], isSuccess);
+    recordStreakAttempt('kanji:write3', isSuccess);
+
+    if(isSuccess){
+      correctCount++;
+      saveCorrectCount(correctCount);
+
+      var msg = 'せいかい！（' + score + 'てん） ' + answerLine;
+      var ticketsToAward = 0;
+      var milestoneMsg = '';
+      if(correctCount % 10 === 0){
+        ticketsToAward = 2;
+        milestoneMsg = '🎉 10問連続正解でふくびきチケットを2枚 ゲット！';
+      } else if(correctCount % 5 === 0){
+        ticketsToAward = 1;
+        milestoneMsg = '🎫 5問連続正解でふくびきチケットを1枚 ゲット！';
+      }
+      if(ticketsToAward > 0){
+        var awarded = 0;
+        for(var i = 0; i < ticketsToAward; i++){
+          if(canDistribute()){
+            walletTickets++;
+            recordDistribution();
+            awarded++;
+          } else {
+            break;
+          }
+        }
+        if(awarded > 0){
+          saveWallet(walletTickets);
+          renderWalletTop();
+        }
+        if(awarded === ticketsToAward){
+          msg += ' ' + milestoneMsg;
+        } else if(awarded > 0){
+          msg += ' 🎫 ふくびきチケットを' + awarded + '枚 ゲット！（本日の配布上限のため一部のみ）';
+        }
+      }
+      kwFeedback.textContent = msg;
+      kwFeedback.className = 'feedback ok';
+    } else {
+      correctCount = 0;
+      saveCorrectCount(correctCount);
+      kwFeedback.textContent = 'おしい！（' + score + 'てん） せいかいは ' + answerLine;
+      kwFeedback.className = 'feedback ng';
+    }
+
+    kwDoneBtn.classList.add('hidden');
+    kwClearBtn.disabled = true;
+    kwNextBtn.classList.remove('hidden');
+  }
+
+  function kwNextQuestion(){
+    kwQuestionNum++;
+    kwMakeProblem();
+  }
+
+  function refreshGradeButtonLabelsKw(){
+    gradeBtnsKw.forEach(function(btn){
+      var base = btn.getAttribute('data-base');
+      if(!base) return;
+      var gradeAttr = btn.getAttribute('data-grade');
+      btn.innerHTML = escapeHtml(base) + streakBadgeHtml(btn, 'kanji:write' + gradeAttr);
+    });
+  }
+
   function addMissedEn(grade, word){
     var list = missedWordsEn[grade];
     if(!list) return;
@@ -5115,6 +5427,31 @@
   function hkRefreshHighScoreDisplay(){
     hkHighScoreText.textContent = hkHighScore;
   }
+
+  var hubKanjiWriteBtn = document.getElementById('hubKanjiWriteBtn');
+  var kanjiWriteTitleScreen = document.getElementById('kanjiWriteTitleScreen');
+  var hubBackBtnKw = document.getElementById('hubBackBtnKw');
+  var gradeBtnsKw = document.querySelectorAll('#kanjiWriteTitleScreen .grade-btn');
+  var titleStatusKw = document.getElementById('titleStatusKw');
+  var kwGameScreen = document.getElementById('kwGameScreen');
+  var kwExitBtn = document.getElementById('kwExitBtn');
+  var kwGradeSubtitle = document.getElementById('kwGradeSubtitle');
+  var kwCount = document.getElementById('kwCount');
+  var kwMaskedWord = document.getElementById('kwMaskedWord');
+  var kwReading = document.getElementById('kwReading');
+  var kwCanvasWrap = document.getElementById('kwCanvasWrap');
+  var kwGuideCanvas = document.getElementById('kwGuideCanvas');
+  var kwInkCanvas = document.getElementById('kwInkCanvas');
+  var kwGuideCtx = kwGuideCanvas.getContext('2d');
+  var kwInkCtx = kwInkCanvas.getContext('2d');
+  kwInkCtx.strokeStyle = '#2E2A4D';
+  kwInkCtx.lineWidth = 10;
+  kwInkCtx.lineCap = 'round';
+  kwInkCtx.lineJoin = 'round';
+  var kwFeedback = document.getElementById('kwFeedback');
+  var kwClearBtn = document.getElementById('kwClearBtn');
+  var kwDoneBtn = document.getElementById('kwDoneBtn');
+  var kwNextBtn = document.getElementById('kwNextBtn');
 
   var streakDog = document.getElementById('streakDog');
   var streakLabel = document.getElementById('streakLabel');
@@ -6644,6 +6981,50 @@
     refreshGradeButtonLabels();
     renderTitleRemaining();
   });
+  hubKanjiWriteBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    kanjiWriteTitleScreen.classList.remove('hidden');
+    refreshGradeButtonLabelsKw();
+    renderTitleRemaining();
+  });
+  hubBackBtnKw.addEventListener('click', function(){
+    kanjiWriteTitleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+    titleStatusKw.textContent = '';
+  });
+  gradeBtnsKw.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var lockId = btn.getAttribute('data-lockid');
+      if(lockId && !gachaConfig.unlocked[lockId]){
+        titleStatusKw.textContent = '🔒 このモードはまだ未開放です';
+        return;
+      }
+      var grade = btn.getAttribute('data-grade');
+      if(IMPLEMENTED_GRADES_KW.indexOf(grade) === -1){
+        titleStatusKw.textContent = '📘 この学年の書きとりはまだ準備中です。もうしばらくお待ちください。';
+        return;
+      }
+      titleStatusKw.textContent = '';
+      kwGradeSubtitle.textContent = btn.getAttribute('data-base') + '・書きとり';
+      kwQuestionNum = 1;
+      kanjiWriteTitleScreen.classList.add('hidden');
+      kwGameScreen.classList.remove('hidden');
+      kwMakeProblem();
+    });
+  });
+  kwExitBtn.addEventListener('click', function(){
+    kwGameScreen.classList.add('hidden');
+    kanjiWriteTitleScreen.classList.remove('hidden');
+    refreshGradeButtonLabelsKw();
+  });
+  kwInkCanvas.addEventListener('pointerdown', kwPointerDown);
+  kwInkCanvas.addEventListener('pointermove', kwPointerMove);
+  kwInkCanvas.addEventListener('pointerup', kwPointerUp);
+  kwInkCanvas.addEventListener('pointercancel', kwPointerUp);
+  kwClearBtn.addEventListener('click', kwClearInk);
+  kwDoneBtn.addEventListener('click', kwDoneWriting);
+  kwNextBtn.addEventListener('click', kwNextQuestion);
   hubMathBtn.addEventListener('click', function(){
     hubStatus.textContent = '';
     hubScreen.classList.add('hidden');
