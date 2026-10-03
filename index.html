@@ -692,6 +692,7 @@
     line-height:1.3;
   }
   .problem .op{color:var(--sky-text);padding:0 6px;}
+  .problem.word-problem{font-size:17px;font-weight:700;text-align:left;line-height:1.7;margin:8px 0 20px;}
 
   .choices{
     display:grid;
@@ -1634,6 +1635,7 @@
       <button class="category-btn" data-lockid="mathSubAdvanced" data-category="subtract_advanced">ひきざん<small>レベル2</small></button>
       <button class="category-btn" data-lockid="mathMultiply" data-category="multiply">かけ算<small>×</small></button>
       <button class="category-btn" data-lockid="mathDivision" data-category="division">わり算<small>÷</small></button>
+      <button class="category-btn" data-lockid="mathTextbook" data-category="textbook">教科書<small>ワーク</small></button>
       <button class="category-btn locked" data-lockid="fraction" data-category="fraction" data-base="分数">分数</button>
     </div>
     <div class="title-status" id="titleStatusMath"></div>
@@ -2543,6 +2545,9 @@
       <div class="settings-cost-row"><label>わり算を開放</label>
         <input type="checkbox" id="lockCk_mathDivision" style="width:22px;height:22px;">
       </div>
+      <div class="settings-cost-row"><label>教科書ワークを開放</label>
+        <input type="checkbox" id="lockCk_mathTextbook" style="width:22px;height:22px;">
+      </div>
       <div class="settings-cost-row"><label>分数を開放</label>
         <input type="checkbox" id="lockCk_fraction" style="width:22px;height:22px;">
       </div>
@@ -2631,7 +2636,7 @@
     english5: true, english4: true,
     g3: true, pre2: true, g2: true,
     mathDivision: true, mathMultiply: true, mathAddBasic: true, mathAddAdvanced: true,
-    subtract: true, mathSubAdvanced: true, fraction: false,
+    subtract: true, mathSubAdvanced: true, mathTextbook: true, fraction: false,
     mojiAnimals: true, mojiFood: true, mojiVehicles: true, mojiNature: true,
     mojiAdvanced: true, mojiDescriptive: true
   };
@@ -2984,6 +2989,7 @@
     'math:division': 'わり算', 'math:multiply': 'かけ算',
     'math:add_basic': '足し算（レベル1）', 'math:add_advanced': '足し算（レベル2）',
     'math:subtract': 'ひきざん（レベル1）', 'math:subtract_advanced': 'ひきざん（レベル2）', 'math:fraction': '分数',
+    'math:textbook': '教科書ワーク',
     'moji:animals': 'どうぶつ', 'moji:food': 'たべもの',
     'moji:vehicles': 'のりもの・もの', 'moji:nature': 'しぜん',
     'moji:advanced': 'むずかしいことば', 'moji:descriptive': 'ようすのことば'
@@ -2998,7 +3004,7 @@
   var CATEGORY_ORDER_WITHIN_SUBJECT = [
     'kanji:1', 'kanji:2', 'kanji:3', 'kanji:4', 'kanji:5', 'kanji:6', 'kanji:yoji', 'kanji:extra', 'kanji:write3',
     'english:5', 'english:4', 'english:3', 'english:pre2', 'english:2',
-    'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:subtract_advanced', 'math:multiply', 'math:division', 'math:fraction',
+    'math:add_basic', 'math:add_advanced', 'math:subtract', 'math:subtract_advanced', 'math:multiply', 'math:division', 'math:textbook', 'math:fraction',
     'moji:animals', 'moji:food', 'moji:vehicles', 'moji:nature', 'moji:advanced', 'moji:descriptive'
   ];
 
@@ -3842,6 +3848,29 @@
     }
   }
 
+  var TEXTBOOK_WORK_POOL = [
+    { word: '（　2　）にあてはまる、時間のたんいを書きましょう：遠足で歩いた時間', answer: '時間', choices: ['時間', '分', '秒'] },
+    { word: '（　22　）にあてはまる、時間のたんいを書きましょう：100m走るのにかかった時間', answer: '秒', choices: ['時間', '分', '秒'] },
+    { word: '（　45　）にあてはまる、時間のたんいを書きましょう：昼休みの時間', answer: '分', choices: ['時間', '分', '秒'] },
+    { word: '（　4　）にあてはまる、時間のたんいを書きましょう：校歌を1回歌うのにかかった時間', answer: '分', choices: ['時間', '分', '秒'] },
+    { word: '家から駅まで30分かかります。9時20分までに駅に着くためには、おそくとも何時何分までに家を出なければならないでしょうか。', answer: '8時50分', choices: ['8時50分', '8時40分', '9時50分', '8時30分'] },
+    { word: 'たくやさんは、午後2時40分から、午後3時30分まで公園で遊びました。公園で遊んでいた時間は、何分ですか。', answer: '50分', choices: ['50分', '90分', '40分', '1時間10分'] },
+    { word: 'ゆりさんは、おばさんの家に遊びに行くのに、電車に1時間40分、バスに30分乗りました。乗り物に乗った時間は、あわせて何時間何分ですか。', answer: '2時間10分', choices: ['2時間10分', '1時間70分', '2時間', '1時間10分'] },
+    { word: 'どちらの時間が長いですか。長いほうの時間を答えましょう：1分、59秒', answer: '1分', choices: ['1分', '59秒'] },
+    { word: 'どちらの時間が長いですか。長いほうの時間を答えましょう：80秒、1分30秒', answer: '1分30秒', choices: ['80秒', '1分30秒'] },
+    { word: 'どちらの時間が長いですか。長いほうの時間を答えましょう：2分、100秒', answer: '2分', choices: ['2分', '100秒'] },
+    { word: 'ふくろの中に入っているあめを、6人で同じ数ずつ分けます。あめが12こ入っているとき、1人分は何こになりますか。', answer: '2こ', choices: ['2こ', '6こ', '12こ', '3こ'] },
+    { word: 'ふくろの中に入っているあめを、6人で同じ数ずつ分けます。あめが6こ入っているとき、1人分は何こになりますか。', answer: '1こ', choices: ['1こ', '6こ', '0こ', '2こ'] },
+    { word: 'ふくろの中に入っているあめを、6人で同じ数ずつ分けます。あめが1こも入っていないとき、1人分は何こになりますか。', answer: '0こ', choices: ['0こ', '1こ', '6こ', '分けられない'] },
+    { word: '42このボールを、6こずつ箱に分けるには、箱は何箱ひつようですか。', answer: '7箱', choices: ['7箱', '6箱', '8箱', '48箱'] },
+    { word: '54このみかんを、9こずつふくろに入れます。何ふくろできますか。', answer: '6ふくろ', choices: ['6ふくろ', '9ふくろ', '5ふくろ', '63ふくろ'] },
+    { word: '赤い色紙が346まいあります。青い色紙は赤い色紙より157まい多いです。青い色紙は何まいありますか。', answer: '503まい', choices: ['503まい', '189まい', '493まい', '513まい'] },
+    { word: '工場のそう庫に品物が7248こ入っていました。このうち3657こを外に運び出しました。そう庫にのこっている品物は何こですか。', answer: '3591こ', choices: ['3591こ', '3691こ', '4591こ', '3501こ'] },
+    { word: 'ある学校では、コピー用紙を、先週は1755まい、今週は2352まい使いました。先週と今週で、使ったコピー用紙は、あわせて何まいですか。', answer: '4107まい', choices: ['4107まい', '4017まい', '597まい', '4207まい'] },
+    { word: 'ある学校では、コピー用紙を、先週は1755まい、今週は2352まい使いました。先週と今週で、使ったコピー用紙のまい数のちがいは何まいですか。', answer: '597まい', choices: ['597まい', '4107まい', '697まい', '587まい'] },
+    { word: '0から9までのカードが1まいずつあります。このカードから8まいをえらんで、□□□□＋3804＝6000となるたし算の式をつくります。4まいのカードを使ってできる式の□にあてはまる4けたの数はいくつですか。', answer: '2196', choices: ['2196', '2296', '2186', '3196'] }
+  ];
+  var twLastIndex = -1;
 
   function makeQuestionsMath(n, cfg, category){
     var qs = [];
@@ -3873,6 +3902,21 @@
         var big2 = Math.max(s3, s4);
         var small2 = Math.min(s3, s4);
         q = { subject: 'math', category: 'subtract_advanced', a: big2, b: small2, op: '−', answer: big2-small2, special: isSpecial };
+      } else if(category === 'textbook'){
+        var twIndex;
+        do {
+          twIndex = Math.floor(Math.random() * TEXTBOOK_WORK_POOL.length);
+        } while(twIndex === twLastIndex && TEXTBOOK_WORK_POOL.length > 1);
+        twLastIndex = twIndex;
+        var twEntry = TEXTBOOK_WORK_POOL[twIndex];
+        q = {
+          subject: 'math',
+          category: 'textbook',
+          word: twEntry.word,
+          answer: twEntry.answer,
+          choices: shuffleArray(twEntry.choices),
+          special: false
+        };
       } else {
         var divisor = 2 + Math.floor(Math.random()*8); // 2-9
         var wantRemainder = Math.random() < 0.75;
@@ -3894,9 +3938,11 @@
           special: isSpecial
         };
       }
-      q.word = (q.category === 'division')
-        ? (q.dividend + '÷' + q.divisor)
-        : (q.a + (q.op) + q.b);
+      if(q.category === 'division'){
+        q.word = q.dividend + '÷' + q.divisor;
+      } else if(q.category !== 'textbook'){
+        q.word = q.a + (q.op) + q.b;
+      }
       qs.push(q);
     }
     return qs;
@@ -3909,7 +3955,8 @@
     add_advanced: '足し算編（レベル2）',
     subtract: 'ひきざん編（レベル1）',
     subtract_advanced: 'ひきざん編（レベル2）',
-    fraction: '分数編'
+    fraction: '分数編',
+    textbook: '教科書ワーク'
   };
   var CATEGORY_MASTER_MATH = {
     division: 'わり算マスター',
@@ -3917,9 +3964,10 @@
     add_basic: 'たし算マスター',
     add_advanced: 'たし算マスター',
     subtract: 'ひきざんマスター',
-    subtract_advanced: 'ひきざんマスター'
+    subtract_advanced: 'ひきざんマスター',
+    textbook: '教科書ワークマスター'
   };
-  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced', 'subtract', 'subtract_advanced'];
+  var IMPLEMENTED_CATEGORIES_MATH = ['division', 'multiply', 'add_basic', 'add_advanced', 'subtract', 'subtract_advanced', 'textbook'];
 
   function dgRandDelta(){
     var options = [-3, -2, -1, 1, 2, 3];
@@ -5842,11 +5890,35 @@
     var q = currentQuestion;
     countEl.textContent = (results.length + 1) + '問目';
 
-    if(q.subject === 'math'){
+    if(q.subject === 'math' && q.category === 'textbook'){
+      illustrationEl.classList.add('hidden');
+      speakBtn.classList.add('hidden');
+      checkBtn.classList.add('hidden');
+      choicesEl.classList.remove('hidden');
+      divisionAnswerRow.style.display = 'none';
+      singleAnswerRow.style.display = 'none';
+      spLampLeft.style.display = 'none';
+      spLampRight.style.display = 'none';
+      specialCaption.style.display = 'none';
+      specialBanner.style.display = 'none';
+
+      problemEl.classList.add('word-problem');
+      problemEl.textContent = q.word;
+      choicesEl.innerHTML = '';
+      q.choices.forEach(function(choice){
+        var btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.dataset.value = choice;
+        btn.textContent = choice;
+        btn.addEventListener('click', function(){ selectAnswerTextbook(choice, btn); });
+        choicesEl.appendChild(btn);
+      });
+    } else if(q.subject === 'math'){
       illustrationEl.classList.add('hidden');
       speakBtn.classList.add('hidden');
       choicesEl.classList.add('hidden');
       checkBtn.classList.remove('hidden');
+      problemEl.classList.remove('word-problem');
       spLampLeft.style.display = '';
       spLampRight.style.display = '';
       specialCaption.style.display = '';
@@ -5872,6 +5944,7 @@
       choicesEl.classList.remove('hidden');
       divisionAnswerRow.style.display = 'none';
       singleAnswerRow.style.display = 'none';
+      problemEl.classList.remove('word-problem');
       spLampLeft.style.display = '';
       spLampRight.style.display = '';
       specialCaption.style.display = '';
@@ -6033,6 +6106,76 @@
       }
       feedbackEl.className = 'feedback ng';
     }
+    nextBtn.classList.remove('hidden');
+    renderStreakTrack(!ok);
+  }
+
+  function selectAnswerTextbook(choice, btnEl){
+    var q = currentQuestion;
+    var ok = choice === q.answer;
+    results.push({ ok: ok, q: q });
+    recordWordAttempt('math:textbook', q.word, ok);
+    recordStreakAttempt('math:textbook', ok);
+
+    answerMark.textContent = ok ? '○' : '✕';
+    answerMark.className = 'answer-mark show ' + (ok ? 'mark-ok' : 'mark-ng');
+
+    var buttons = choicesEl.querySelectorAll('.choice-btn');
+    buttons.forEach(function(b){
+      b.disabled = true;
+      if(b.dataset.value === q.answer){
+        b.classList.add('correct');
+      } else if(b === btnEl && !ok){
+        b.classList.add('wrong');
+      }
+    });
+
+    if(ok){
+      feedbackEl.textContent = 'せいかい！';
+      feedbackEl.className = 'feedback ok';
+
+      correctCount++;
+      saveCorrectCount(correctCount);
+      var ticketsToAward = 0;
+      var milestoneMsg = '';
+      if(correctCount % 10 === 0){
+        ticketsToAward = 2;
+        milestoneMsg = '🎉 10問連続正解でふくびきチケットを2枚 ゲット！';
+      } else if(correctCount % 5 === 0){
+        ticketsToAward = 1;
+        milestoneMsg = '🎫 5問連続正解でふくびきチケットを1枚 ゲット！';
+      }
+      if(ticketsToAward > 0){
+        var awarded = 0;
+        for(var i=0;i<ticketsToAward;i++){
+          if(canDistribute()){
+            walletTickets++;
+            recordDistribution();
+            awarded++;
+          } else {
+            break;
+          }
+        }
+        if(awarded > 0){
+          saveWallet(walletTickets);
+          renderWalletTop();
+          sessionTicketsEarned += awarded;
+        }
+        if(awarded === ticketsToAward){
+          feedbackEl.textContent += ' ' + milestoneMsg;
+        } else if(awarded > 0){
+          feedbackEl.textContent += ' 🎫 ふくびきチケットを' + awarded + '枚 ゲット！（本日の配布上限のため一部のみ）';
+        } else {
+          feedbackEl.textContent += '（本日のチケット配布上限のためふくびきチケットはもらえませんでした）';
+        }
+      }
+    } else {
+      correctCount = 0;
+      saveCorrectCount(correctCount);
+      feedbackEl.textContent = 'ざんねん… 正しい答えは「' + q.answer + '」だよ';
+      feedbackEl.className = 'feedback ng';
+    }
+
     nextBtn.classList.remove('hidden');
     renderStreakTrack(!ok);
   }
