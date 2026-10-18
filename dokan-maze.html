@@ -99,7 +99,7 @@ body[data-ctl="swipe"] #sw{display:grid}
   </main>
   <p class="hint">移動：矢印キー / WASD　爆弾：スペース　一時停止：P</p>
   <footer class="ctl">
-    <div id="sw"><div><b>画面のどこでもドラッグで移動</b><br>ちょんとタップで爆弾</div></div>
+    <div id="sw"><div><b>画面のどこでもドラッグで移動</b><br>爆弾は右のボタンで設置</div></div>
     <div id="pad"role="group" aria-label="移動パッド">
       <svg viewBox="0 0 100 100" aria-hidden="true">
         <circle class="ring" cx="50" cy="50" r="48"/>
@@ -305,7 +305,7 @@ function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(_){}
 let ctlMode='swipe';
 try{ const m=localStorage.getItem('dokan-meiro-ctl'); if(m==='pad'||m==='swipe') ctlMode=m; }catch(_){}
 const stickEl=$('stick'),knobEl=stickEl.firstElementChild;
-let swId=null,swX=0,swY=0,swX0=0,swY0=0,swT0=0,swMoved=false;
+let swId=null,swX=0,swY=0;
 function releaseStick(){
   swId=null; padDir=null; stickEl.style.display='none'; pad.dataset.dir='';
 }
@@ -323,7 +323,7 @@ document.addEventListener('pointerdown',e=>{
   if(ctlMode!=='swipe'||e.pointerType==='mouse'||swId!==null||state!=='play') return;
   const t=e.target;
   if(t&&t.closest&&t.closest('button,#pad,#bomb')) return;
-  swId=e.pointerId; swX=swX0=e.clientX; swY=swY0=e.clientY; swT0=performance.now(); swMoved=false;
+  swId=e.pointerId; swX=e.clientX; swY=e.clientY;
   ac();
   stickEl.style.display='block';
   stickEl.style.transform='translate('+swX+'px,'+swY+'px)';
@@ -333,7 +333,6 @@ document.addEventListener('pointermove',e=>{
   if(e.pointerId!==swId) return;
   let dx=e.clientX-swX,dy=e.clientY-swY;
   const d=Math.hypot(dx,dy),R=46;
-  if(Math.hypot(e.clientX-swX0,e.clientY-swY0)>10) swMoved=true;
   if(d>R){ swX+=dx/d*(d-R); swY+=dy/d*(d-R); dx=e.clientX-swX; dy=e.clientY-swY; }
   const dd=Math.min(R,d);
   stickEl.style.transform='translate('+swX+'px,'+swY+'px)';
@@ -342,9 +341,7 @@ document.addEventListener('pointermove',e=>{
 });
 function swEnd(e){
   if(e.pointerId!==swId) return;
-  const tap=e.type==='pointerup'&&!swMoved&&performance.now()-swT0<240;
   releaseStick();
-  if(tap&&state==='play') bombReq=true;
 }
 document.addEventListener('pointerup',swEnd);
 document.addEventListener('pointercancel',swEnd);
