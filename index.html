@@ -1384,6 +1384,11 @@
     #hkGameScreen .hk-canvasWrap{width:190px;height:190px;}
     #hkGameScreen .hk-parentKanji{font-size:48px;}
   }
+
+  #dokanGameScreen{ display:none; position:fixed; inset:0; z-index:90; background:#15122f; }
+  #dokanGameScreen:not(.hidden){display:block;}
+  #dokanGameScreen .dk-exit{position:absolute;top:14px;left:14px;z-index:10;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.25);cursor:pointer;}
+  #dokanGameScreen iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:1;}
 </style>
 </head>
 <body>
@@ -1519,6 +1524,7 @@
       <button class="hub-btn" id="hubEnglishBtn"><span class="hub-icon">🔤</span>英語</button>
       <button class="hub-btn" id="hubMojiBtn"><span class="hub-icon">🐛</span>もじ虫食い</button>
       <button class="hub-btn" id="hubGameBtn"><span class="hub-icon">🎮</span>ゲームで学ぶ</button>
+      <button class="hub-btn" id="hubGamesBtn"><span class="hub-icon">🕹️</span>ゲーム</button>
     </div>
     <div class="title-status" id="hubStatus"></div>
     <button class="settings-link" id="parentInfoLinkBtn">👪 保護者の方へ</button>
@@ -1713,6 +1719,26 @@
         <button class="hub-btn" id="hkRunBtn" style="flex:1;width:auto;border-color:var(--sky);"><span class="hub-icon">🔍</span>かくれかんじ探し</button>
         <div class="app-header-badge" style="flex-shrink:0;">🏆 <span id="hkHighScoreText">0</span></div>
       </div>
+    </div>
+  </div>
+
+  <div id="gamesTitleScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnGames">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">ゲーム</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">ゲーム</div>
+    <div class="subtitle">あそびたいゲームを えらんでね</div>
+
+    <div class="hub-select">
+      <button class="hub-btn" id="dokanRunBtn" style="border-color:var(--coral);"><span class="hub-icon">💣</span>ドカン迷路</button>
     </div>
   </div>
 
@@ -2215,6 +2241,11 @@
       </div>
     </div>
   </div>
+</div>
+
+<div id="dokanGameScreen" class="hidden">
+  <button class="dk-exit" id="dkExitBtn">🏠</button>
+  <iframe id="dokanFrame" src="dokan-maze.html" title="ドカン迷路"></iframe>
 </div>
 
 <div class="overlay hidden" id="gachaScreenOverlay">
@@ -5493,6 +5524,14 @@
     hkHighScoreText.textContent = hkHighScore;
   }
 
+  var hubGamesBtn = document.getElementById('hubGamesBtn');
+  var gamesTitleScreen = document.getElementById('gamesTitleScreen');
+  var hubBackBtnGames = document.getElementById('hubBackBtnGames');
+  var dokanRunBtn = document.getElementById('dokanRunBtn');
+  var dokanGameScreen = document.getElementById('dokanGameScreen');
+  var dkExitBtn = document.getElementById('dkExitBtn');
+  var dokanFrame = document.getElementById('dokanFrame');
+
   var hubKanjiWriteBtn = document.getElementById('hubKanjiWriteBtn');
   var kanjiWriteTitleScreen = document.getElementById('kanjiWriteTitleScreen');
   var hubBackBtnKw = document.getElementById('hubBackBtnKw');
@@ -7338,6 +7377,24 @@
   hkHintBtn.addEventListener('click', hkShowHint);
   hkChestBtns.forEach(function(btn, idx){
     btn.addEventListener('click', function(){ hkOpenChest(idx); });
+  });
+  hubGamesBtn.addEventListener('click', function(){
+    hubStatus.textContent = '';
+    hubScreen.classList.add('hidden');
+    gamesTitleScreen.classList.remove('hidden');
+  });
+  hubBackBtnGames.addEventListener('click', function(){
+    gamesTitleScreen.classList.add('hidden');
+    hubScreen.classList.remove('hidden');
+  });
+  dokanRunBtn.addEventListener('click', function(){
+    gamesTitleScreen.classList.add('hidden');
+    dokanGameScreen.classList.remove('hidden');
+    try { dokanFrame.contentWindow.location.reload(); } catch(e){}
+  });
+  dkExitBtn.addEventListener('click', function(){
+    dokanGameScreen.classList.add('hidden');
+    gamesTitleScreen.classList.remove('hidden');
   });
   hubBackBtnMoji.addEventListener('click', function(){
     mojiTitleScreen.classList.add('hidden');
