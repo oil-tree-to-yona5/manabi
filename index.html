@@ -1585,6 +1585,7 @@
       <button class="grade-btn" data-lockid="g4" data-grade="4" data-base="4年生の漢字">4年生の漢字</button>
       <button class="grade-btn" data-lockid="g5" data-grade="5" data-base="5年生の漢字">5年生の漢字</button>
       <button class="grade-btn" data-lockid="g6" data-grade="6" data-base="6年生の漢字">6年生の漢字</button>
+      <button class="grade-btn" data-lockid="kanji3" data-grade="3sentence" data-base="れい文の漢字">れい文の漢字</button>
     </div>
     <div class="title-status" id="titleStatusKw"></div>
   </div>
@@ -3290,7 +3291,7 @@
     return KANJI_POOL_G3;
   }
 
-  var IMPLEMENTED_GRADES_KW = ['3'];
+  var IMPLEMENTED_GRADES_KW = ['3', '3sentence'];
 
   var EIKEN_POOL_5 = [
     ['apple','りんご','りんご'],['banana','バナナ','バナナ'],['orange','オレンジ','オレンジ'],
@@ -4974,14 +4975,70 @@
     }
   }
 
-  var KW_CELL = 130;
-  var KW_HEIGHT = 150;
+  var KANJI_POOL_G3_SENTENCES = [
+    { before: '', word: '鳥', after: 'が空にとび立つ。', reading: 'とり' },
+    { before: '大きく', word: '両手', after: 'を広げる。', reading: 'りょうて' },
+    { before: '学校のチャイムが', word: '鳴る', after: '。', reading: 'なる' },
+    { before: 'サッカーの試合で', word: '負ける', after: '。', reading: 'まける' },
+    { before: '', word: '係', after: 'の仕事をてつだう。', reading: 'かかり' },
+    { before: '言葉の意味を', word: '考える', after: '。', reading: 'かんがえる' },
+    { before: 'クラスの', word: '全員', after: 'が集まる。', reading: 'ぜんいん' },
+    { before: '当たりくじを', word: '引く', after: '。', reading: 'ひく' },
+    { before: '町内の', word: '祭り', after: 'に参加する。', reading: 'まつり' },
+    { before: '一日の', word: '作業', after: 'をおえる。', reading: 'さぎょう' },
+    { before: '', word: '鉄板', after: 'で肉をやく。', reading: 'てっぱん' },
+    { before: '', word: '電柱', after: 'を見上げる。', reading: 'でんちゅう' },
+    { before: '', word: '休日', after: 'に出かける。', reading: 'きゅうじつ' },
+    { before: '', word: '油田', after: 'が広がる。', reading: 'ゆでん' },
+    { before: 'バスで', word: '空港', after: 'に向かう。', reading: 'くうこう' },
+    { before: '', word: '目薬', after: 'を買う。', reading: 'めぐすり' },
+    { before: '兄は', word: '草笛', after: 'が上手だ。', reading: 'くさぶえ' },
+    { before: '', word: '雲海', after: 'をながめる。', reading: 'うんかい' },
+    { before: '', word: '新雪', after: 'をふみながら歩く。', reading: 'しんせつ' },
+    { before: '車に', word: '注意', after: 'する。', reading: 'ちゅうい' },
+    { before: '', word: '悪者', after: 'をつかまえる。', reading: 'わるもの' },
+    { before: 'けむりを', word: '感知', after: 'する。', reading: 'かんち' },
+    { before: '洋服を', word: '売買', after: 'する。', reading: 'ばいばい' },
+    { before: 'じゃんけんで', word: '勝負', after: 'する。', reading: 'しょうぶ' },
+    { before: '', word: '広大', after: 'な土地に家がたつ。', reading: 'こうだい' },
+    { before: 'バスが', word: '車庫', after: 'から出る。', reading: 'しゃこ' },
+    { before: '文字を', word: '入力', after: 'する。', reading: 'にゅうりょく' },
+    { before: 'ラジオの', word: '電波', after: 'を受信する。', reading: 'でんぱ' },
+    { before: '校内', word: '放送', after: 'がながれる。', reading: 'ほうそう' },
+    { before: '算数の', word: '勉強', after: 'をする。', reading: 'べんきょう' },
+    { before: '物語の', word: '感想', after: 'を言う。', reading: 'かんそう' },
+    { before: '', word: '兄さん', after: 'と話をする。', reading: 'にいさん' },
+    { before: '犬の', word: '写真', after: 'をとる。', reading: 'しゃしん' },
+    { before: '', word: '列車', after: 'が線路を走る。', reading: 'れっしゃ' },
+    { before: 'きず口から', word: '血', after: 'がにじむ。', reading: 'ち' },
+    { before: '', word: '暗い', after: '道にあかりがつく。', reading: 'くらい' },
+    { before: '川には', word: '橋', after: 'をかける。', reading: 'はし' },
+    { before: '', word: '暑い', after: '夏が去る。', reading: 'あつい' },
+    { before: '', word: '寒い', after: '冬が来る。', reading: 'さむい' },
+    { before: '', word: '軽い', after: 'かばんを持つ。', reading: 'かるい' },
+    { before: '何よりも大切ない', word: '命', after: '。', reading: 'いのち' },
+    { before: '安全を', word: '第一', after: 'に考える。', reading: 'だいいち' },
+    { before: '真実を', word: '明らか', after: 'にする。', reading: 'あきらか' },
+    { before: '図書館の本を', word: '返す', after: '。', reading: 'かえす' },
+    { before: '文の中から', word: '主語', after: 'をさがす。', reading: 'しゅご' },
+    { before: '', word: '九州', after: 'に引っこす。', reading: 'きゅうしゅう' },
+    { before: '青い', word: '風船', after: 'をとばす。', reading: 'ふうせん' },
+    { before: '', word: '屋根', after: 'に雪がつもる。', reading: 'やね' },
+    { before: 'おばから', word: '荷物', after: 'がとどく。', reading: 'にもつ' },
+    { before: 'やくそくを', word: '守る', after: '。', reading: 'まもる' },
+  ];
+
+  var KW_CELL_MAX = 190;
+  var KW_CELL_MIN = 70;
+  var KW_CELL_BASE = 130;
+  var kwInkDilateRadius = 8;
   var kwGlyphMask = null;
   var kwTolerantGlyphMask = null;
   var kwGlyphTotal = 0;
   var kwCurrentEntry = null;
   var kwLastEntry = null;
   var kwCurrentSplit = null;
+  var kwCurrentGrade = '3';
   var kwDrawing = false;
   var kwHasInk = false;
   var kwQuestionNum = 1;
@@ -5004,8 +5061,13 @@
     };
   }
 
+  function kwGetPool(){
+    if(kwCurrentGrade === '3sentence') return KANJI_POOL_G3_SENTENCES;
+    return KANJI_POOL_G3;
+  }
+
   function kwPickEntry(){
-    var pool = KANJI_POOL_G3;
+    var pool = kwGetPool();
     var entry;
     do {
       entry = pool[Math.floor(Math.random() * pool.length)];
@@ -5041,17 +5103,35 @@
     return out;
   }
 
+  function kwComputeCellSize(n){
+    var available = KW_CELL_MAX * n;
+    if(kwCard){
+      var cs = getComputedStyle(kwCard);
+      var pl = parseFloat(cs.paddingLeft) || 0;
+      var pr = parseFloat(cs.paddingRight) || 0;
+      var innerWidth = kwCard.clientWidth - pl - pr;
+      if(innerWidth > 0) available = innerWidth;
+    }
+    var cell = Math.floor(available / n);
+    if(cell > KW_CELL_MAX) cell = KW_CELL_MAX;
+    if(cell < KW_CELL_MIN) cell = KW_CELL_MIN;
+    return cell;
+  }
+
   function kwDrawGuide(){
     var core = kwCurrentSplit.core;
     var chars = core.split('');
     var n = chars.length;
-    var w = KW_CELL * n, h = KW_HEIGHT;
+    var cell = kwComputeCellSize(n);
+    var w = cell * n, h = Math.round(cell * 1.15);
     kwGuideCanvas.width = w;
     kwGuideCanvas.height = h;
     kwInkCanvas.width = w;
     kwInkCanvas.height = h;
     kwCanvasWrap.style.width = w + 'px';
     kwCanvasWrap.style.height = h + 'px';
+    kwCanvasWrap.style.backgroundSize = cell + 'px ' + h + 'px';
+    kwCanvasWrap.style.backgroundImage = 'repeating-linear-gradient(to right, transparent, transparent ' + (cell - 1) + 'px, rgba(0,0,0,.15) ' + (cell - 1) + 'px, rgba(0,0,0,.15) ' + cell + 'px)';
 
     kwGuideCtx.clearRect(0, 0, w, h);
     kwGuideCtx.fillStyle = '#000';
@@ -5059,13 +5139,15 @@
     kwGuideCtx.textAlign = 'center';
     kwGuideCtx.textBaseline = 'middle';
     chars.forEach(function(ch, i){
-      kwGuideCtx.fillText(ch, KW_CELL * (i + 0.5), h / 2 + h * 0.04);
+      kwGuideCtx.fillText(ch, cell * (i + 0.5), h / 2 + h * 0.04);
     });
 
     kwGlyphMask = kwBuildAlphaMask(kwGuideCtx, w, h);
     kwGlyphTotal = 0;
     for(var i = 0; i < kwGlyphMask.length; i++) kwGlyphTotal += kwGlyphMask[i];
-    kwTolerantGlyphMask = kwDilateMask(kwGlyphMask, w, h, 14);
+    var toleranceRadius = Math.max(8, Math.round(cell * 14 / KW_CELL_BASE));
+    kwInkDilateRadius = Math.max(4, Math.round(cell * 8 / KW_CELL_BASE));
+    kwTolerantGlyphMask = kwDilateMask(kwGlyphMask, w, h, toleranceRadius);
   }
 
   function kwClearInk(){
@@ -5076,11 +5158,21 @@
 
   function kwMakeProblem(){
     kwCurrentEntry = kwPickEntry();
-    kwCurrentSplit = kwSplitEntry(kwCurrentEntry[0]);
+    if(kwCurrentGrade === '3sentence'){
+      var sentenceSplit = kwSplitEntry(kwCurrentEntry.word);
+      kwCurrentSplit = {
+        prefix: kwCurrentEntry.before,
+        core: sentenceSplit.core,
+        suffix: sentenceSplit.suffix + kwCurrentEntry.after
+      };
+      kwReading.textContent = 'よみ：' + kwCurrentEntry.reading;
+    } else {
+      kwCurrentSplit = kwSplitEntry(kwCurrentEntry[0]);
+      kwReading.textContent = 'よみ：' + kwCurrentEntry[1];
+    }
     var blanks = '';
     for(var i = 0; i < kwCurrentSplit.core.split('').length; i++) blanks += '＿';
     kwMaskedWord.textContent = kwCurrentSplit.prefix + blanks + kwCurrentSplit.suffix;
-    kwReading.textContent = 'よみ：' + kwCurrentEntry[1];
     kwDrawGuide();
     kwClearInk();
     kwFeedback.textContent = '';
@@ -5137,7 +5229,7 @@
     }
     var accuracy = onTarget / inkTotal;
 
-    var dilatedInk = kwDilateMask(inkMask, w, h, 8);
+    var dilatedInk = kwDilateMask(inkMask, w, h, kwInkDilateRadius);
     var glyphCovered = 0;
     for(var k = 0; k < kwGlyphMask.length; k++){
       if(kwGlyphMask[k] && dilatedInk[k]) glyphCovered++;
@@ -5151,11 +5243,15 @@
   function kwDoneWriting(){
     var score = kwComputeScore();
     var isSuccess = score >= 60;
-    var fullWord = kwCurrentSplit.prefix + kwCurrentSplit.core + kwCurrentSplit.suffix;
-    var answerLine = '「' + fullWord + '」（' + kwCurrentEntry[1] + '）';
+    var isSentenceMode = kwCurrentGrade === '3sentence';
+    var fullWord = isSentenceMode ? kwCurrentEntry.word : (kwCurrentSplit.prefix + kwCurrentSplit.core + kwCurrentSplit.suffix);
+    var readingText = isSentenceMode ? kwCurrentEntry.reading : kwCurrentEntry[1];
+    var answerLine = '「' + fullWord + '」（' + readingText + '）';
+    var streakKey = 'kanji:write' + kwCurrentGrade;
+    var wordKey = isSentenceMode ? kwCurrentEntry.word : kwCurrentEntry[0];
 
-    recordWordAttempt('kanji:write3', kwCurrentEntry[0], isSuccess);
-    recordStreakAttempt('kanji:write3', isSuccess);
+    recordWordAttempt(streakKey, wordKey, isSuccess);
+    recordStreakAttempt(streakKey, isSuccess);
 
     if(isSuccess){
       correctCount++;
@@ -5540,6 +5636,7 @@
   var kwGameScreen = document.getElementById('kwGameScreen');
   var kwExitBtn = document.getElementById('kwExitBtn');
   var kwGradeSubtitle = document.getElementById('kwGradeSubtitle');
+  var kwCard = document.getElementById('kwCard');
   var kwCount = document.getElementById('kwCount');
   var kwMaskedWord = document.getElementById('kwMaskedWord');
   var kwReading = document.getElementById('kwReading');
@@ -5549,7 +5646,7 @@
   var kwGuideCtx = kwGuideCanvas.getContext('2d');
   var kwInkCtx = kwInkCanvas.getContext('2d');
   kwInkCtx.strokeStyle = '#2E2A4D';
-  kwInkCtx.lineWidth = 10;
+  kwInkCtx.lineWidth = 16;
   kwInkCtx.lineCap = 'round';
   kwInkCtx.lineJoin = 'round';
   var kwFeedback = document.getElementById('kwFeedback');
@@ -7205,6 +7302,7 @@
         return;
       }
       titleStatusKw.textContent = '';
+      kwCurrentGrade = grade;
       kwGradeSubtitle.textContent = btn.getAttribute('data-base') + '・書きとり';
       kwQuestionNum = 1;
       kanjiWriteTitleScreen.classList.add('hidden');
