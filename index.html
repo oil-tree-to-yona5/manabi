@@ -5028,8 +5028,10 @@
     { before: 'やくそくを', word: '守る', after: '。', reading: 'まもる' },
   ];
 
-  var KW_CELL = 130;
-  var KW_HEIGHT = 150;
+  var KW_CELL_MAX = 190;
+  var KW_CELL_MIN = 70;
+  var KW_CELL_BASE = 130;
+  var kwInkDilateRadius = 8;
   var kwGlyphMask = null;
   var kwTolerantGlyphMask = null;
   var kwGlyphTotal = 0;
@@ -5101,17 +5103,35 @@
     return out;
   }
 
+  function kwComputeCellSize(n){
+    var available = KW_CELL_MAX * n;
+    if(kwCard){
+      var cs = getComputedStyle(kwCard);
+      var pl = parseFloat(cs.paddingLeft) || 0;
+      var pr = parseFloat(cs.paddingRight) || 0;
+      var innerWidth = kwCard.clientWidth - pl - pr;
+      if(innerWidth > 0) available = innerWidth;
+    }
+    var cell = Math.floor(available / n);
+    if(cell > KW_CELL_MAX) cell = KW_CELL_MAX;
+    if(cell < KW_CELL_MIN) cell = KW_CELL_MIN;
+    return cell;
+  }
+
   function kwDrawGuide(){
     var core = kwCurrentSplit.core;
     var chars = core.split('');
     var n = chars.length;
-    var w = KW_CELL * n, h = KW_HEIGHT;
+    var cell = kwComputeCellSize(n);
+    var w = cell * n, h = Math.round(cell * 1.15);
     kwGuideCanvas.width = w;
     kwGuideCanvas.height = h;
     kwInkCanvas.width = w;
     kwInkCanvas.height = h;
     kwCanvasWrap.style.width = w + 'px';
     kwCanvasWrap.style.height = h + 'px';
+    kwCanvasWrap.style.backgroundSize = cell + 'px ' + h + 'px';
+    kwCanvasWrap.style.backgroundImage = 'repeating-linear-gradient(to right, transparent, transparent ' + (cell - 1) + 'px, rgba(0,0,0,.15) ' + (cell - 1) + 'px, rgba(0,0,0,.15) ' + cell + 'px)';
 
     kwGuideCtx.clearRect(0, 0, w, h);
     kwGuideCtx.fillStyle = '#000';
@@ -5119,13 +5139,15 @@
     kwGuideCtx.textAlign = 'center';
     kwGuideCtx.textBaseline = 'middle';
     chars.forEach(function(ch, i){
-      kwGuideCtx.fillText(ch, KW_CELL * (i + 0.5), h / 2 + h * 0.04);
+      kwGuideCtx.fillText(ch, cell * (i + 0.5), h / 2 + h * 0.04);
     });
 
     kwGlyphMask = kwBuildAlphaMask(kwGuideCtx, w, h);
     kwGlyphTotal = 0;
     for(var i = 0; i < kwGlyphMask.length; i++) kwGlyphTotal += kwGlyphMask[i];
-    kwTolerantGlyphMask = kwDilateMask(kwGlyphMask, w, h, 14);
+    var toleranceRadius = Math.max(8, Math.round(cell * 14 / KW_CELL_BASE));
+    kwInkDilateRadius = Math.max(4, Math.round(cell * 8 / KW_CELL_BASE));
+    kwTolerantGlyphMask = kwDilateMask(kwGlyphMask, w, h, toleranceRadius);
   }
 
   function kwClearInk(){
@@ -5207,7 +5229,7 @@
     }
     var accuracy = onTarget / inkTotal;
 
-    var dilatedInk = kwDilateMask(inkMask, w, h, 8);
+    var dilatedInk = kwDilateMask(inkMask, w, h, kwInkDilateRadius);
     var glyphCovered = 0;
     for(var k = 0; k < kwGlyphMask.length; k++){
       if(kwGlyphMask[k] && dilatedInk[k]) glyphCovered++;
@@ -5614,6 +5636,7 @@
   var kwGameScreen = document.getElementById('kwGameScreen');
   var kwExitBtn = document.getElementById('kwExitBtn');
   var kwGradeSubtitle = document.getElementById('kwGradeSubtitle');
+  var kwCard = document.getElementById('kwCard');
   var kwCount = document.getElementById('kwCount');
   var kwMaskedWord = document.getElementById('kwMaskedWord');
   var kwReading = document.getElementById('kwReading');
@@ -5623,7 +5646,7 @@
   var kwGuideCtx = kwGuideCanvas.getContext('2d');
   var kwInkCtx = kwInkCanvas.getContext('2d');
   kwInkCtx.strokeStyle = '#2E2A4D';
-  kwInkCtx.lineWidth = 10;
+  kwInkCtx.lineWidth = 16;
   kwInkCtx.lineCap = 'round';
   kwInkCtx.lineJoin = 'round';
   var kwFeedback = document.getElementById('kwFeedback');
