@@ -1387,8 +1387,10 @@
 
   #dokanGameScreen{ display:none; position:fixed; inset:0; z-index:90; background:#15122f; }
   #dokanGameScreen:not(.hidden){display:block;}
-  #dokanGameScreen .dk-exit{position:absolute;top:14px;left:14px;z-index:10;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.25);cursor:pointer;}
-  #dokanGameScreen iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:1;}
+  #pitaGameScreen{ display:none; position:fixed; inset:0; z-index:90; background:#1b1140; }
+  #pitaGameScreen:not(.hidden){display:block;}
+  #dokanGameScreen .dk-exit, #pitaGameScreen .dk-exit{position:absolute;top:14px;left:14px;z-index:10;width:40px;height:40px;border-radius:50%;background:#fff;border:none;font-size:18px;box-shadow:0 4px 8px rgba(0,0,0,.25);cursor:pointer;}
+  #dokanGameScreen iframe, #pitaGameScreen iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:1;}
 </style>
 </head>
 <body>
@@ -1740,6 +1742,7 @@
 
     <div class="hub-select">
       <button class="hub-btn" id="dokanRunBtn" style="border-color:var(--coral);"><span class="hub-icon">💣</span>ドカン迷路</button>
+      <button class="hub-btn" id="pitaRunBtn" style="border-color:#ff5fa8;"><span class="hub-icon">⏱️</span>ピタッとタイマー</button>
     </div>
   </div>
 
@@ -2247,6 +2250,11 @@
 <div id="dokanGameScreen" class="hidden">
   <button class="dk-exit" id="dkExitBtn">🏠</button>
   <iframe id="dokanFrame" src="dokan-maze.html" title="ドカン迷路"></iframe>
+</div>
+
+<div id="pitaGameScreen" class="hidden">
+  <button class="dk-exit" id="pitaExitBtn">🏠</button>
+  <iframe id="pitaFrame" src="timing-game.html" title="ピタッとタイマー"></iframe>
 </div>
 
 <div class="overlay hidden" id="gachaScreenOverlay">
@@ -5627,6 +5635,10 @@
   var dokanGameScreen = document.getElementById('dokanGameScreen');
   var dkExitBtn = document.getElementById('dkExitBtn');
   var dokanFrame = document.getElementById('dokanFrame');
+  var pitaRunBtn = document.getElementById('pitaRunBtn');
+  var pitaGameScreen = document.getElementById('pitaGameScreen');
+  var pitaExitBtn = document.getElementById('pitaExitBtn');
+  var pitaFrame = document.getElementById('pitaFrame');
 
   var hubKanjiWriteBtn = document.getElementById('hubKanjiWriteBtn');
   var kanjiWriteTitleScreen = document.getElementById('kanjiWriteTitleScreen');
@@ -7492,6 +7504,15 @@
   });
   dkExitBtn.addEventListener('click', function(){
     dokanGameScreen.classList.add('hidden');
+    gamesTitleScreen.classList.remove('hidden');
+  });
+  pitaRunBtn.addEventListener('click', function(){
+    gamesTitleScreen.classList.add('hidden');
+    pitaGameScreen.classList.remove('hidden');
+    try { pitaFrame.contentWindow.location.reload(); } catch(e){}
+  });
+  pitaExitBtn.addEventListener('click', function(){
+    pitaGameScreen.classList.add('hidden');
     gamesTitleScreen.classList.remove('hidden');
   });
   hubBackBtnMoji.addEventListener('click', function(){
