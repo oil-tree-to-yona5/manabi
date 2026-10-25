@@ -1,0 +1,204 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ピタッとタイマー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1b1140; --panel:#271a55; --line:#4a3b8c; --fg:#f5f0ff; --mute:#b6a9e8;
+  --accent:#ff5fa8; --accent-deep:#c73f82; --ink:#2b0f22;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:"Zen Kaku Gothic New",system-ui,sans-serif; font-size:14px;
+  overflow:hidden; overscroll-behavior:none; touch-action:none;
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; -webkit-tap-highlight-color:transparent;
+}
+#app{ height:100%; max-width:900px; margin-inline:auto; padding-inline:16px; padding-block:8px; display:flex; flex-direction:column; gap:10px; }
+.hud{display:grid; grid-template-columns:1fr 1fr 1fr; background:var(--panel); border:1px solid var(--line); border-radius:12px}
+.hud>div{padding:8px 10px; display:flex; flex-direction:column; gap:2px; min-width:0}
+.hud>div+div{border-left:1px solid var(--line)}
+.hud small{font:11px "DotGothic16",sans-serif; color:var(--mute); letter-spacing:.08em}
+.hud b{font:400 20px/1.15 "DotGothic16",sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap}
+#hTotal{color:var(--accent)}
+.sub{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chips span{font:13px "DotGothic16",sans-serif; color:var(--mute); padding:4px 12px; border-radius:999px; background:var(--panel); border:1px solid var(--line); white-space:nowrap}
+.chips b{color:var(--accent); font-weight:700}
+.mini{font:12px "DotGothic16",sans-serif; color:var(--fg); background:transparent; border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer}
+.mini:active{background:var(--panel)}
+button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+#stage{flex:1; min-height:0; display:grid; place-items:center}
+.board{position:relative; width:100%; max-width:420px; height:100%; max-height:380px; border-radius:20px; background:var(--panel); box-shadow:0 0 0 2px var(--line),0 10px 30px rgba(0,0,0,.4); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; overflow:hidden}
+.timerDisplay{font:700 72px/1 "DotGothic16",sans-serif; font-variant-numeric:tabular-nums; color:var(--fg); letter-spacing:.02em}
+.timerUnit{font:13px "DotGothic16",sans-serif; color:var(--mute); letter-spacing:.08em}
+.ov{position:absolute; inset:0; display:grid; place-items:center; padding:16px; background:rgba(20,12,45,.86); backdrop-filter:blur(2px); border-radius:20px}
+.card{max-width:min(94%,420px); text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px}
+.card h1{margin:0; font:400 clamp(24px,7vw,40px)/1.2 "DotGothic16",sans-serif; letter-spacing:.04em; color:#fff; text-shadow:2px 2px 0 var(--accent-deep); text-wrap:balance}
+.card p{margin:0; line-height:1.75; color:#e6defa; font-size:14px}
+.card p em{font-style:normal; color:var(--accent)}
+.go{font:400 20px "DotGothic16",sans-serif; color:var(--ink); background:var(--accent); border:0; border-radius:12px; padding:14px 34px; box-shadow:0 5px 0 var(--accent-deep); cursor:pointer}
+.go:active{transform:translateY(3px); box-shadow:0 2px 0 var(--accent-deep)}
+footer.ctl{display:flex; justify-content:center; padding-block:2px 8px}
+#stopBtn{width:min(72vw,320px); padding:20px; border-radius:999px; border:0; font:400 24px "DotGothic16",sans-serif; color:#fff; background:linear-gradient(180deg,var(--accent),var(--accent-deep)); box-shadow:0 6px 0 #8a2a5a; cursor:pointer}
+#stopBtn:active{transform:translateY(4px); box-shadow:0 2px 0 #8a2a5a}
+#stopBtn[disabled]{opacity:.35; pointer-events:none}
+.hint{display:none; margin:0; text-align:center; color:var(--mute); font-size:12px}
+@media (hover:hover) and (pointer:fine){ .hint{display:block; padding-block:2px 4px} }
+</style>
+
+<div id="app">
+  <header class="hud" aria-label="ゲームの状況">
+    <div><small>ラウンド</small><b id="hRound">-/5</b></div>
+    <div><small>ごうけい</small><b id="hTotal">0</b></div>
+    <div><small>ベスト</small><b id="hBest">0</b></div>
+  </header>
+  <div class="sub">
+    <div class="chips"><span>おだい <b id="cTarget">--</b></span></div>
+    <div class="btns"><button id="bSnd" class="mini" type="button">音 ON</button></div>
+  </div>
+  <main id="stage">
+    <div class="board" id="board">
+      <div class="timerDisplay" id="timerDisplay">0.00</div>
+      <div class="timerUnit">びょう</div>
+      <div id="ov" class="ov"><div class="card"><h1 id="ovT"></h1><p id="ovB"></p><button id="ovBtn" class="go" type="button"></button></div></div>
+    </div>
+  </main>
+  <p class="hint">スペース / Enter キーでも おせます</p>
+  <footer class="ctl">
+    <button id="stopBtn" type="button">ここだ！</button>
+  </footer>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const ROUNDS=5;
+const $=id=>document.getElementById(id);
+const board=$('board'),ov=$('ov'),ovT=$('ovT'),ovB=$('ovB'),ovBtn=$('ovBtn');
+const timerDisplay=$('timerDisplay'),stopBtn=$('stopBtn');
+const hRound=$('hRound'),hTotal=$('hTotal'),hBest=$('hBest'),cTarget=$('cTarget');
+
+let state='title', round=0, total=0, best=0, target=0, startTime=0, muted=false, newRecord=false;
+try{ best=+localStorage.getItem('pita-timer-best')||0; }catch(_){}
+hBest.textContent=best;
+
+/* ---------- sound ---------- */
+let AC=null;
+function ac(){
+  if(muted) return null;
+  if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(_){ AC=null; } }
+  if(AC&&AC.state==='suspended'){ try{ AC.resume(); }catch(_){} }
+  return AC;
+}
+function tone(f,d,type,v,to,delay){
+  const a=ac(); if(!a) return;
+  try{
+    const t=a.currentTime+(delay||0), o=a.createOscillator(), g=a.createGain();
+    o.type=type||'sine'; o.frequency.setValueAtTime(f,t);
+    if(to) o.frequency.exponentialRampToValueAtTime(to,t+d);
+    g.gain.setValueAtTime(v||0.06,t); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+d+0.02);
+  }catch(_){}
+}
+function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(_){} }
+
+/* ---------- helpers ---------- */
+function randTarget(){ return Math.round((1 + Math.random()*9) * 100) / 100; }
+function judge(diff){
+  if(diff<=0.03) return {label:'かんぺき！✨', color:'#ffe27a'};
+  if(diff<=0.10) return {label:'ピッタリ！🎯', color:'#ff5fa8'};
+  if(diff<=0.25) return {label:'おしい！', color:'#8fe0ff'};
+  if(diff<=0.50) return {label:'まずまず', color:'#b6a9e8'};
+  return {label:'ざんねん…', color:'#b6a9e8'};
+}
+function scoreFor(diff){ return Math.max(0, Math.round(1000 - diff*2000)); }
+
+/* ---------- overlay / flow ---------- */
+function showOv(title,body,btn){ ovT.textContent=title; ovB.innerHTML=body; ovBtn.textContent=btn; ov.hidden=false; }
+function hideOv(){ ov.hidden=true; }
+function showTitle(){
+  const rec=best>0?'<br>ベストごうけい <em>'+best+'</em>':'';
+  showOv('ピタッとタイマー','おだいの びょうすうで「ここだ！」を おそう。<br>さいしょの1びょうだけ すうじが見えるよ。<br>ぜんぶで'+ROUNDS+'ラウンド！'+rec,'スタート');
+  hRound.textContent='-/'+ROUNDS;
+  cTarget.textContent='--';
+  timerDisplay.textContent='0.00';
+}
+function startSession(){
+  round=0; total=0; newRecord=false; hTotal.textContent=0;
+  nextRound();
+}
+function nextRound(){
+  round++;
+  target=randTarget();
+  hRound.textContent=round+'/'+ROUNDS;
+  cTarget.textContent=target.toFixed(2)+'びょう';
+  timerDisplay.textContent='0.00';
+  state='counting';
+  stopBtn.disabled=false;
+  hideOv();
+  ac();
+  startTime=performance.now();
+}
+function doPress(){
+  if(state!=='counting') return;
+  const elapsed=(performance.now()-startTime)/1000;
+  const diff=Math.abs(target-elapsed);
+  const score=scoreFor(diff);
+  const j=judge(diff);
+  total+=score;
+  hTotal.textContent=total;
+  state='judged';
+  stopBtn.disabled=true;
+  tone(300+score*0.35,0.18,'square',0.07,score>800?900:500);
+  if(score>=900){ tone(900,0.14,'square',0.05,null,0.1); buzz(20); }
+  const body='おだい：<em>'+target.toFixed(2)+'</em>びょう<br>あなた：<em>'+elapsed.toFixed(2)+'</em>びょう<br>ズレ：'+diff.toFixed(2)+'びょう　スコア +'+score;
+  showOv(j.label, body, round<ROUNDS?'つぎへ':'けっかを見る');
+}
+function finishSession(){
+  state='result';
+  if(total>best){ best=total; newRecord=true; try{ localStorage.setItem('pita-timer-best',String(best)); }catch(_){} }
+  hBest.textContent=best;
+  showOv('けっか！','ごうけいスコア <em>'+total+'</em><br>ベスト '+best+(newRecord?'<br><em>ハイスコア更新！</em>':''),'もう一度');
+}
+function primaryAction(){
+  if(state==='title') startSession();
+  else if(state==='judged'){ if(round<ROUNDS) nextRound(); else finishSession(); }
+  else if(state==='result') startSession();
+}
+function primaryKey(){ if(state==='counting') doPress(); else primaryAction(); }
+
+/* ---------- live display ---------- */
+function frame(ts){
+  if(state==='counting'){
+    const elapsed=(performance.now()-startTime)/1000;
+    timerDisplay.textContent = elapsed<1.0 ? elapsed.toFixed(2) : '？';
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---------- input ---------- */
+ovBtn.addEventListener('click',()=>{ ovBtn.blur(); primaryAction(); });
+stopBtn.addEventListener('click',()=>{ stopBtn.blur(); doPress(); });
+board.addEventListener('pointerdown',e=>{
+  if(state!=='counting') return;
+  if(e.target&&e.target.closest&&e.target.closest('#ov')) return;
+  doPress();
+});
+addEventListener('keydown',e=>{
+  if(e.key===' '||e.key==='Enter'){ e.preventDefault(); if(e.repeat) return; primaryKey(); }
+});
+$('bSnd').addEventListener('click',e=>{ muted=!muted; e.currentTarget.textContent=muted?'音 OFF':'音 ON'; e.currentTarget.blur(); if(!muted) ac(); });
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&state==='counting'){ state='title'; showTitle(); }
+});
+
+showTitle();
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>
