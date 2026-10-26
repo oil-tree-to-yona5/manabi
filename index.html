@@ -1112,6 +1112,9 @@
   #gameScreen .dg-question{position:absolute;z-index:15;top:135px;left:50%;transform:translateX(-50%);width:min(78vw,570px);padding:16px 18px;text-align:center;background:#fffaf0;border:5px solid #f1d69b;border-radius:28px;box-shadow:0 9px 20px rgba(123,100,64,.2);}
   #gameScreen .dg-question small{font-weight:800;color:#9b7a58;}
   #gameScreen .dg-problem{font-size:clamp(30px,7.5vw,50px);font-weight:1000;line-height:1.05;margin-top:5px;}
+  #gameScreen .dg-speak{display:none;margin:8px auto 0;border:3px solid #dfc486;background:#fff8df;color:#78451f;border-radius:14px;padding:6px 16px;font-weight:900;font-size:14px;cursor:pointer;}
+  #gameScreen .dg-speak.show{display:inline-block;}
+  #gameScreen .dg-speak:active{transform:scale(.96);}
 
   #gameScreen .dg-path{position:absolute;left:50%;bottom:-8%;width:70%;height:70%;transform:translateX(-50%);background:#ead39b;clip-path:polygon(35% 0,65% 0,100% 100%,0 100%);z-index:2;}
   #gameScreen .dg-stone{position:absolute;background:#f8e7b6;border-radius:45%;opacity:.75;}
@@ -1128,6 +1131,7 @@
   #gameScreen .dg-door.pink .dg-arch{background:#ff7896;border-color:#d64f72;}
   #gameScreen .dg-door .dg-star{position:absolute;top:7%;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 0 #a36d00);}
   #gameScreen .dg-answer{position:absolute;left:14%;right:14%;top:47%;background:#fff8df;border:3px solid #dfc486;border-radius:14px;padding:7px;font-size:clamp(22px,4.5vw,36px);font-weight:1000;color:#78451f;}
+  #gameScreen .dg-answer.dg-word{font-size:clamp(13px,3.4vw,20px);line-height:1.15;white-space:normal;word-break:break-word;top:44%;}
   #gameScreen .dg-knob{position:absolute;right:9%;top:62%;width:18px;height:18px;background:#ffd34e;border:2px solid #b27b17;border-radius:50%;}
   #gameScreen .dg-door.open{animation:dgDoorShake .12s 2;}
   #gameScreen .dg-door.open .dg-panel{animation:dgOpenDoor .65s forwards;transform-origin:left;}
@@ -1887,7 +1891,7 @@
   <div class="dg-timerBox"><div class="dg-timerFill" id="dgTimerFill"></div><div class="dg-timerText" id="dgTimerText">15秒</div></div>
   <div class="dg-sign" id="dgSign">🐾 ステージ1：正しい答えのドアを選ぼう！</div>
 
-  <div class="dg-question"><small>もんだい</small><div class="dg-problem" id="dgProblem">-</div></div>
+  <div class="dg-question"><small>もんだい</small><div class="dg-problem" id="dgProblem">-</div><button type="button" class="dg-speak" id="dgSpeakBtn">🔊 きいてみる</button></div>
 
   <div class="dg-path"></div>
   <div class="dg-stone dg-s1"></div><div class="dg-stone dg-s2"></div><div class="dg-stone dg-s3"></div><div class="dg-stone dg-s4"></div>
@@ -3342,6 +3346,20 @@
     ['ant','あり','あり'],['frog','かえる','かえる']
   ];
 
+  var EIKEN_PICTOGRAM_5 = {
+    dog:'🐶', cat:'🐱', bird:'🐦', fish:'🐟', rabbit:'🐰', horse:'🐴', cow:'🐮', pig:'🐷',
+    lion:'🦁', tiger:'🐯', elephant:'🐘', monkey:'🐵', bear:'🐻', ant:'🐜', frog:'🐸',
+    apple:'🍎', banana:'🍌', orange:'🍊', grape:'🍇', strawberry:'🍓', melon:'🍈', rice:'🍚', juice:'🧃',
+    book:'📖', pen:'🖊️', pencil:'✏️', notebook:'📓', bag:'🎒',
+    chair:'🪑', door:'🚪', window:'🪟', bed:'🛏️',
+    house:'🏠', school:'🏫', station:'🚉', hospital:'🏥', store:'🏪', museum:'🏛️',
+    hand:'✋', foot:'🦶', eye:'👁️', ear:'👂', mouth:'👄', nose:'👃',
+    ball:'⚽', doll:'🪆', toy:'🧸', box:'📦', cup:'☕', spoon:'🥄',
+    red:'🟥', blue:'🟦', yellow:'🟨', green:'🟩', white:'⬜', black:'⬛',
+    spring:'🌸', summer:'🏖️', autumn:'🍂', winter:'❄️'
+  };
+  var DG_ENGLISH_POOL_5 = EIKEN_POOL_5.filter(function(e){ return !!EIKEN_PICTOGRAM_5[e[0]]; });
+
   var EIKEN_POOL_4 = [
     ['weather','天気','てんき'],['rain','雨','あめ'],['snow','雪','ゆき'],
     ['wind','風','かぜ'],['cloud','雲','くも'],['sunny','晴れた','はれた'],
@@ -4036,12 +4054,12 @@
   }
 
   var DG_STAGE_POOLS = [
-    ['add_basic'],
-    ['add_basic', 'subtract'],
-    ['subtract', 'add_advanced', 'subtract_advanced'],
-    ['add_advanced', 'subtract_advanced', 'multiply'],
-    ['multiply', 'division'],
-    ['multiply', 'division', 'add_advanced', 'subtract_advanced']
+    ['add_basic', 'english5'],
+    ['add_basic', 'subtract', 'english5'],
+    ['subtract', 'add_advanced', 'subtract_advanced', 'english5'],
+    ['add_advanced', 'subtract_advanced', 'multiply', 'english5'],
+    ['multiply', 'division', 'english5'],
+    ['multiply', 'division', 'add_advanced', 'subtract_advanced', 'english5']
   ];
 
   function dgCategoryForStage(stage){
@@ -4050,9 +4068,56 @@
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
+  function dgStreakKeyFor(q){
+    return q.category === 'english5' ? 'english:5' : ('math:' + q.category);
+  }
+
+  function dgSpeakCurrentWord(){
+    var q = dgCurrentQuestion;
+    if(q && q.category === 'english5') speakWord(q.word, 'en-US');
+  }
+
+  function dgMakeEnglishProblem(){
+    dgSign.textContent = '🐾 ステージ' + dgStage + '：えに あう たんごの ドアを選ぼう！';
+    var pool = DG_ENGLISH_POOL_5;
+    var entry;
+    do {
+      entry = pool[Math.floor(Math.random() * pool.length)];
+    } while(entry === dgLastEnglishEntry && pool.length > 1);
+    dgLastEnglishEntry = entry;
+    var wrongEntry;
+    do {
+      wrongEntry = pool[Math.floor(Math.random() * pool.length)];
+    } while(wrongEntry[0] === entry[0]);
+
+    dgCurrentQuestion = { category: 'english5', word: entry[0], answer: entry[0], meaning: entry[1] };
+    dgProblemEl.textContent = EIKEN_PICTOGRAM_5[entry[0]];
+    dgSpeakBtn.classList.add('show');
+    dgAns0.classList.add('dg-word');
+    dgAns1.classList.add('dg-word');
+
+    dgCorrectDoor = Math.random() < 0.5 ? 0 : 1;
+    var texts = ['', ''];
+    texts[dgCorrectDoor] = entry[0];
+    texts[1 - dgCorrectDoor] = wrongEntry[0];
+    dgAns0.textContent = texts[0];
+    dgAns1.textContent = texts[1];
+
+    dgUpdateHud();
+    dgStartTimer();
+    dgSpeakCurrentWord();
+  }
+
   function dgMakeProblem(){
-    dgSign.textContent = '🐾 ステージ' + dgStage + '：正しい答えのドアを選ぼう！';
     var category = dgCategoryForStage(dgStage);
+    if(category === 'english5'){
+      dgMakeEnglishProblem();
+      return;
+    }
+    dgSign.textContent = '🐾 ステージ' + dgStage + '：正しい答えのドアを選ぼう！';
+    dgSpeakBtn.classList.remove('show');
+    dgAns0.classList.remove('dg-word');
+    dgAns1.classList.remove('dg-word');
     var q = makeQuestionsMath(1, gachaConfig, category)[0];
     dgCurrentQuestion = q;
     dgProblemEl.textContent = q.word;
@@ -4166,7 +4231,7 @@
           dgHighScore = dgSessionScore;
           saveDogRunHighScore(dgHighScore);
         }
-        recordWordAttempt('math:' + q.category, q.word, true);
+        recordWordAttempt(dgStreakKeyFor(q), q.word, true);
         dgResultTitle.textContent = 'せいかい！🎉';
         msgParts.push('わんこがドアの中へ入ったよ！');
         if(dgStreak % 5 === 0){
@@ -4175,7 +4240,7 @@
         }
       } else {
         dgStreak = 0;
-        recordWordAttempt('math:' + q.category, q.word, false);
+        recordWordAttempt(dgStreakKeyFor(q), q.word, false);
         dgResultTitle.textContent = 'おしい！💦';
         var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
         msgParts.push('こたえは ' + correctText + ' だよ');
@@ -4190,7 +4255,7 @@
     dgLocked = true;
     var q = dgCurrentQuestion;
     dgStreak = 0;
-    recordWordAttempt('math:' + q.category, q.word, false);
+    recordWordAttempt(dgStreakKeyFor(q), q.word, false);
     dgResultTitle.textContent = '時間切れ ⏰';
     var correctText = (q.category === 'division') ? dgFormatDivisionAnswer(q.quotient, q.remainder) : q.answer;
     dgResultText.textContent = DG_TIME_LIMIT + '秒いないにドアをえらぼう！（こたえは ' + correctText + '）';
@@ -5429,6 +5494,7 @@
   var gameScreen = document.getElementById('gameScreen');
   var dgExitBtn = document.getElementById('dgExitBtn');
   var dgProblemEl = document.getElementById('dgProblem');
+  var dgSpeakBtn = document.getElementById('dgSpeakBtn');
   var dgAns0 = document.getElementById('dgAns0');
   var dgAns1 = document.getElementById('dgAns1');
   var dgDoor0 = document.getElementById('dgDoor0');
@@ -5460,6 +5526,7 @@
   var dgSessionScore = 0;
   var dgHighScore = loadDogRunHighScore();
   var dgPendingTreasure = false;
+  var dgLastEnglishEntry = null;
   var DG_CHEST_VALUES = [10, 20, 30];
 
   function dgRefreshHighScoreDisplay(){
@@ -7387,6 +7454,7 @@
   });
   dgDoor0.addEventListener('click', function(){ dgChoose(0); });
   dgDoor1.addEventListener('click', function(){ dgChoose(1); });
+  dgSpeakBtn.addEventListener('click', function(e){ e.stopPropagation(); dgSpeakCurrentWord(); });
   dgNextBtn.addEventListener('click', dgNextQuestion);
   dgChestBtns.forEach(function(btn, idx){
     btn.addEventListener('click', function(){ dgOpenChest(idx); });
