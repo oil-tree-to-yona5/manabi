@@ -1729,6 +1729,27 @@
     </div>
   </div>
 
+  <div id="dgModeScreen" class="hidden">
+    <div class="app-header">
+      <div class="header-back-wrap">
+        <button class="app-header-btn big" id="hubBackBtnDgMode">🏠</button>
+        <div class="header-back-label">もどる</div>
+      </div>
+      <div class="app-header-title">ドッグラン</div>
+      <div class="header-back-wrap" style="visibility:hidden;">
+        <button class="app-header-btn big"></button>
+        <div class="header-back-label">もどる</div>
+      </div>
+    </div>
+    <div class="title">ドッグ<span>ラン</span></div>
+    <div class="subtitle">あそびかたを えらんでね</div>
+
+    <div class="category-select">
+      <button class="category-btn" id="dgModeMathBtn">🐾 さんすうで あそぶ</button>
+      <button class="category-btn" id="dgModeEnglishBtn">🔤 えいごで あそぶ<small>英検5級</small></button>
+    </div>
+  </div>
+
   <div id="gamesTitleScreen" class="hidden">
     <div class="app-header">
       <div class="header-back-wrap">
@@ -4054,15 +4075,18 @@
   }
 
   var DG_STAGE_POOLS = [
-    ['add_basic', 'english5'],
-    ['add_basic', 'subtract', 'english5'],
-    ['subtract', 'add_advanced', 'subtract_advanced', 'english5'],
-    ['add_advanced', 'subtract_advanced', 'multiply', 'english5'],
-    ['multiply', 'division', 'english5'],
-    ['multiply', 'division', 'add_advanced', 'subtract_advanced', 'english5']
+    ['add_basic'],
+    ['add_basic', 'subtract'],
+    ['subtract', 'add_advanced', 'subtract_advanced'],
+    ['add_advanced', 'subtract_advanced', 'multiply'],
+    ['multiply', 'division'],
+    ['multiply', 'division', 'add_advanced', 'subtract_advanced']
   ];
 
+  var dgMode = 'math';
+
   function dgCategoryForStage(stage){
+    if(dgMode === 'english') return 'english5';
     var idx = Math.min(stage - 1, DG_STAGE_POOLS.length - 1);
     var pool = DG_STAGE_POOLS[idx];
     return pool[Math.floor(Math.random() * pool.length)];
@@ -5491,6 +5515,10 @@
   var gameTitleScreen = document.getElementById('gameTitleScreen');
   var hubBackBtnGame = document.getElementById('hubBackBtnGame');
   var dogRunBtn = document.getElementById('dogRunBtn');
+  var dgModeScreen = document.getElementById('dgModeScreen');
+  var hubBackBtnDgMode = document.getElementById('hubBackBtnDgMode');
+  var dgModeMathBtn = document.getElementById('dgModeMathBtn');
+  var dgModeEnglishBtn = document.getElementById('dgModeEnglishBtn');
   var gameScreen = document.getElementById('gameScreen');
   var dgExitBtn = document.getElementById('dgExitBtn');
   var dgProblemEl = document.getElementById('dgProblem');
@@ -7438,6 +7466,15 @@
   });
   dogRunBtn.addEventListener('click', function(){
     gameTitleScreen.classList.add('hidden');
+    dgModeScreen.classList.remove('hidden');
+  });
+  hubBackBtnDgMode.addEventListener('click', function(){
+    dgModeScreen.classList.add('hidden');
+    gameTitleScreen.classList.remove('hidden');
+  });
+  function dgStartSession(mode){
+    dgMode = mode;
+    dgModeScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     dgStreak = 0;
     dgStage = 1;
@@ -7445,7 +7482,9 @@
     dgPendingTreasure = false;
     dgResetStage();
     dgMakeProblem();
-  });
+  }
+  dgModeMathBtn.addEventListener('click', function(){ dgStartSession('math'); });
+  dgModeEnglishBtn.addEventListener('click', function(){ dgStartSession('english'); });
   dgExitBtn.addEventListener('click', function(){
     clearInterval(dgTimer);
     gameScreen.classList.add('hidden');
